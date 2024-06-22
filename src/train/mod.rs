@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 mod update_acceleration;
 mod update_air_resistance;
 mod update_braking_force;
@@ -70,7 +73,7 @@ pub struct ForceDriving(pub f32);
 // N
 pub struct ForceBraking(pub f32);
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Direction {
     Forward,
     Backward,
@@ -152,9 +155,9 @@ pub struct TrainBundle {
 }
 
 impl TrainBundle {
-    pub fn br_218(name: String, wagon_mass: f32) -> Self {
+    pub fn br_218(name: &str, wagon_mass: f32) -> Self {
         Self {
-            name: Name(name),
+            name: Name(name.to_owned()),
             mass: Mass {
                 engine: 78_000.0,
                 wagons: wagon_mass,

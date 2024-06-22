@@ -17,16 +17,13 @@ use train::{PaintScheme, PaintSchemeColor};
 
 fn setup(mut commands: Commands) {
     commands
-        .spawn(train::TrainBundle::br_218(
-            "BR 218 001".to_owned(),
-            400_000.0,
-        ))
+        .spawn(train::TrainBundle::br_218("BR 218 001", 400_000.0))
         .insert(PaintScheme {
             color: PaintSchemeColor::Orientrot,
         });
 
     commands
-        .spawn(train::TrainBundle::br_218("BR 218 002".to_owned(), 0.0))
+        .spawn(train::TrainBundle::br_218("BR 218 002", 0.0))
         .insert(PaintScheme {
             color: PaintSchemeColor::Pasteltuerkis,
         });
