@@ -1,3 +1,5 @@
+[![Rust](https://github.com/PatrickLerner/rustrail/actions/workflows/rust.yml/badge.svg)](https://github.com/PatrickLerner/rustrail/actions/workflows/rust.yml) [![codecov](https://codecov.io/github/PatrickLerner/rustrail/graph/badge.svg?token=L96BAYS6N1)](https://codecov.io/github/PatrickLerner/rustrail)
+
 # Rustrail
 
 Experimental railroad / train physic simulation.
