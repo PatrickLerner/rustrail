@@ -1,3 +1,4 @@
+mod update_acceleration;
 mod update_drive_force;
 
 use bevy::prelude::*;
@@ -157,47 +158,6 @@ fn update_air_resistance(mut entries: Query<(&mut ForceAirResistance, &Speed)>) 
     }
 }
 
-fn update_acceleration(
-    mut entries: Query<(
-        &mut Acceleration,
-        &Speed,
-        &ForceDriving,
-        &ForceFriction,
-        &ForceAirResistance,
-        &ForceBraking,
-        &Mass,
-    )>,
-) {
-    for (
-        mut acceleration,
-        speed,
-        force_driving,
-        force_friction,
-        force_air_resistance,
-        force_braking,
-        mass,
-    ) in entries.iter_mut()
-    {
-        let negative_force = force_friction.0 + force_air_resistance.0 + force_braking.0;
-        let positive_force = force_driving.0.abs();
-        let direction = if positive_force != 0.0 {
-            force_driving.0 / positive_force
-        } else if speed.0 != 0.0 {
-            speed.0 / speed.0.abs()
-        } else {
-            0.0
-        };
-
-        let force = (positive_force - negative_force) * direction;
-        acceleration.0 = force / mass.total();
-
-        let sign = direction.signum();
-        if sign * -acceleration.0 > sign * speed.0 {
-            acceleration.0 = -speed.0;
-        }
-    }
-}
-
 fn update_speed(mut entries: Query<(&mut Speed, &MaxSpeed, &Acceleration)>, time: Res<Time>) {
     for (mut speed, max_speed, acceleration) in entries.iter_mut() {
         speed.0 += acceleration.0 * time.delta_seconds();
@@ -255,7 +215,7 @@ impl Plugin for TrainPlugin {
                 update_braking_force,
                 update_friction,
                 update_air_resistance,
-                update_acceleration,
+                update_acceleration::system,
                 update_speed,
                 update_distance,
             ),
