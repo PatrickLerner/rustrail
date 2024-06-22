@@ -3,6 +3,44 @@ use bevy::prelude::*;
 #[derive(Component, Default)]
 pub struct Name(pub String);
 
+#[derive(Copy, Clone)]
+pub enum PaintSchemeColor {
+    Verkehrsrot,
+    Orientrot,
+    Lichtgrau,
+    Fernblau,
+    Ozeanblau,
+    Minttuerkis,
+    Pasteltuerkis,
+    Lachsorange,
+}
+
+impl From<PaintSchemeColor> for Color {
+    fn from(value: PaintSchemeColor) -> Self {
+        match value {
+            PaintSchemeColor::Verkehrsrot => Color::hex("C1121C").unwrap(),
+            PaintSchemeColor::Orientrot => Color::hex("A7323E").unwrap(),
+            PaintSchemeColor::Lichtgrau => Color::hex("D7D7D7").unwrap(),
+            PaintSchemeColor::Fernblau => Color::hex("486590").unwrap(),
+            PaintSchemeColor::Ozeanblau => Color::hex("2A5059").unwrap(),
+            PaintSchemeColor::Minttuerkis => Color::hex("3F8884").unwrap(),
+            PaintSchemeColor::Pasteltuerkis => Color::hex("74AEB1").unwrap(),
+            PaintSchemeColor::Lachsorange => Color::hex("DB6A50").unwrap(),
+        }
+    }
+}
+
+impl Default for PaintSchemeColor {
+    fn default() -> Self {
+        Self::Verkehrsrot
+    }
+}
+
+#[derive(Component, Default)]
+pub struct PaintScheme {
+    pub color: PaintSchemeColor,
+}
+
 #[derive(Component, Default)]
 // m/s^2
 pub struct Acceleration(pub f32);
@@ -162,15 +200,9 @@ fn update_acceleration(
         let force = (positive_force - negative_force) * direction;
         acceleration.0 = force / mass.total();
 
-        if direction > 0.0 {
-            if -acceleration.0 > speed.0 {
-                acceleration.0 = -speed.0;
-            }
-        }
-        if direction < 0.0 {
-            if -acceleration.0 < speed.0 {
-                acceleration.0 = -speed.0;
-            }
+        let sign = direction.signum();
+        if sign * -acceleration.0 > sign * speed.0 {
+            acceleration.0 = -speed.0;
         }
     }
 }
@@ -203,6 +235,7 @@ pub struct TrainBundle {
     force_friction: ForceFriction,
     force_air_resistance: ForceAirResistance,
     distance: Distance,
+    paint_scheme: PaintScheme,
 }
 
 impl TrainBundle {

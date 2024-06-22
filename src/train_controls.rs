@@ -6,18 +6,20 @@ use crate::{
     train::{Acceleration, BrakeLever, Distance, Mass, Name, Speed, ThrottleLever},
 };
 
+type TrainControlQuery<'a> = (
+    Entity,
+    &'a Name,
+    &'a Speed,
+    &'a Acceleration,
+    &'a Distance,
+    &'a Mass,
+    &'a mut ThrottleLever,
+    &'a mut BrakeLever,
+    &'a Transform,
+);
+
 fn train_controls(
-    mut entries: Query<(
-        Entity,
-        &Name,
-        &Speed,
-        &Acceleration,
-        &Distance,
-        &Mass,
-        &mut ThrottleLever,
-        &mut BrakeLever,
-        &Transform,
-    )>,
+    mut entries: Query<TrainControlQuery>,
     mut contexts: EguiContexts,
     mut camera: Query<&mut camera::PanOrbitState>,
 ) {
@@ -50,13 +52,13 @@ fn train_controls(
                     egui::Slider::new(&mut brake_lever.percentage, 0.0..=1.0).text("BrakeLever"),
                 );
 
+                let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
                 if ui
                     .small_button(format!("{:?}", throttle_lever.direction))
                     .clicked()
+                    && can_change_direction
                 {
-                    if speed.0 < 0.1 && speed.0 > -0.1 {
-                        throttle_lever.direction = throttle_lever.direction.opposite();
-                    }
+                    throttle_lever.direction = throttle_lever.direction.opposite();
                 }
 
                 if ui.small_button("Focus").clicked() {

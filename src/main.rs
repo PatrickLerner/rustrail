@@ -13,14 +13,23 @@ use bevy::{
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
 use height_map::HeightMap;
 use proj::Proj;
+use train::{PaintScheme, PaintSchemeColor};
 
 fn setup(mut commands: Commands) {
-    commands.spawn(train::TrainBundle::br_218(
-        "BR 218 001".to_owned(),
-        400_000.0,
-    ));
+    commands
+        .spawn(train::TrainBundle::br_218(
+            "BR 218 001".to_owned(),
+            400_000.0,
+        ))
+        .insert(PaintScheme {
+            color: PaintSchemeColor::Orientrot,
+        });
 
-    commands.spawn(train::TrainBundle::br_218("BR 218 002".to_owned(), 0.0));
+    commands
+        .spawn(train::TrainBundle::br_218("BR 218 002".to_owned(), 0.0))
+        .insert(PaintScheme {
+            color: PaintSchemeColor::Pasteltuerkis,
+        });
 }
 
 fn color_mode(mut contexts: EguiContexts, mut commands: Commands) {
@@ -33,29 +42,24 @@ fn color_mode(mut contexts: EguiContexts, mut commands: Commands) {
     contexts.ctx_mut().set_visuals(egui::Visuals::light());
 }
 
-fn spawn_3d(mut commands: Commands) {
-    commands.insert_resource(AmbientLight {
-        color: Color::WHITE,
-        brightness: 255.0,
-    });
-}
-
 #[derive(Component)]
 struct Train3DModel;
 
 fn spawn_train(
-    trains: Query<Entity, (Without<Train3DModel>, With<train::Name>)>,
+    trains: Query<(Entity, &PaintScheme), Without<Train3DModel>>,
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    for entity in trains.iter() {
+    for (entity, paint_scheme) in trains.iter() {
+        let color: Color = paint_scheme.color.into();
+
         commands
             .entity(entity)
             .insert(Train3DModel)
             .insert(PbrBundle {
                 mesh: meshes.add(Cuboid::new(20.0, 5.0, 4.0)),
-                material: materials.add(Color::hex("BF616A").unwrap()),
+                material: materials.add(color),
                 transform: Transform::from_xyz(0.0, 0.5, 0.0),
                 ..default()
             });
@@ -117,10 +121,8 @@ fn spawn_height_map(
     for y in 0..h - 1 {
         indices_y += 1;
         indices_x = 0;
-        let y = y as u32;
         for x in 0..w - 1 {
             indices_x += 1;
-            let x = x as u32;
 
             indicies.push(y * w + x);
             indicies.push(y * w + x + 1 + w);
@@ -132,7 +134,6 @@ fn spawn_height_map(
         }
     }
     assert!(indices_y == vertices_y - 1);
-    println!("{} {}", indices_x, vertices_x);
     assert!(indices_x == vertices_x - 1);
 
     let indices = Indices::U32(indicies);
@@ -161,6 +162,6 @@ fn main() {
         .add_plugins(train_controls::TrainControlsPlugin)
         .add_plugins(camera::CameraPlugin)
         .add_systems(Update, (spawn_train, move_train))
-        .add_systems(Startup, (setup, color_mode, spawn_3d, spawn_height_map))
+        .add_systems(Startup, (setup, color_mode, spawn_height_map))
         .run();
 }

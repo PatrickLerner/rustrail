@@ -207,6 +207,13 @@ fn pan_orbit_camera(
     }
 }
 
+fn spawn_light(mut commands: Commands) {
+    commands.insert_resource(AmbientLight {
+        color: Color::WHITE,
+        brightness: 255.0,
+    });
+}
+
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
@@ -215,6 +222,6 @@ impl Plugin for CameraPlugin {
             Update,
             pan_orbit_camera.run_if(any_with_component::<PanOrbitState>),
         )
-        .add_systems(Startup, spawn_camera);
+        .add_systems(Startup, (spawn_camera, spawn_light));
     }
 }
