@@ -17,8 +17,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    - &install-deps
-      run: sudo apt-get update; sudo apt-get install -y libspeechd-dev libasound2-dev libudev-dev
+    - run: sudo apt-get update; sudo apt-get install -y libspeechd-dev libasound2-dev libudev-dev
       if: ${{ runner.os == 'Linux' }}
 
     - name: Install Rust
@@ -41,7 +40,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - *install-deps
+      - run: sudo apt-get update; sudo apt-get install -y libspeechd-dev libasound2-dev libudev-dev
+        if: ${{ runner.os == 'Linux' }}
+
 
       - name: Install Rust
         run: rustup update stable
