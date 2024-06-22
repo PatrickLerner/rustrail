@@ -3,6 +3,7 @@ use bevy::prelude::*;
 #[derive(Component, Default)]
 pub struct Name(pub String);
 
+// ref: https://de.wikipedia.org/wiki/RAL-Eisenbahnfarben
 #[derive(Copy, Clone)]
 pub enum PaintSchemeColor {
     Verkehrsrot,
