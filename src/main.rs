@@ -97,8 +97,8 @@ const BENSHEIM_STATION: (f64, f64) = (49.68134809269307, 8.61687829630227);
 const HEIGHT_OFFSET: f32 = -101.0;
 const TRAIN_HEIGHT: f32 = 5.0;
 const TRAIN_HEIGHT_OFFSET: f32 = 1.5 + TRAIN_HEIGHT / 2.0;
-const TRIANGLE_SIZE: f64 = 5.0;
-const GRID_SIZE: i64 = 500;
+const TRIANGLE_SIZE: i64 = 10;
+const GRID_SIZE: i64 = 2500 / TRIANGLE_SIZE;
 
 fn spawn_height_map(
     mut commands: Commands,
@@ -128,8 +128,8 @@ fn spawn_height_map(
         vertices_x = 0;
         for dx in -GRID_SIZE..=GRID_SIZE {
             vertices_x += 1;
-            let sx = dx as f64 * TRIANGLE_SIZE;
-            let sy = dy as f64 * TRIANGLE_SIZE;
+            let sx = dx as f64 * TRIANGLE_SIZE as f64;
+            let sy = dy as f64 * TRIANGLE_SIZE as f64;
 
             let h = height_map.height_at_position(sx + origin_x, sy + origin_y);
 
@@ -206,7 +206,7 @@ fn main() {
         ))
         .insert_resource(WireframeConfig {
             global: false,
-            default_color: Color::WHITE.into(),
+            default_color: Color::hex("8FBCBB").unwrap(),
         })
         .add_plugins(EguiPlugin)
         .add_plugins(train::TrainPlugin)
