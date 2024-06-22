@@ -3433,6 +3433,7 @@ dependencies = [
  "bevy",
  "bevy_egui",
  "georaster",
+ "log",
  "proj",
 ]
 
