@@ -1,4 +1,5 @@
 mod update_acceleration;
+mod update_braking_force;
 mod update_drive_force;
 
 use bevy::prelude::*;
@@ -128,16 +129,6 @@ impl Mass {
 // m
 pub struct Distance(pub f32);
 
-fn update_braking_force(mut entries: Query<(&mut ForceBraking, &Mass, &BrakeLever)>) {
-    let friction_coefficient = 0.3;
-    let g = 9.81;
-
-    for (mut friction, mass, brake_lever) in entries.iter_mut() {
-        let n = mass.total() * g;
-        friction.0 = friction_coefficient * n * brake_lever.percentage;
-    }
-}
-
 fn update_friction(mut entries: Query<(&mut ForceFriction, &Mass)>) {
     let my_rolling = 0.002;
     let g = 9.81;
@@ -212,7 +203,7 @@ impl Plugin for TrainPlugin {
             Update,
             (
                 update_drive_force::system,
-                update_braking_force,
+                update_braking_force::system,
                 update_friction,
                 update_air_resistance,
                 update_acceleration::system,
