@@ -1,3 +1,5 @@
+mod update_drive_force;
+
 use bevy::prelude::*;
 
 #[derive(Component, Default)]
@@ -125,18 +127,6 @@ impl Mass {
 // m
 pub struct Distance(pub f32);
 
-fn update_drive_force(mut entries: Query<(&mut ForceDriving, &MaxPower, &Speed, &ThrottleLever)>) {
-    for (mut force_driving, max_power, speed, throttle_lever) in entries.iter_mut() {
-        let direction = match throttle_lever.direction {
-            Direction::Forward => 1.0,
-            Direction::Backward => -1.0,
-        };
-
-        force_driving.0 =
-            direction * (max_power.0 * 1000.0 * throttle_lever.percentage) / speed.0.abs().max(1.0);
-    }
-}
-
 fn update_braking_force(mut entries: Query<(&mut ForceBraking, &Mass, &BrakeLever)>) {
     let friction_coefficient = 0.3;
     let g = 9.81;
@@ -261,7 +251,7 @@ impl Plugin for TrainPlugin {
         app.add_systems(
             Update,
             (
-                update_drive_force,
+                update_drive_force::system,
                 update_braking_force,
                 update_friction,
                 update_air_resistance,
