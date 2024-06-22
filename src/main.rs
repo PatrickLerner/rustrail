@@ -4,10 +4,14 @@ mod train;
 mod train_controls;
 
 use bevy::{
+    pbr::wireframe::{WireframeConfig, WireframePlugin},
     prelude::*,
     render::{
         mesh::{Indices, PrimitiveTopology},
         render_asset::RenderAssetUsages,
+        render_resource::WgpuFeatures,
+        settings::{RenderCreation, WgpuSettings},
+        RenderPlugin,
     },
 };
 use bevy_egui::{egui, EguiContexts, EguiPlugin};
@@ -55,9 +59,9 @@ fn spawn_train(
             .entity(entity)
             .insert(Train3DModel)
             .insert(PbrBundle {
-                mesh: meshes.add(Cuboid::new(20.0, 5.0, 4.0)),
+                mesh: meshes.add(Cuboid::new(20.0, TRAIN_HEIGHT, 4.0)),
                 material: materials.add(color),
-                transform: Transform::from_xyz(0.0, 0.5, 0.0),
+                transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, 0.0),
                 ..default()
             });
     }
@@ -66,16 +70,35 @@ fn spawn_train(
 fn move_train(
     mut trains: Query<(&mut Transform, &train::Speed), With<Train3DModel>>,
     time: Res<Time>,
+    mut height_map: ResMut<HeightMap>,
+    origin_offset: Res<OriginOffset>,
 ) {
     for (mut transform, speed) in trains.iter_mut() {
-        transform.translation.x += speed.0 * time.delta_seconds();
+        if speed.0.abs() > f32::EPSILON {
+            transform.translation.x += speed.0 * time.delta_seconds();
+
+            let h = height_map.height_at_position(
+                transform.translation.x as f64 + origin_offset.x,
+                transform.translation.z as f64 + origin_offset.y,
+            );
+
+            transform.translation.y = h + HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET;
+        }
     }
+}
+
+#[derive(Resource)]
+struct OriginOffset {
+    x: f64,
+    y: f64,
 }
 
 const BENSHEIM_STATION: (f64, f64) = (49.68134809269307, 8.61687829630227);
 const HEIGHT_OFFSET: f32 = -101.0;
-const GRID: f64 = 50.0;
-const GRID_SIZE: i64 = 50;
+const TRAIN_HEIGHT: f32 = 5.0;
+const TRAIN_HEIGHT_OFFSET: f32 = 1.5 + TRAIN_HEIGHT / 2.0;
+const TRIANGLE_SIZE: f64 = 5.0;
+const GRID_SIZE: i64 = 500;
 
 fn spawn_height_map(
     mut commands: Commands,
@@ -86,7 +109,12 @@ fn spawn_height_map(
     let converter = Proj::new_known_crs("EPSG:4326", "ESRI:53004", None).unwrap();
     let (lat, lng) = BENSHEIM_STATION;
     let result = converter.convert((lng, lat));
-    let (x, y) = result.unwrap();
+    let (origin_x, origin_y) = result.unwrap();
+
+    commands.insert_resource(OriginOffset {
+        x: origin_x,
+        y: origin_y,
+    });
 
     let mut verticies: Vec<Vec3> = Vec::new();
     let mut uv: Vec<Vec2> = Vec::new();
@@ -100,10 +128,10 @@ fn spawn_height_map(
         vertices_x = 0;
         for dx in -GRID_SIZE..=GRID_SIZE {
             vertices_x += 1;
-            let sx = dx as f64 * GRID;
-            let sy = dy as f64 * GRID;
+            let sx = dx as f64 * TRIANGLE_SIZE;
+            let sy = dy as f64 * TRIANGLE_SIZE;
 
-            let h = height_map.height_at_position(sx + x, sy + y);
+            let h = height_map.height_at_position(sx + origin_x, sy + origin_y);
 
             verticies.push(Vec3::new(sx as f32, h + HEIGHT_OFFSET, sy as f32));
             normals.push(Vec3::new(0.0, 1.0, 0.0));
@@ -149,16 +177,42 @@ fn spawn_height_map(
         transform: Transform::from_xyz(0.0, 0.0, 0.0),
         ..default()
     });
+
+    commands.insert_resource(height_map);
+}
+
+fn wireframe_mode(
+    keyboard_input: Res<ButtonInput<KeyCode>>,
+    mut wireframe: ResMut<WireframeConfig>,
+) {
+    if keyboard_input.just_released(KeyCode::KeyG) {
+        wireframe.global = !wireframe.global;
+    }
 }
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins((
+            DefaultPlugins.set(RenderPlugin {
+                render_creation: RenderCreation::Automatic(WgpuSettings {
+                    // WARN this is a native only feature. It will not work with webgl or webgpu
+                    features: WgpuFeatures::POLYGON_MODE_LINE,
+                    ..default()
+                }),
+                ..default()
+            }),
+            // You need to add this plugin to enable wireframe rendering
+            WireframePlugin,
+        ))
+        .insert_resource(WireframeConfig {
+            global: false,
+            default_color: Color::WHITE.into(),
+        })
         .add_plugins(EguiPlugin)
         .add_plugins(train::TrainPlugin)
         .add_plugins(train_controls::TrainControlsPlugin)
         .add_plugins(camera::CameraPlugin)
-        .add_systems(Update, (spawn_train, move_train))
+        .add_systems(Update, (spawn_train, move_train, wireframe_mode))
         .add_systems(Startup, (setup, color_mode, spawn_height_map))
         .run();
 }

@@ -21,6 +21,7 @@ pub struct PanOrbitState {
     pub upside_down: bool,
     pub pitch: f32,
     pub yaw: f32,
+    pub follow: Option<Entity>,
 }
 
 /// The configuration of the pan-orbit controller
@@ -46,6 +47,7 @@ impl Default for PanOrbitState {
             upside_down: false,
             pitch: 0.0,
             yaw: 0.0,
+            follow: None,
         }
     }
 }
@@ -71,6 +73,15 @@ fn spawn_camera(mut commands: Commands) {
     camera.state.pitch = -30.0f32.to_radians();
     camera.state.yaw = 30.0f32.to_radians();
     commands.spawn(camera);
+}
+
+fn update_follow(mut q_camera: Query<&mut PanOrbitState>, transform: Query<&Transform>) {
+    for mut state in &mut q_camera {
+        if let Some(follow) = state.follow {
+            let transform = transform.get(follow).unwrap();
+            state.center = transform.translation;
+        }
+    }
 }
 
 fn pan_orbit_camera(
@@ -116,6 +127,7 @@ fn pan_orbit_camera(
         if !egui.is_using_pointer() {
             if mouse.pressed(MouseButton::Left) {
                 total_pan -= total_motion * settings.pan_sensitivity;
+                state.follow = None;
             }
 
             if mouse.pressed(MouseButton::Right) {
@@ -220,7 +232,7 @@ impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            pan_orbit_camera.run_if(any_with_component::<PanOrbitState>),
+            (pan_orbit_camera, update_follow).run_if(any_with_component::<PanOrbitState>),
         )
         .add_systems(Startup, (spawn_camera, spawn_light));
     }

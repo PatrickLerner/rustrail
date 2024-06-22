@@ -42,6 +42,7 @@ fn train_controls(
                 ui.label(format!("acceleration {:.3} m/s^2", acceleration.0));
                 ui.label(format!("distance {:.0} m", distance.0));
                 ui.label(format!("mass {:.0} t", mass.total() / 1000.0));
+                ui.label(format!("pos {:?}", transform.translation));
 
                 ui.add(
                     egui::Slider::new(&mut throttle_lever.percentage, 0.0..=1.0)
@@ -61,10 +62,9 @@ fn train_controls(
                     throttle_lever.direction = throttle_lever.direction.opposite();
                 }
 
-                if ui.small_button("Focus").clicked() {
+                if ui.small_button("Follow").clicked() {
                     let mut camera = camera.single_mut();
-                    camera.center.x = transform.translation.x;
-                    camera.center.z = transform.translation.z;
+                    camera.follow = Some(entity);
                 }
             });
     }
