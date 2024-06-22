@@ -1,6 +1,10 @@
 mod update_acceleration;
+mod update_air_resistance;
 mod update_braking_force;
+mod update_distance;
 mod update_drive_force;
+mod update_friction;
+mod update_speed;
 
 use bevy::prelude::*;
 
@@ -129,39 +133,6 @@ impl Mass {
 // m
 pub struct Distance(pub f32);
 
-fn update_friction(mut entries: Query<(&mut ForceFriction, &Mass)>) {
-    let my_rolling = 0.002;
-    let g = 9.81;
-
-    for (mut friction, mass) in entries.iter_mut() {
-        let n = mass.total() * g;
-        friction.0 = my_rolling * n;
-    }
-}
-
-fn update_air_resistance(mut entries: Query<(&mut ForceAirResistance, &Speed)>) {
-    let air_density = 1.225; // kg/m^3
-    let drag_coefficient = 0.8;
-    let frontal_area = 10.0; // m^2
-
-    for (mut air_resistance, speed) in entries.iter_mut() {
-        air_resistance.0 = 0.5 * air_density * speed.0.powi(2) * drag_coefficient * frontal_area;
-    }
-}
-
-fn update_speed(mut entries: Query<(&mut Speed, &MaxSpeed, &Acceleration)>, time: Res<Time>) {
-    for (mut speed, max_speed, acceleration) in entries.iter_mut() {
-        speed.0 += acceleration.0 * time.delta_seconds();
-        speed.0 = speed.0.clamp(-max_speed.0, max_speed.0);
-    }
-}
-
-fn update_distance(mut entries: Query<(&mut Distance, &Speed)>, time: Res<Time>) {
-    for (mut distance, speed) in entries.iter_mut() {
-        distance.0 += speed.0 * time.delta_seconds();
-    }
-}
-
 #[derive(Bundle, Default)]
 pub struct TrainBundle {
     name: Name,
@@ -204,11 +175,11 @@ impl Plugin for TrainPlugin {
             (
                 update_drive_force::system,
                 update_braking_force::system,
-                update_friction,
-                update_air_resistance,
+                update_friction::system,
+                update_air_resistance::system,
                 update_acceleration::system,
-                update_speed,
-                update_distance,
+                update_speed::system,
+                update_distance::system,
             ),
         );
     }
