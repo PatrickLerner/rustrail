@@ -21,6 +21,7 @@ type TrainControlQuery<'a> = (
     &'a Transform,
 );
 
+#[coverage(off)]
 fn train_controls(
     mut entries: Query<TrainControlQuery>,
     mut contexts: EguiContexts,
@@ -40,36 +41,41 @@ fn train_controls(
     {
         egui::Window::new(format!("Train: {}", name.0))
             .id(egui::Id::new(entity))
-            .show(contexts.ctx_mut(), |ui| {
-                ui.label(format!("speed {:.1} km/h", speed.0 * 3.6,));
-                ui.label(format!("acceleration {:.3} m/s^2", acceleration.0));
-                ui.label(format!("distance {:.0} m", distance.0));
-                ui.label(format!("mass {:.0} t", mass.total() / 1000.0));
-                ui.label(format!("pos {:?}", transform.translation));
+            .show(
+                contexts.ctx_mut(),
+                #[coverage(off)]
+                |ui| {
+                    ui.label(format!("speed {:.1} km/h", speed.0 * 3.6,));
+                    ui.label(format!("acceleration {:.3} m/s^2", acceleration.0));
+                    ui.label(format!("distance {:.0} m", distance.0));
+                    ui.label(format!("mass {:.0} t", mass.total() / 1000.0));
+                    ui.label(format!("pos {:?}", transform.translation));
 
-                ui.add(
-                    egui::Slider::new(&mut throttle_lever.percentage, 0.0..=1.0)
-                        .text("ThrottleLever"),
-                );
+                    ui.add(
+                        egui::Slider::new(&mut throttle_lever.percentage, 0.0..=1.0)
+                            .text("ThrottleLever"),
+                    );
 
-                ui.add(
-                    egui::Slider::new(&mut brake_lever.percentage, 0.0..=1.0).text("BrakeLever"),
-                );
+                    ui.add(
+                        egui::Slider::new(&mut brake_lever.percentage, 0.0..=1.0)
+                            .text("BrakeLever"),
+                    );
 
-                let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
-                if ui
-                    .small_button(format!("{:?}", throttle_lever.direction))
-                    .clicked()
-                    && can_change_direction
-                {
-                    throttle_lever.direction = throttle_lever.direction.opposite();
-                }
+                    let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
+                    if ui
+                        .small_button(format!("{:?}", throttle_lever.direction))
+                        .clicked()
+                        && can_change_direction
+                    {
+                        throttle_lever.direction = throttle_lever.direction.opposite();
+                    }
 
-                if ui.small_button("Follow").clicked() {
-                    let mut camera = camera.single_mut();
-                    camera.follow = Some(entity);
-                }
-            });
+                    if ui.small_button("Follow").clicked() {
+                        let mut camera = camera.single_mut();
+                        camera.follow = Some(entity);
+                    }
+                },
+            );
     }
 }
 
