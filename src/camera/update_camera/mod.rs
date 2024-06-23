@@ -132,7 +132,7 @@ pub fn system(
         // (if we changed anything, or if the pan-orbit
         // controller was just added and thus we are running
         // for the first time and need to initialize)
-        if any || state.is_added() || state.is_changed() {
+        if any || state.is_added() {
             // YXZ Euler Rotation performs yaw/pitch/roll.
             transform.rotation = Quat::from_euler(EulerRot::YXZ, state.yaw, state.pitch, 0.0);
             // To position the camera, get the backward direction vector
