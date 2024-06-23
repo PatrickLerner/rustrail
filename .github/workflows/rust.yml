@@ -27,8 +27,8 @@ jobs:
           ~/.cargo/registry/cache/
           ~/.cargo/git/db/
           target/
-        key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}-lint
-        restore-keys: ${{ runner.os }}-cargo-
+        key: ${{ runner.os }}-cargo-lint-${{ hashFiles('Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-lint-
 
     - run: sudo apt-get update; sudo apt-get install -y libspeechd-dev libasound2-dev libudev-dev
       if: ${{ runner.os == 'Linux' }}
@@ -63,8 +63,8 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('Cargo.lock') }}-test
-          restore-keys: ${{ runner.os }}-cargo-
+          key: ${{ runner.os }}-cargo-test-${{ hashFiles('Cargo.lock') }}
+          restore-keys: ${{ runner.os }}-cargo-test-
 
       - run: sudo apt-get update; sudo apt-get install -y libspeechd-dev libasound2-dev libudev-dev
         if: ${{ runner.os == 'Linux' }}
