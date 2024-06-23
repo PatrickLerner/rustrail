@@ -190,6 +190,7 @@ fn wireframe_mode(
     }
 }
 
+#[cfg(not(coverage))]
 fn main() {
     App::new()
         .add_plugins((

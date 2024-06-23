@@ -1,4 +1,6 @@
-// modied from https://bevy-cheatbook.github.io/cookbook/pan-orbit-camera.html
+// modified from https://bevy-cheatbook.github.io/cookbook/pan-orbit-camera.html
+#[cfg(test)]
+mod tests;
 
 use bevy::input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel};
 use bevy::prelude::*;

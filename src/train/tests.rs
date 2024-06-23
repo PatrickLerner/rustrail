@@ -46,7 +46,7 @@ fn bundle_initializer() {
 }
 
 #[test]
-fn train_plugin() {
+fn plugin() {
     let mut app = App::default();
     app.add_plugins(TrainPlugin);
     assert!(app.is_plugin_added::<TrainPlugin>());
