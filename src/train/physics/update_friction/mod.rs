@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{ForceFriction, Mass};
+use crate::train::{ForceFriction, Mass};
 use bevy::prelude::*;
 
 pub fn system(mut entries: Query<(&mut ForceFriction, &Mass)>) {

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{Acceleration, MaxSpeed, Speed};
+use crate::train::{Acceleration, MaxSpeed, Speed};
 use bevy::prelude::*;
 
 pub fn system(mut entries: Query<(&mut Speed, &MaxSpeed, &Acceleration)>, time: Res<Time>) {

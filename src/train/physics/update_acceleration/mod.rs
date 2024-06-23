@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{
+use crate::train::{
     Acceleration, ForceAirResistance, ForceBraking, ForceDriving, ForceFriction, Mass, Speed,
 };
 use bevy::prelude::*;

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{BrakeLever, ForceBraking, Mass};
+use crate::train::{BrakeLever, ForceBraking, Mass};
 use bevy::prelude::*;
 
 pub fn system(mut entries: Query<(&mut ForceBraking, &Mass, &BrakeLever)>) {

@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{ForceAirResistance, Speed};
+use crate::train::{ForceAirResistance, Speed};
 use bevy::prelude::*;
 
 pub fn system(mut entries: Query<(&mut ForceAirResistance, &Speed)>) {

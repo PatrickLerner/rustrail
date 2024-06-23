@@ -1,5 +1,7 @@
 use super::*;
 use coverage_helper::test;
+use physics::TrainPhysicsPlugin;
+use render::TrainRenderPlugin;
 
 #[test]
 fn direction_reverse() {
@@ -49,8 +51,9 @@ fn bundle_initializer() {
 #[test]
 fn plugin() {
     let mut app = App::default();
-    app.add_plugins(TrainPlugin);
-    assert!(app.is_plugin_added::<TrainPlugin>());
+    app.add_plugins(TrainPlugins);
+    assert!(app.is_plugin_added::<TrainRenderPlugin>());
+    assert!(app.is_plugin_added::<TrainPhysicsPlugin>());
 }
 
 #[test]

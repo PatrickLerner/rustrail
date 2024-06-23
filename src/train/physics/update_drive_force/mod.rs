@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{Direction, ForceDriving, MaxPower, Speed, ThrottleLever};
+use crate::train::{Direction, ForceDriving, MaxPower, Speed, ThrottleLever};
 use bevy::prelude::*;
 
 pub fn system(mut entries: Query<(&mut ForceDriving, &MaxPower, &Speed, &ThrottleLever)>) {

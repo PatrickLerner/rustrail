@@ -1,15 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-mod update_acceleration;
-mod update_air_resistance;
-mod update_braking_force;
-mod update_distance;
-mod update_drive_force;
-mod update_friction;
-mod update_speed;
+mod physics;
+mod render;
 
-use bevy::prelude::*;
+use bevy::{app::PluginGroupBuilder, prelude::*};
 
 #[derive(Component, Default)]
 pub struct Name(pub String);
@@ -169,21 +164,12 @@ impl TrainBundle {
     }
 }
 
-pub struct TrainPlugin;
+pub struct TrainPlugins;
 
-impl Plugin for TrainPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(
-            Update,
-            (
-                update_drive_force::system,
-                update_braking_force::system,
-                update_friction::system,
-                update_air_resistance::system,
-                update_acceleration::system,
-                update_speed::system,
-                update_distance::system,
-            ),
-        );
+impl PluginGroup for TrainPlugins {
+    fn build(self) -> bevy::app::PluginGroupBuilder {
+        PluginGroupBuilder::start::<Self>()
+            .add(physics::TrainPhysicsPlugin)
+            .add(render::TrainRenderPlugin)
     }
 }
