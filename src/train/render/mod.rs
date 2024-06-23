@@ -2,8 +2,9 @@
 mod tests;
 
 use crate::{
+    landscape::{HeightMap, OriginOffset},
     train::{PaintScheme, Speed},
-    HeightMap, OriginOffset, HEIGHT_OFFSET, TRAIN_HEIGHT, TRAIN_HEIGHT_OFFSET,
+    HEIGHT_OFFSET, TRAIN_HEIGHT, TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
 
