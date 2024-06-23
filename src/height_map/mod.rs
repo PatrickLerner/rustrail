@@ -67,18 +67,9 @@ impl HeightMap {
         // pixels
         let (x, y) = ((x - origin.0) / pixel_size.0, (y - origin.1) / pixel_size.1);
 
-        // let y = 1.0 - y;
-
-        let mut d_x = (x % 1.0) as f32;
-        let mut d_y = (y % 1.0) as f32;
-
-        // rust modulo is weird, we need to make sure it is positive
-        if d_x < 0.0 {
-            d_x += 1.0
-        }
-        if d_y < 0.0 {
-            d_y += 1.0
-        }
+        // remainder not modulo
+        let d_x = (((x % 1.0) + 1.0) % 1.0) as f32;
+        let d_y = (((y % 1.0) + 1.0) % 1.0) as f32;
 
         assert!(d_x >= 0.0);
         assert!(d_x <= 1.0);

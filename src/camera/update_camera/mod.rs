@@ -61,6 +61,7 @@ pub fn system(
             // check if we are starting it upside-down
             if mouse.just_pressed(MouseButton::Right) {
                 state.upside_down = state.pitch < -FRAC_PI_2 || state.pitch > FRAC_PI_2;
+                println!("{:?} {:?}", state.upside_down, state.pitch);
             }
 
             // If we are upside down, reverse the X orbiting
