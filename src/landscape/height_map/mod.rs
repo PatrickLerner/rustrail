@@ -21,6 +21,19 @@ unsafe impl Sync for ProjWrapper {}
 unsafe impl Send for ProjWrapper {}
 
 impl HeightMap {
+    #[cfg(test)]
+    pub fn test_dummy() -> Self {
+        let converter = Proj::new_known_crs("ESRI:53004", "EPSG:32632", None).unwrap();
+
+        Self {
+            origin: (0.0, 0.0),
+            pixel_size: (10.0, 10.0),
+            dimensions: (10, 10),
+            converter: ProjWrapper(converter),
+            values: HashMap::new(),
+        }
+    }
+
     pub fn load_from_file(file_name: &str) -> Self {
         let img_file = BufReader::new(File::open(file_name).unwrap());
         let mut data = GeoTiffReader::open(img_file).unwrap();
@@ -54,7 +67,7 @@ impl HeightMap {
         let x = u32::max(u32::min(x, self.dimensions.0 - 1), 0);
         let y = u32::max(u32::min(y, self.dimensions.1 - 1), 0);
 
-        *self.values.get(&(x, y)).unwrap_or(&-9999.0)
+        *self.values.get(&(x, y)).unwrap_or(&0.0)
     }
 
     pub fn height_at_position(&self, x: f64, y: f64) -> f32 {

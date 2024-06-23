@@ -18,6 +18,7 @@ use bevy::{
 use bevy_egui::EguiPlugin;
 use train::{PaintScheme, PaintSchemeColor};
 
+#[coverage(off)]
 fn setup(mut commands: Commands) {
     commands
         .spawn(train::TrainBundle::br_218("BR 218 001", 400_000.0))
