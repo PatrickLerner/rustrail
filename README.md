@@ -10,7 +10,7 @@ Assets must be downloaded and saved to `assets` folder.
 
 ###  `assets/dgm200_utm32s.tif`
 
-Digitales Gittermodell (DGM, aka a height map) to get information about
+Digitales Geländemodell (digital landscape model, aka a height map) to get information about
 Germany's topography.
 
 [Download](https://daten.gdz.bkg.bund.de/produkte/dgm/dgm200/aktuell/dgm200.utm32s.geotiff.zip)
