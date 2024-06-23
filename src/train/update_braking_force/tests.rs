@@ -1,5 +1,7 @@
 use super::*;
+use coverage_helper::test;
 
+#[coverage(off)]
 fn spawn_train(app: &mut App, brake: BrakeLever, mass: f32) -> Entity {
     app.world
         .spawn((

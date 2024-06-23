@@ -1,4 +1,5 @@
 use super::*;
+use coverage_helper::test;
 use std::time::Duration;
 
 #[test]

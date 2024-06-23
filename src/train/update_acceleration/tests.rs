@@ -1,4 +1,5 @@
 use super::*;
+use coverage_helper::test;
 
 #[derive(PartialEq)]
 enum GenTrainMode {
@@ -6,6 +7,7 @@ enum GenTrainMode {
     Breaking,
 }
 
+#[coverage(off)]
 fn gen_train(app: &mut App, weight: f32, mode: GenTrainMode) -> Entity {
     app.world
         .spawn((

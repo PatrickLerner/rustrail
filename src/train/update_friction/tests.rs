@@ -1,4 +1,5 @@
 use super::*;
+use coverage_helper::test;
 
 #[test]
 fn higher_mass_higher_friction() {

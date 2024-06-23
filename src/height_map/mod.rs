@@ -8,9 +8,11 @@ use std::{collections::HashMap, fs::File, io::BufReader};
 
 #[derive(Resource)]
 pub struct HeightMap {
-    data: GeoTiffReader<BufReader<File>>,
+    origin: (f64, f64),
+    pixel_size: (f64, f64),
+    dimensions: (u32, u32),
     converter: ProjWrapper,
-    lookup_cache: HashMap<(u32, u32), f32>,
+    values: HashMap<(u32, u32), f32>,
 }
 
 struct ProjWrapper(Proj);
@@ -27,50 +29,43 @@ impl HeightMap {
         let converter = Proj::new_known_crs("ESRI:53004", "EPSG:32632", None).unwrap();
 
         let (w, h) = data.image_info().dimensions.unwrap();
-        let mut lookup_cache = HashMap::new();
+        let mut values = HashMap::new();
 
         // warm up cache
         for (x, y, pixel) in data.pixels(0, 0, w, h) {
             if let RasterValue::F64(v) = pixel {
-                lookup_cache.insert((x, y), v as f32);
+                values.insert((x, y), v as f32);
             }
         }
 
+        let origin = data.origin().unwrap();
+        let pixel_size = data.pixel_size().unwrap();
+
         Self {
-            data,
-            lookup_cache,
+            origin: (origin[0], origin[1]),
+            pixel_size: (pixel_size[0], pixel_size[1]),
+            dimensions: data.image_info().dimensions.unwrap(),
+            values,
             converter: ProjWrapper(converter),
         }
     }
 
-    fn get_pixel(&mut self, x: u32, y: u32) -> f32 {
-        let (w, h) = self.data.image_info().dimensions.unwrap();
+    fn get_pixel(&self, x: u32, y: u32) -> f32 {
+        let x = u32::max(u32::min(x, self.dimensions.0 - 1), 0);
+        let y = u32::max(u32::min(y, self.dimensions.1 - 1), 0);
 
-        let x = u32::max(u32::min(x, w - 1), 0);
-        let y = u32::max(u32::min(y, h - 1), 0);
-
-        *self
-            .lookup_cache
-            .entry((x, y))
-            .or_insert_with(|| match self.data.read_pixel(x, y) {
-                RasterValue::F64(v) => v as f32,
-                _ => panic!("Unexpected pixel type"),
-            })
+        *self.values.get(&(x, y)).unwrap_or(&-9999.0)
     }
 
-    // TODO: can we avoid mutable here?!
-    pub fn height_at_position(&mut self, x: f64, y: f64) -> f32 {
+    pub fn height_at_position(&self, x: f64, y: f64) -> f32 {
         // merc -> utm32
         let (x, y) = self.converter.0.convert((x, y)).unwrap();
         // TOP left
-        let lower_left = self.data.origin().unwrap();
-        let pixel_size = self.data.pixel_size().unwrap();
+        let origin = self.origin;
+        let pixel_size = self.pixel_size;
 
         // pixels
-        let (x, y) = (
-            (x - lower_left[0]) / pixel_size[0],
-            (y - lower_left[1]) / pixel_size[1],
-        );
+        let (x, y) = ((x - origin.0) / pixel_size.0, (y - origin.1) / pixel_size.1);
 
         // let y = 1.0 - y;
 

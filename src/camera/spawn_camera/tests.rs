@@ -1,4 +1,5 @@
 use super::*;
+use coverage_helper::test;
 
 #[test]
 fn spawn_light() {

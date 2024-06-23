@@ -1,6 +1,8 @@
 use super::*;
 use crate::train::Direction;
+use coverage_helper::test;
 
+#[coverage(off)]
 fn spawn_train(app: &mut App, throttle: ThrottleLever, speed: f32) -> Entity {
     app.world
         .spawn((

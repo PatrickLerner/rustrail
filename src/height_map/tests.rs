@@ -1,4 +1,5 @@
 use super::*;
+use coverage_helper::test;
 
 const HAMBURG: (f64, f64) = (53.54383973905111, 9.989119819258486);
 const HAMBURG_HEIGHT: f32 = 3.4745164;
@@ -22,20 +23,22 @@ const BAYERN_PUNKT_HEIGHT: f32 = 2715.91;
 fn height_extraction() {
     // WGS84 to Mercator
     let converter = Proj::new_known_crs("EPSG:4326", "ESRI:53004", None).unwrap();
-    let mut height_map = HeightMap::load_from_file("assets/dgm200_utm32s.tif");
+    let height_map = HeightMap::load_from_file("assets/dgm200_utm32s.tif");
 
-    let mut test = |coords: (f64, f64), height: f32| {
-        let (lat, lng) = coords;
-        let result = converter.convert((lng, lat));
-        let (x, y) = result.unwrap();
+    macro_rules! test_height {
+        ($coords:expr, $height:expr) => {{
+            let (lat, lng) = $coords;
+            let result = converter.convert((lng, lat));
+            let (x, y) = result.unwrap();
 
-        assert_eq!(height_map.height_at_position(x, y), height);
-    };
+            assert_eq!(height_map.height_at_position(x, y), $height);
+        }};
+    }
 
-    test(BAYERN_PUNKT, BAYERN_PUNKT_HEIGHT);
-    test(HAMBURG, HAMBURG_HEIGHT);
-    test(BENSHEIM_STATION, BENSHEIM_STATION_HEIGHT);
-    test(BENSHEIM_KIRCHBERG, BENSHEIM_KIRCHBERG_HEIGHT);
-    test(NEBELHORN, NEBELHORN_HEIGHT);
-    test(ZUGSPITZE, ZUGSPITZE_HEIGHT);
+    test_height!(BAYERN_PUNKT, BAYERN_PUNKT_HEIGHT);
+    test_height!(HAMBURG, HAMBURG_HEIGHT);
+    test_height!(BENSHEIM_STATION, BENSHEIM_STATION_HEIGHT);
+    test_height!(BENSHEIM_KIRCHBERG, BENSHEIM_KIRCHBERG_HEIGHT);
+    test_height!(NEBELHORN, NEBELHORN_HEIGHT);
+    test_height!(ZUGSPITZE, ZUGSPITZE_HEIGHT);
 }

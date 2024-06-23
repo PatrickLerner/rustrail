@@ -1,7 +1,10 @@
+#![feature(coverage_attribute)]
+
 mod camera;
 mod height_map;
 mod train;
 mod train_controls;
+mod ui;
 
 use bevy::{
     pbr::wireframe::{WireframeConfig, WireframePlugin},
@@ -14,7 +17,7 @@ use bevy::{
         RenderPlugin,
     },
 };
-use bevy_egui::{egui, EguiContexts, EguiPlugin};
+use bevy_egui::EguiPlugin;
 use height_map::HeightMap;
 use proj::Proj;
 use train::{PaintScheme, PaintSchemeColor};
@@ -31,16 +34,6 @@ fn setup(mut commands: Commands) {
         .insert(PaintScheme {
             color: PaintSchemeColor::Pasteltuerkis,
         });
-}
-
-fn color_mode(mut contexts: EguiContexts, mut commands: Commands) {
-    // commands.spawn(Camera2dBundle::default());
-    commands.insert_resource(ClearColor(Color::rgb(
-        230.0 / 255.0,
-        230.0 / 255.0,
-        230.0 / 255.0,
-    )));
-    contexts.ctx_mut().set_visuals(egui::Visuals::light());
 }
 
 #[derive(Component)]
@@ -70,7 +63,7 @@ fn spawn_train(
 fn move_train(
     mut trains: Query<(&mut Transform, &train::Speed), With<Train3DModel>>,
     time: Res<Time>,
-    mut height_map: ResMut<HeightMap>,
+    height_map: Res<HeightMap>,
     origin_offset: Res<OriginOffset>,
 ) {
     for (mut transform, speed) in trains.iter_mut() {
@@ -105,7 +98,7 @@ fn spawn_height_map(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    let mut height_map = HeightMap::load_from_file("assets/dgm200_utm32s.tif");
+    let height_map = HeightMap::load_from_file("assets/dgm200_utm32s.tif");
     let converter = Proj::new_known_crs("EPSG:4326", "ESRI:53004", None).unwrap();
     let (lat, lng) = BENSHEIM_STATION;
     let result = converter.convert((lng, lat));
@@ -181,16 +174,7 @@ fn spawn_height_map(
     commands.insert_resource(height_map);
 }
 
-fn wireframe_mode(
-    keyboard_input: Res<ButtonInput<KeyCode>>,
-    mut wireframe: ResMut<WireframeConfig>,
-) {
-    if keyboard_input.just_released(KeyCode::KeyG) {
-        wireframe.global = !wireframe.global;
-    }
-}
-
-#[cfg(not(coverage))]
+#[coverage(off)]
 fn main() {
     App::new()
         .add_plugins((
@@ -213,7 +197,8 @@ fn main() {
         .add_plugins(train::TrainPlugin)
         .add_plugins(train_controls::TrainControlsPlugin)
         .add_plugins(camera::CameraPlugin)
-        .add_systems(Update, (spawn_train, move_train, wireframe_mode))
-        .add_systems(Startup, (setup, color_mode, spawn_height_map))
+        .add_plugins(ui::UIPlugin)
+        .add_systems(Update, (spawn_train, move_train))
+        .add_systems(Startup, (setup, spawn_height_map))
         .run();
 }

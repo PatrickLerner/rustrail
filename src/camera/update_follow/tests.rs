@@ -1,5 +1,6 @@
 use super::*;
 use crate::camera::GameCameraBundle;
+use coverage_helper::test;
 
 #[test]
 fn update_follow_position() {
