@@ -2,22 +2,24 @@
 #[cfg(test)]
 mod tests;
 
+mod spawn_camera;
+mod spawn_light;
+mod update_follow;
+
 use bevy::input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel};
 use bevy::prelude::*;
 use bevy_egui::EguiContexts;
 use std::f32::consts::{FRAC_PI_2, PI, TAU};
 
-// Bundle to spawn our custom camera easily
 #[derive(Bundle, Default)]
-pub struct PanOrbitCameraBundle {
+pub struct GameCameraBundle {
     pub camera: Camera3dBundle,
-    pub state: PanOrbitState,
-    pub settings: PanOrbitSettings,
+    pub state: GameCameraState,
+    pub settings: GameCameraSettings,
 }
 
-// The internal state of the pan-orbit controller
 #[derive(Component)]
-pub struct PanOrbitState {
+pub struct GameCameraState {
     pub center: Vec3,
     pub radius: f32,
     pub upside_down: bool,
@@ -26,9 +28,8 @@ pub struct PanOrbitState {
     pub follow: Option<Entity>,
 }
 
-/// The configuration of the pan-orbit controller
 #[derive(Component)]
-pub struct PanOrbitSettings {
+pub struct GameCameraSettings {
     /// World units per pixel of mouse motion
     pub pan_sensitivity: f32,
     /// Radians per pixel of mouse motion
@@ -41,9 +42,9 @@ pub struct PanOrbitSettings {
     pub scroll_pixel_sensitivity: f32,
 }
 
-impl Default for PanOrbitState {
+impl Default for GameCameraState {
     fn default() -> Self {
-        PanOrbitState {
+        Self {
             center: Vec3::ZERO,
             radius: 1.0,
             upside_down: false,
@@ -54,9 +55,9 @@ impl Default for PanOrbitState {
     }
 }
 
-impl Default for PanOrbitSettings {
+impl Default for GameCameraSettings {
     fn default() -> Self {
-        PanOrbitSettings {
+        Self {
             pan_sensitivity: 0.001,                 // 1000 pixels per world unit
             orbit_sensitivity: 0.1f32.to_radians(), // 0.1 degree per pixel
             zoom_sensitivity: 0.01,
@@ -66,31 +67,11 @@ impl Default for PanOrbitSettings {
     }
 }
 
-fn spawn_camera(mut commands: Commands) {
-    let mut camera = PanOrbitCameraBundle::default();
-    // Position our camera using our component,
-    // not Transform (it would get overwritten)
-    camera.state.center = Vec3::new(1.0, 10.0, 3.0);
-    camera.state.radius = 50.0;
-    camera.state.pitch = -30.0f32.to_radians();
-    camera.state.yaw = 30.0f32.to_radians();
-    commands.spawn(camera);
-}
-
-fn update_follow(mut q_camera: Query<&mut PanOrbitState>, transform: Query<&Transform>) {
-    for mut state in &mut q_camera {
-        if let Some(follow) = state.follow {
-            let transform = transform.get(follow).unwrap();
-            state.center = transform.translation;
-        }
-    }
-}
-
-fn pan_orbit_camera(
+fn update_camera(
     mouse: Res<ButtonInput<MouseButton>>,
     mut evr_motion: EventReader<MouseMotion>,
     mut evr_scroll: EventReader<MouseWheel>,
-    mut q_camera: Query<(&PanOrbitSettings, &mut PanOrbitState, &mut Transform)>,
+    mut q_camera: Query<(&GameCameraSettings, &mut GameCameraState, &mut Transform)>,
     mut egui: EguiContexts,
 ) {
     // First, accumulate the total amount of
@@ -221,21 +202,14 @@ fn pan_orbit_camera(
     }
 }
 
-fn spawn_light(mut commands: Commands) {
-    commands.insert_resource(AmbientLight {
-        color: Color::WHITE,
-        brightness: 255.0,
-    });
-}
-
 pub struct CameraPlugin;
 
 impl Plugin for CameraPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Update,
-            (pan_orbit_camera, update_follow).run_if(any_with_component::<PanOrbitState>),
+            (update_camera, update_follow::system).run_if(any_with_component::<GameCameraState>),
         )
-        .add_systems(Startup, (spawn_camera, spawn_light));
+        .add_systems(Startup, (spawn_camera::system, spawn_light::system));
     }
 }

@@ -21,7 +21,7 @@ type TrainControlQuery<'a> = (
 fn train_controls(
     mut entries: Query<TrainControlQuery>,
     mut contexts: EguiContexts,
-    mut camera: Query<&mut camera::PanOrbitState>,
+    mut camera: Query<&mut camera::GameCameraState>,
 ) {
     for (
         entity,
