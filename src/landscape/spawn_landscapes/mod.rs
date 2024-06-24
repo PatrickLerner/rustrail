@@ -31,6 +31,7 @@ pub fn system(
                 {
                     landscape.ttl = DEFAULT_TTL;
                 } else {
+                    #[cfg(not(coverage))]
                     log::debug!("Requesting landscape at {:?}", (x as i32, y as i32));
 
                     commands.spawn(Landscape {

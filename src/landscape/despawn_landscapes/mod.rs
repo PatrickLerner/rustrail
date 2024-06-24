@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use super::Landscape;
 use bevy::prelude::*;
 
@@ -11,6 +14,7 @@ pub fn system(
         if landscape.ttl <= 0.0 {
             commands.entity(entity).despawn_recursive();
 
+            #[cfg(not(coverage))]
             log::debug!(
                 "Despawning landscape at {:?}",
                 (
