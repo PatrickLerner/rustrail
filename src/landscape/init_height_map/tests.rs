@@ -1,5 +1,5 @@
-use coverage_helper::test;
 use super::*;
+use coverage_helper::test;
 
 #[test]
 fn initiate_resources() {
