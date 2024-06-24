@@ -114,6 +114,7 @@ fn spawn_landscapes(
     }
 }
 
+#[coverage(off)]
 fn spawn_height_maps(
     landscapes: Query<(Entity, &Landscape), Without<Transform>>,
     origin_offset: Res<OriginOffset>,
