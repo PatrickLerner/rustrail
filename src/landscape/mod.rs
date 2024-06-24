@@ -15,11 +15,13 @@ use proj::Proj;
 
 use crate::{camera::GameCameraState, HEIGHT_OFFSET};
 
-const TRIANGLE_SIZE: i64 = 10;
-const LANDSCAPE_SIZE: i64 = 5000;
+const TRIANGLE_SIZE: i32 = 10;
+const LANDSCAPE_SIZE: i32 = 1000;
 const BENSHEIM_STATION: (f64, f64) = (49.68134809269307, 8.61687829630227);
 // lifetime of a landscape. if it is not renewed, it will despawn
-const DEFAULT_TTL: f32 = 10.0;
+const DEFAULT_TTL: f32 = 30.0;
+const SPAWN_RADIUS: i32 = 5;
+const MAX_SPAWN_PER_FRAME: usize = 3;
 
 #[derive(Resource)]
 pub struct OriginOffset {
@@ -59,7 +61,7 @@ fn despawn_landscapes(
         if landscape.ttl <= 0.0 {
             commands.entity(entity).despawn_recursive();
 
-            log::info!(
+            log::debug!(
                 "Despawning landscape at {:?}",
                 (
                     transform.translation.x as i32,
@@ -76,37 +78,39 @@ fn spawn_landscapes(
     cameras: Query<&GameCameraState>,
     origin_offset: Res<OriginOffset>,
 ) {
+    let grid_half_length = (LANDSCAPE_SIZE / 2) as f64;
+
     for camera in cameras.iter() {
-        let grid_half_length = (LANDSCAPE_SIZE / 2) as f64;
+        for dx in -SPAWN_RADIUS..SPAWN_RADIUS {
+            for dy in -SPAWN_RADIUS..SPAWN_RADIUS {
+                let x = (((camera.center.x as f64 + grid_half_length) / (2.0 * grid_half_length))
+                    .floor()
+                    + dx as f64)
+                    * (2.0 * grid_half_length);
+                let y = (((camera.center.z as f64 + grid_half_length) / (2.0 * grid_half_length))
+                    .floor()
+                    + dy as f64)
+                    * (2.0 * grid_half_length);
 
-        let camera_x = ((camera.center.x as f64 + grid_half_length) / (2.0 * grid_half_length))
-            .floor()
-            * (2.0 * grid_half_length);
-        let camera_y = ((camera.center.z as f64 + grid_half_length) / (2.0 * grid_half_length))
-            .floor()
-            * (2.0 * grid_half_length);
+                let desired_x = x + origin_offset.x;
+                let desired_y = y + origin_offset.y;
 
-        let desired_x = camera_x + origin_offset.x;
-        let desired_y = camera_y + origin_offset.y;
+                if let Some(mut landscape) = landscapes
+                    .iter_mut()
+                    .find(|l| l.x == desired_x && l.y == desired_y)
+                {
+                    landscape.ttl = DEFAULT_TTL;
+                } else {
+                    log::debug!("Requesting landscape at {:?}", (x as i32, y as i32));
 
-        if let Some(mut landscape) = landscapes
-            .iter_mut()
-            .find(|l| l.x == desired_x && l.y == desired_y)
-        {
-            landscape.ttl = DEFAULT_TTL;
-            break;
+                    commands.spawn(Landscape {
+                        ttl: DEFAULT_TTL,
+                        x: desired_x,
+                        y: desired_y,
+                    });
+                }
+            }
         }
-
-        log::info!(
-            "Requesting landscape at {:?}",
-            (camera_x as i32, camera_y as i32)
-        );
-
-        commands.spawn(Landscape {
-            ttl: DEFAULT_TTL,
-            x: desired_x,
-            y: desired_y,
-        });
     }
 }
 
@@ -118,13 +122,13 @@ fn spawn_height_maps(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
-    for (entity, landscape) in landscapes.iter() {
+    for (entity, landscape) in landscapes.iter().take(MAX_SPAWN_PER_FRAME) {
         let position = Vec2::new(
             (landscape.x - origin_offset.x) as f32,
             (landscape.y - origin_offset.y) as f32,
         );
 
-        log::info!(
+        log::debug!(
             "Spawning landscape at {:?}",
             (position.x as i32, position.y as i32)
         );
