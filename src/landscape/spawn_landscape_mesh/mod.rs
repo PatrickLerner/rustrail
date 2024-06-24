@@ -1,0 +1,101 @@
+use bevy::{
+    prelude::*,
+    render::{
+        mesh::{Indices, PrimitiveTopology},
+        render_asset::RenderAssetUsages,
+    },
+};
+
+use crate::{
+    landscape::{LANDSCAPE_SIZE, TRIANGLE_SIZE},
+    HEIGHT_OFFSET,
+};
+
+use super::{HeightMap, Landscape, OriginOffset, MAX_SPAWN_PER_FRAME};
+
+#[coverage(off)]
+pub fn system(
+    landscapes: Query<(Entity, &Landscape), Without<Transform>>,
+    origin_offset: Res<OriginOffset>,
+    height_map: Res<HeightMap>,
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+) {
+    for (entity, landscape) in landscapes.iter().take(MAX_SPAWN_PER_FRAME) {
+        let position = Vec2::new(
+            (landscape.x - origin_offset.x) as f32,
+            (landscape.y - origin_offset.y) as f32,
+        );
+
+        log::debug!(
+            "Spawning landscape at {:?}",
+            (position.x as i32, position.y as i32)
+        );
+
+        let mut verticies: Vec<Vec3> = Vec::new();
+        let mut uv: Vec<Vec2> = Vec::new();
+        let mut indicies: Vec<u32> = Vec::new();
+        let mut normals = Vec::new();
+
+        let mut vertices_y = 0;
+        let mut vertices_x = 0;
+
+        let grid_size = ((LANDSCAPE_SIZE / 2) as f64 / TRIANGLE_SIZE as f64) as i32;
+
+        for dy in -grid_size..=grid_size {
+            vertices_y += 1;
+            vertices_x = 0;
+            for dx in -grid_size..=grid_size {
+                vertices_x += 1;
+                let sx = dx as f64 * TRIANGLE_SIZE as f64;
+                let sy = dy as f64 * TRIANGLE_SIZE as f64;
+
+                let h = height_map.height_at_position(sx + landscape.x, sy + landscape.y);
+
+                verticies.push(Vec3::new(sx as f32, h + HEIGHT_OFFSET, sy as f32));
+                normals.push(Vec3::new(0.0, 1.0, 0.0));
+                uv.push(Vec2::new(0.0, 0.0));
+            }
+        }
+
+        let w = 1 + 2 * grid_size as u32;
+        let h = 1 + 2 * grid_size as u32;
+        let mut indices_y = 0;
+        let mut indices_x = 0;
+        for y in 0..h - 1 {
+            indices_y += 1;
+            indices_x = 0;
+            for x in 0..w - 1 {
+                indices_x += 1;
+
+                indicies.push(y * w + x);
+                indicies.push(y * w + x + 1 + w);
+                indicies.push(y * w + x + 1);
+
+                indicies.push(y * w + x);
+                indicies.push(y * w + x + w);
+                indicies.push(y * w + x + 1 + w);
+            }
+        }
+        assert!(indices_y == vertices_y - 1);
+        assert!(indices_x == vertices_x - 1);
+
+        let indices = Indices::U32(indicies);
+        let mut mesh = Mesh::new(PrimitiveTopology::TriangleList, RenderAssetUsages::all());
+        mesh.insert_indices(indices);
+        mesh.insert_attribute(Mesh::ATTRIBUTE_POSITION, verticies);
+        mesh.insert_attribute(Mesh::ATTRIBUTE_NORMAL, normals);
+        mesh.insert_attribute(Mesh::ATTRIBUTE_UV_0, uv);
+        mesh.generate_tangents().unwrap();
+
+        let mesh = meshes.add(mesh);
+
+        commands.entity(entity).insert(PbrBundle {
+            mesh,
+            material: materials.add(Color::hex("A3BE8C").unwrap()),
+            transform: Transform::from_xyz(position.x, 0.0, position.y),
+            ..default()
+        });
+    }
+}
