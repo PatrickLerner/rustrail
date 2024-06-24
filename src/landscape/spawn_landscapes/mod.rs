@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use super::{Landscape, OriginOffset, LANDSCAPE_SIZE, SPAWN_RADIUS};
 use crate::{camera::GameCameraState, landscape::DEFAULT_TTL};
 use bevy::prelude::*;

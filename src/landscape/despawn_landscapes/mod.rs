@@ -4,6 +4,7 @@ mod tests;
 use super::Landscape;
 use bevy::prelude::*;
 
+#[cfg_attr(coverage, allow(unused_variables))]
 pub fn system(
     mut commands: Commands,
     mut landscapes: Query<(Entity, &mut Landscape, &Transform)>,
