@@ -96,8 +96,8 @@ pub fn system(
             normals[indicies[i + 2] as usize] += ab_x_ac;
         }
 
-        for i in (0..normals.len()).step_by(3) {
-            normals[i] = normals[i].normalize();
+        for normal in normals.iter_mut() {
+            *normal = normal.clone().normalize();
         }
 
         assert!(indices_y == vertices_y - 1);
