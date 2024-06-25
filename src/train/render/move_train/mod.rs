@@ -9,6 +9,8 @@ use crate::{
 };
 use bevy::prelude::*;
 
+const SPEED: f32 = 3.0; // m/s
+
 pub fn system(
     mut trains: Query<(&mut Transform, &Speed), With<Train3DModel>>,
     time: Res<Time>,
@@ -27,7 +29,8 @@ pub fn system(
             let target = h + HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET;
             let diff = target - transform.translation.y;
 
-            transform.translation.y += (diff * time.delta_seconds()).clamp(-diff.abs(), diff.abs());
+            transform.translation.y +=
+                (SPEED * diff * time.delta_seconds()).clamp(-diff.abs(), diff.abs());
         }
     }
 }
