@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use super::*;
 use crate::camera::GameCameraBundle;
 use coverage_helper::test;
@@ -9,6 +11,10 @@ fn update_follow_position() {
     let camera_id = app.world.spawn(GameCameraBundle::default()).id();
 
     let entity = app.world.spawn(Transform::from_xyz(10.0, 10.0, 10.0)).id();
+
+    app.init_resource::<Time>();
+    let mut time = app.world.resource_mut::<Time>();
+    time.advance_by(Duration::from_millis(500));
 
     let mut state = app.world.query::<&mut GameCameraState>();
     let mut state = state.get_mut(&mut app.world, camera_id).unwrap();
