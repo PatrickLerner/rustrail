@@ -54,7 +54,7 @@ pub fn system(
                 let h = height_map.height_at_position(sx + landscape.x, sy + landscape.y);
 
                 verticies.push(Vec3::new(sx as f32, h + HEIGHT_OFFSET, sy as f32));
-                normals.push(Vec3::new(0.0, 1.0, 0.0));
+                normals.push(Vec3::new(0.0, 0.0, 0.0));
                 uv.push(Vec2::new(0.0, 0.0));
             }
         }
@@ -78,6 +78,28 @@ pub fn system(
                 indicies.push(y * w + x + 1 + w);
             }
         }
+
+        // calculate normals
+        for i in (0..indicies.len()).step_by(3) {
+            //vi v(i+1) v(i+2) are the three faces of a triangle
+            let a = verticies[indicies[i] as usize];
+            let b = verticies[indicies[i + 1] as usize];
+            let c = verticies[indicies[i + 2] as usize];
+
+            let ab = b - a;
+            let ac = c - a;
+
+            let ab_x_ac = ab.cross(ac);
+
+            normals[indicies[i] as usize] += ab_x_ac;
+            normals[indicies[i + 1] as usize] += ab_x_ac;
+            normals[indicies[i + 2] as usize] += ab_x_ac;
+        }
+
+        for i in (0..normals.len()).step_by(3) {
+            normals[i] = normals[i].normalize();
+        }
+
         assert!(indices_y == vertices_y - 1);
         assert!(indices_x == vertices_x - 1);
 
