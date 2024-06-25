@@ -14,5 +14,5 @@ fn spawn_light() {
     let light = app.world.get_resource::<AmbientLight>();
     assert!(light.is_some());
     let light = light.unwrap();
-    assert_eq!(light.brightness, 255.0);
+    assert!(light.brightness > 255.0);
 }

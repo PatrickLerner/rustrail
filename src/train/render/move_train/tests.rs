@@ -11,7 +11,7 @@ fn apply_transform() {
 
     app.init_resource::<Time>();
     let mut time = app.world.resource_mut::<Time>();
-    time.advance_by(Duration::from_millis(500));
+    time.advance_by(Duration::from_millis(1500));
 
     app.insert_resource(HeightMap::test_dummy());
     app.insert_resource(OriginOffset { x: 0.0, y: 0.0 });
@@ -25,7 +25,7 @@ fn apply_transform() {
 
     let mut transform = app.world.query::<&Transform>();
     let transform = transform.get(&app.world, train_id).unwrap();
-    assert_eq!(transform.translation.x, 0.5);
+    assert_eq!(transform.translation.x, 1.5);
     assert_eq!(transform.translation.z, 0.0);
     assert_eq!(transform.translation.y, HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET);
 

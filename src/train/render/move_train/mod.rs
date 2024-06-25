@@ -24,7 +24,10 @@ pub fn system(
                 transform.translation.z as f64 + origin_offset.y,
             );
 
-            transform.translation.y = h + HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET;
+            let target = h + HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET;
+            let diff = target - transform.translation.y;
+
+            transform.translation.y += (diff * time.delta_seconds()).clamp(-diff.abs(), diff.abs());
         }
     }
 }

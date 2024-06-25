@@ -21,6 +21,8 @@ pub fn system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
+    mut soil_texture: Local<Option<Handle<StandardMaterial>>>,
 ) {
     for (entity, landscape) in landscapes.iter().take(MAX_SPAWN_PER_FRAME) {
         let position = Vec2::new(
@@ -55,7 +57,10 @@ pub fn system(
 
                 verticies.push(Vec3::new(sx as f32, h + HEIGHT_OFFSET, sy as f32));
                 normals.push(Vec3::new(0.0, 0.0, 0.0));
-                uv.push(Vec2::new(0.0, 0.0));
+                uv.push(Vec2::new(
+                    if dx % 2 == 0 { 0.0 } else { 1.0 },
+                    if dy % 2 == 0 { 0.0 } else { 1.0 },
+                ));
             }
         }
 
@@ -113,9 +118,19 @@ pub fn system(
 
         let mesh = meshes.add(mesh);
 
+        let material = soil_texture
+            .get_or_insert_with(
+                #[coverage(off)]
+                || {
+                    let soil = asset_server.load("soil.png");
+                    materials.add(soil)
+                },
+            )
+            .clone();
+
         commands.entity(entity).insert(PbrBundle {
             mesh,
-            material: materials.add(Color::hex("A3BE8C").unwrap()),
+            material,
             transform: Transform::from_xyz(position.x, 0.0, position.y),
             ..default()
         });
