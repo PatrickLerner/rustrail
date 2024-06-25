@@ -14,6 +14,7 @@ use crate::{
 use super::{HeightMap, Landscape, OriginOffset, MAX_SPAWN_PER_FRAME};
 
 #[coverage(off)]
+#[allow(clippy::too_many_arguments)]
 pub fn system(
     landscapes: Query<(Entity, &Landscape), Without<Transform>>,
     origin_offset: Res<OriginOffset>,
@@ -102,7 +103,7 @@ pub fn system(
         }
 
         for normal in normals.iter_mut() {
-            *normal = normal.clone().normalize();
+            *normal = normal.normalize();
         }
 
         assert!(indices_y == vertices_y - 1);
