@@ -5,6 +5,7 @@ mod physics;
 mod render;
 
 use bevy::{app::PluginGroupBuilder, prelude::*};
+use serde::{Deserialize, Serialize};
 
 #[derive(Component, Default)]
 pub struct Name(pub String);
@@ -68,7 +69,7 @@ pub struct ForceDriving(pub f32);
 // N
 pub struct ForceBraking(pub f32);
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
 pub enum Direction {
     Forward,
     Backward,

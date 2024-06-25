@@ -7,7 +7,7 @@ use bevy::{
 };
 
 use crate::{
-    landscape::{LANDSCAPE_SIZE, TRIANGLE_SIZE},
+    landscape::{HALF_LANDSCAPE_SIZE, TRIANGLE_SIZE},
     HEIGHT_OFFSET,
 };
 
@@ -44,7 +44,7 @@ pub fn system(
         let mut vertices_y = 0;
         let mut vertices_x = 0;
 
-        let grid_size = ((LANDSCAPE_SIZE / 2) as f64 / TRIANGLE_SIZE as f64) as i32;
+        let grid_size = (HALF_LANDSCAPE_SIZE as f64 / TRIANGLE_SIZE as f64) as i32;
 
         for dy in -grid_size..=grid_size {
             vertices_y += 1;

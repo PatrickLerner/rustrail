@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{Landscape, OriginOffset, LANDSCAPE_SIZE, SPAWN_RADIUS};
+use super::{Landscape, OriginOffset, HALF_LANDSCAPE_SIZE, SPAWN_RADIUS};
 use crate::{camera::GameCameraState, landscape::DEFAULT_TTL};
 use bevy::prelude::*;
 
@@ -11,7 +11,7 @@ pub fn system(
     cameras: Query<&GameCameraState>,
     origin_offset: Res<OriginOffset>,
 ) {
-    let grid_half_length = (LANDSCAPE_SIZE / 2) as f64;
+    let grid_half_length = HALF_LANDSCAPE_SIZE as f64;
 
     for camera in cameras.iter() {
         for dx in -SPAWN_RADIUS..SPAWN_RADIUS {
@@ -38,9 +38,9 @@ pub fn system(
                     log::debug!("Requesting landscape at {:?}", (x as i32, y as i32));
 
                     commands.spawn(Landscape {
-                        ttl: DEFAULT_TTL,
                         x: desired_x,
                         y: desired_y,
+                        ..default()
                     });
                 }
             }
