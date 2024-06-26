@@ -1,51 +1,14 @@
+mod path;
+
+use super::CoordinatePoint;
+use crate::train::Direction;
 use bevy::prelude::*;
 use osmpbfreader::{OsmObj, Way};
 use proj::Proj;
-use rand::{thread_rng, Rng};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-use crate::train::Direction;
-
-use super::{CoordinatePoint, PathId};
-
-#[derive(Component, Default, Debug, Deserialize, Serialize, Clone)]
-pub struct Path {
-    pub start_id: i64,
-    pub end_id: i64,
-    pub start_coords: CoordinatePoint,
-    pub end_coords: CoordinatePoint,
-    pub forward_connections: Vec<(PathId, Direction)>,
-    pub backwards_connections: Vec<(PathId, Direction)>,
-}
-
-impl Path {
-    fn id(&self) -> PathId {
-        (self.start_id, self.end_id)
-    }
-}
-
-impl Path {
-    fn possible_connections_by_direction(&self, direction: Direction) -> &Vec<(PathId, Direction)> {
-        match direction {
-            Direction::Forward => &self.forward_connections,
-            Direction::Backward => &self.backwards_connections,
-        }
-    }
-
-    fn random_connection_by_direction(&self, direction: Direction) -> Option<&(PathId, Direction)> {
-        let possible = self.possible_connections_by_direction(direction);
-
-        if possible.is_empty() {
-            return None;
-        }
-
-        let mut random = thread_rng();
-        let index = random.gen_range(0..possible.len());
-
-        Some(&possible[index])
-    }
-}
+pub use path::{Path, PathId};
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
 pub enum AreaType {
@@ -107,8 +70,6 @@ pub struct OSMData {
     pub sections: HashMap<(i64, i64), SectionData>,
 }
 
-static DM: f64 = 10_000_000.0;
-
 fn is_rail(obj: &Way) -> bool {
     obj.tags.contains("railway", "rail")
 }
@@ -162,6 +123,7 @@ pub fn load_data(mut commands: Commands) {
     let converter = Proj::new_known_crs("EPSG:4326", "ESRI:53004", None).unwrap();
 
     let node_to_coordinates = |node: &osmpbfreader::Node| {
+        static DM: f64 = 10_000_000.0;
         let lng = node.decimicro_lon as f64 / DM;
         let lat = node.decimicro_lat as f64 / DM;
 
