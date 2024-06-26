@@ -134,16 +134,16 @@ pub fn system(
             )
             .clone();
 
-        commands
-            .entity(entity)
-            .insert(SpawnedMesh)
-            .with_children(|parent| {
+        commands.entity(entity).insert(SpawnedMesh).with_children(
+            #[coverage(off)]
+            |parent| {
                 parent.spawn(PbrBundle {
                     transform: Transform::from_xyz(0.0, 0.0, 0.0),
                     mesh,
                     material,
                     ..default()
                 });
-            });
+            },
+        );
     }
 }

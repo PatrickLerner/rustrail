@@ -15,6 +15,7 @@ pub struct RailData {
 #[derive(Component)]
 pub struct SpawnedRails;
 
+#[coverage(off)]
 pub fn system(
     mut rail_data: Local<Option<RailData>>,
     mut commands: Commands,
@@ -25,13 +26,16 @@ pub fn system(
     height_map: Res<HeightMap>,
 ) {
     for (entity, landscape) in landscapes.iter() {
-        let rail_data = rail_data.get_or_insert_with(|| {
-            // let material = materials.add(Color::rgb(0.180, 0.204, 0.251));
-            RailData {
-                mesh: meshes.add(Cuboid::new(1.0, RAIL_HEIGHT, RAIL_WIDTH)),
-                material: materials.add(Color::rgb(1.0, 0.204, 0.251)),
-            }
-        });
+        let rail_data = rail_data.get_or_insert_with(
+            #[coverage(off)]
+            || {
+                // let material = materials.add(Color::rgb(0.180, 0.204, 0.251));
+                RailData {
+                    mesh: meshes.add(Cuboid::new(1.0, RAIL_HEIGHT, RAIL_WIDTH)),
+                    material: materials.add(Color::rgb(1.0, 0.204, 0.251)),
+                }
+            },
+        );
 
         let addr = landscape.position.sector_coordinates();
 
@@ -78,10 +82,9 @@ pub fn system(
                             .with_scale(Vec3::new(distance as f32, 1.0, 1.0))
                             .with_rotation(rotation);
 
-                    commands
-                        .entity(entity)
-                        .insert(SpawnedRails)
-                        .with_children(|parent| {
+                    commands.entity(entity).insert(SpawnedRails).with_children(
+                        #[coverage(off)]
+                        |parent| {
                             parent
                                 .spawn((
                                     rail.clone(),
@@ -90,30 +93,34 @@ pub fn system(
                                         ..default()
                                     },
                                 ))
-                                .with_children(|rail| {
-                                    rail.spawn(PbrBundle {
-                                        mesh: rail_data.mesh.clone(),
-                                        material: rail_data.material.clone(),
-                                        transform: Transform::from_xyz(
-                                            0.0,
-                                            0.0,
-                                            RAIL_DISTANCE / -2.0,
-                                        ),
-                                        ..default()
-                                    });
+                                .with_children(
+                                    #[coverage(off)]
+                                    |rail| {
+                                        rail.spawn(PbrBundle {
+                                            mesh: rail_data.mesh.clone(),
+                                            material: rail_data.material.clone(),
+                                            transform: Transform::from_xyz(
+                                                0.0,
+                                                0.0,
+                                                RAIL_DISTANCE / -2.0,
+                                            ),
+                                            ..default()
+                                        });
 
-                                    rail.spawn(PbrBundle {
-                                        mesh: rail_data.mesh.clone(),
-                                        material: rail_data.material.clone(),
-                                        transform: Transform::from_xyz(
-                                            0.0,
-                                            0.0,
-                                            RAIL_DISTANCE / 2.0,
-                                        ),
-                                        ..default()
-                                    });
-                                });
-                        });
+                                        rail.spawn(PbrBundle {
+                                            mesh: rail_data.mesh.clone(),
+                                            material: rail_data.material.clone(),
+                                            transform: Transform::from_xyz(
+                                                0.0,
+                                                0.0,
+                                                RAIL_DISTANCE / 2.0,
+                                            ),
+                                            ..default()
+                                        });
+                                    },
+                                );
+                        },
+                    );
 
                     start_coords = end_coords;
                     remaining_distance -= distance;
