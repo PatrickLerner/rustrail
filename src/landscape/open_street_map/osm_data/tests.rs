@@ -1,6 +1,6 @@
 use super::*;
 use coverage_helper::test;
-use std::{fs::remove_file, mem, path::Path};
+use std::{fs::remove_file, path::Path};
 
 fn temp_file() -> String {
     let temp_file = std::env::temp_dir().join("liechtenstein.osm.pbf.bin");
