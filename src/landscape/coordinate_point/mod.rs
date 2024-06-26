@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use super::LANDSCAPE_SIZE;
 use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
