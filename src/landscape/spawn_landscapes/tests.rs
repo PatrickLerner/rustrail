@@ -7,7 +7,8 @@ fn spawns_landscapes() {
     app.add_systems(Update, system);
 
     app.world.spawn(GameCameraState::default());
-    app.world.insert_resource(OriginOffset { x: 0.0, y: 0.0 });
+    app.world
+        .insert_resource(OriginOffset(CoordinatePoint(0.0, 0.0)));
 
     assert_eq!(app.world.query::<&Landscape>().iter(&app.world).len(), 0);
 

@@ -11,14 +11,7 @@ fn spawns_landscapes() {
 
     let landscape_id = app
         .world
-        .spawn((
-            Landscape {
-                ttl: 30.0,
-                x: 0.0,
-                y: 0.0,
-            },
-            Transform::default(),
-        ))
+        .spawn((Landscape::default(), Transform::default()))
         .id();
 
     app.init_resource::<Time>();

@@ -22,8 +22,8 @@ pub fn system(
             transform.translation.x += speed.0 * time.delta_seconds();
 
             let h = height_map.height_at_position(
-                transform.translation.x as f64 + origin_offset.x,
-                transform.translation.z as f64 + origin_offset.y,
+                transform.translation.x as f64 + origin_offset.0 .0,
+                transform.translation.z as f64 + origin_offset.0 .1,
             );
 
             let target = h + HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET;

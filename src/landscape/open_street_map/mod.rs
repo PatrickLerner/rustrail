@@ -102,7 +102,7 @@ pub struct SectionData {
 }
 
 #[derive(Default, Resource, Debug, Deserialize, Serialize)]
-pub struct Data {
+pub struct OSMData {
     pub rails: HashMap<PathId, Path>,
     pub sections: HashMap<(i64, i64), SectionData>,
 }
@@ -180,15 +180,15 @@ pub fn load_data(mut commands: Commands) {
         log::info!("Read parsed data file");
 
         // TODO: fail fallback if load fails
-        let data: Data = bincode::deserialize(&data).unwrap();
+        let data: OSMData = bincode::deserialize(&data).unwrap();
         commands.insert_resource(data);
         return;
     }
 
-    let mut data = Data::default();
+    let mut data = OSMData::default();
 
     {
-        let r = std::fs::File::open(&std::path::Path::new(file_name)).unwrap();
+        let r = std::fs::File::open(std::path::Path::new(file_name)).unwrap();
         let mut pbf = osmpbfreader::OsmPbfReader::new(r);
         let mut count = 0;
 
@@ -214,7 +214,7 @@ pub fn load_data(mut commands: Commands) {
                         })
                         .collect();
 
-                    if is_railway_platform(&way) || is_building(&way) || is_wood(&way) {
+                    if is_railway_platform(way) || is_building(way) || is_wood(way) {
                         if nodes.len() == 2 {
                             // TODO: auto fix as a thin line
                         }
@@ -230,31 +230,28 @@ pub fn load_data(mut commands: Commands) {
                         .map(|node| (node.id.0, node_to_coordinates(node)))
                         .collect();
 
-                    if is_building(&way)
-                        || is_railway_platform(&way)
-                        || is_wood(&way)
-                        || is_water(&way)
+                    if is_building(way) || is_railway_platform(way) || is_wood(way) || is_water(way)
                     {
                         let sector = coordinates[0].1.sector_coordinates();
 
                         let sector = data
                             .sections
                             .entry(sector)
-                            .or_insert_with(|| SectionData::default());
+                            .or_insert_with(SectionData::default);
 
                         let coordinates: Vec<CoordinatePoint> = coordinates
                             .into_iter()
                             .map(|(_node, coordinate)| coordinate)
                             .collect();
 
-                        if is_wood(&way) {
+                        if is_wood(way) {
                             let area = AreaData {
                                 area_type: AreaType::Wood,
                                 coordinates,
                             };
 
                             sector.areas.push(area);
-                        } else if is_water(&way) {
+                        } else if is_water(way) {
                             let area = AreaData {
                                 area_type: AreaType::Water,
                                 coordinates,
@@ -262,14 +259,14 @@ pub fn load_data(mut commands: Commands) {
 
                             sector.areas.push(area);
                         } else {
-                            let building_type = if is_building(&way) {
-                                if is_industrial_building(&way) {
+                            let building_type = if is_building(way) {
+                                if is_industrial_building(way) {
                                     BuildingType::Industrial
-                                } else if is_office_building(&way) {
+                                } else if is_office_building(way) {
                                     BuildingType::Office
-                                } else if is_commercial_building(&way) {
+                                } else if is_commercial_building(way) {
                                     BuildingType::Commercial
-                                } else if is_roof_building(&way) {
+                                } else if is_roof_building(way) {
                                     BuildingType::Roof
                                 } else {
                                     BuildingType::Building
@@ -311,7 +308,7 @@ pub fn load_data(mut commands: Commands) {
 
                             sector.buildings.push(building);
                         }
-                    } else if is_rail(&way) {
+                    } else if is_rail(way) {
                         let mut node_iter = coordinates.iter();
                         let (mut last_node_id, mut last_node) = node_iter.next().unwrap();
 
@@ -328,7 +325,7 @@ pub fn load_data(mut commands: Commands) {
                             let sector = data
                                 .sections
                                 .entry(sector)
-                                .or_insert_with(|| SectionData::default());
+                                .or_insert_with(SectionData::default);
 
                             let rail = Path {
                                 start_id: last_node_id,

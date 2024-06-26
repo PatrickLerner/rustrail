@@ -1,3 +1,9 @@
+use crate::{
+    landscape::{
+        HeightMap, Landscape, OriginOffset, HALF_LANDSCAPE_SIZE, MAX_SPAWN_PER_FRAME, TRIANGLE_SIZE,
+    },
+    HEIGHT_OFFSET,
+};
 use bevy::{
     prelude::*,
     render::{
@@ -6,17 +12,13 @@ use bevy::{
     },
 };
 
-use crate::{
-    landscape::{HALF_LANDSCAPE_SIZE, TRIANGLE_SIZE},
-    HEIGHT_OFFSET,
-};
-
-use super::{HeightMap, Landscape, OriginOffset, MAX_SPAWN_PER_FRAME};
+#[derive(Component)]
+pub struct SpawnedMesh;
 
 #[coverage(off)]
 #[allow(clippy::too_many_arguments)]
 pub fn system(
-    landscapes: Query<(Entity, &Landscape), Without<Transform>>,
+    landscapes: Query<(Entity, &Landscape), Without<SpawnedMesh>>,
     origin_offset: Res<OriginOffset>,
     height_map: Res<HeightMap>,
     mut commands: Commands,
@@ -26,14 +28,11 @@ pub fn system(
     mut soil_texture: Local<Option<Handle<StandardMaterial>>>,
 ) {
     for (entity, landscape) in landscapes.iter().take(MAX_SPAWN_PER_FRAME) {
-        let position = Vec2::new(
-            (landscape.x - origin_offset.x) as f32,
-            (landscape.y - origin_offset.y) as f32,
-        );
+        let position = landscape.position - origin_offset.0;
 
         log::debug!(
             "Spawning landscape at {:?}",
-            (position.x as i32, position.y as i32)
+            (position.0 as i32, position.1 as i32)
         );
 
         let mut verticies: Vec<Vec3> = Vec::new();
@@ -54,9 +53,15 @@ pub fn system(
                 let sx = dx as f64 * TRIANGLE_SIZE as f64;
                 let sy = dy as f64 * TRIANGLE_SIZE as f64;
 
-                let h = height_map.height_at_position(sx + landscape.x, sy + landscape.y);
+                let h = height_map
+                    .height_at_position(sx + landscape.position.0, sy + landscape.position.1);
 
-                verticies.push(Vec3::new(sx as f32, h + HEIGHT_OFFSET, sy as f32));
+                verticies.push(Vec3::new(
+                    sx as f32,
+                    h + HEIGHT_OFFSET,
+                    // NOTE: - on z due to bevy's inane projection
+                    -sy as f32,
+                ));
                 normals.push(Vec3::new(0.0, 0.0, 0.0));
                 uv.push(Vec2::new(
                     if dx % 2 == 0 { 0.0 } else { 1.0 },
@@ -76,12 +81,12 @@ pub fn system(
                 indices_x += 1;
 
                 indicies.push(y * w + x);
-                indicies.push(y * w + x + 1 + w);
                 indicies.push(y * w + x + 1);
+                indicies.push(y * w + x + 1 + w);
 
                 indicies.push(y * w + x);
-                indicies.push(y * w + x + w);
                 indicies.push(y * w + x + 1 + w);
+                indicies.push(y * w + x + w);
             }
         }
 
@@ -129,11 +134,16 @@ pub fn system(
             )
             .clone();
 
-        commands.entity(entity).insert(PbrBundle {
-            mesh,
-            material,
-            transform: Transform::from_xyz(position.x, 0.0, position.y),
-            ..default()
-        });
+        commands
+            .entity(entity)
+            .insert(SpawnedMesh)
+            .with_children(|parent| {
+                parent.spawn(PbrBundle {
+                    transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                    mesh,
+                    material,
+                    ..default()
+                });
+            });
     }
 }
