@@ -15,6 +15,12 @@ Germany's topography.
 
 [Download](https://daten.gdz.bkg.bund.de/produkte/dgm/dgm200/aktuell/dgm200.utm32s.geotiff.zip)
 
+### OpenStreetMap
+
+Requires a download of OpenStreetMap Data (e.g. [geofabrik][]) that must be placed in `assets/` folder.
+
+[geofabrik]: https://download.geofabrik.de/europe/germany/saarland.html
+
 ## Research / Sources
 
 - [Fahrdynamik des Schienenverkehrs, Dietrich Wende](https://link.springer.com/book/10.1007/978-3-322-82961-0)

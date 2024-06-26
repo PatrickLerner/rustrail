@@ -1,7 +1,9 @@
 #[cfg(test)]
 mod tests;
 
-use super::{Landscape, OriginOffset, LANDSCAPE_SIZE, SPAWN_RADIUS};
+use super::{
+    CoordinatePoint, Landscape, OriginOffset, HALF_LANDSCAPE_SIZE, LANDSCAPE_SIZE, SPAWN_RADIUS,
+};
 use crate::{camera::GameCameraState, landscape::DEFAULT_TTL};
 use bevy::prelude::*;
 
@@ -11,37 +13,46 @@ pub fn system(
     cameras: Query<&GameCameraState>,
     origin_offset: Res<OriginOffset>,
 ) {
-    let grid_half_length = (LANDSCAPE_SIZE / 2) as f64;
+    let grid_half_length = HALF_LANDSCAPE_SIZE as f64;
+    let grid_length = LANDSCAPE_SIZE as f64;
 
     for camera in cameras.iter() {
+        // NOTE: - on z due to bevy's inane projection
+        let camera = CoordinatePoint(camera.center.x as f64, -camera.center.z as f64);
+
         for dx in -SPAWN_RADIUS..SPAWN_RADIUS {
             for dy in -SPAWN_RADIUS..SPAWN_RADIUS {
-                let x = (((camera.center.x as f64 + grid_half_length) / (2.0 * grid_half_length))
-                    .floor()
-                    + dx as f64)
-                    * (2.0 * grid_half_length);
-                let y = (((camera.center.z as f64 + grid_half_length) / (2.0 * grid_half_length))
-                    .floor()
-                    + dy as f64)
-                    * (2.0 * grid_half_length);
+                let diff = CoordinatePoint(dx as f64, dy as f64);
+                let desired = (((camera + grid_half_length) / grid_length).floor() + diff)
+                    * grid_length
+                    + origin_offset.0;
 
-                let desired_x = x + origin_offset.x;
-                let desired_y = y + origin_offset.y;
-
-                if let Some(mut landscape) = landscapes
-                    .iter_mut()
-                    .find(|l| l.x == desired_x && l.y == desired_y)
-                {
+                if let Some(mut landscape) = landscapes.iter_mut().find(|l| l.position == desired) {
                     landscape.ttl = DEFAULT_TTL;
                 } else {
                     #[cfg(not(coverage))]
-                    log::debug!("Requesting landscape at {:?}", (x as i32, y as i32));
+                    log::debug!(
+                        "Requesting landscape at {:?}",
+                        (desired.0 as i32, desired.1 as i32)
+                    );
 
-                    commands.spawn(Landscape {
-                        ttl: DEFAULT_TTL,
-                        x: desired_x,
-                        y: desired_y,
-                    });
+                    let position = desired - origin_offset.0;
+
+                    commands.spawn((
+                        Landscape {
+                            position: desired,
+                            ..default()
+                        },
+                        PbrBundle {
+                            transform: Transform::from_xyz(
+                                position.0 as f32,
+                                0.0,
+                                // NOTE: -z due to bevy's inane projection
+                                -position.1 as f32,
+                            ),
+                            ..default()
+                        },
+                    ));
                 }
             }
         }

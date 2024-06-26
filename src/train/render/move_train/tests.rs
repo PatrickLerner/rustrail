@@ -1,5 +1,7 @@
 use std::time::Duration;
 
+use crate::landscape::CoordinatePoint;
+
 use super::*;
 use coverage_helper::test;
 
@@ -14,7 +16,7 @@ fn apply_transform() {
     time.advance_by(Duration::from_millis(1500));
 
     app.insert_resource(HeightMap::test_dummy());
-    app.insert_resource(OriginOffset { x: 0.0, y: 0.0 });
+    app.insert_resource(OriginOffset(CoordinatePoint(0.0, 0.0)));
 
     let train_id = app
         .world

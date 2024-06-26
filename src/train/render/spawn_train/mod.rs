@@ -18,7 +18,7 @@ pub fn system(
             .insert(PbrBundle {
                 mesh: meshes.add(Cuboid::new(20.0, TRAIN_HEIGHT, 4.0)),
                 material: materials.add(color),
-                transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, 0.0),
+                transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, -0.0),
                 ..default()
             });
     }
