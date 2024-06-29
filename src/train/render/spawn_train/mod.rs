@@ -14,7 +14,7 @@ pub fn system(
 
         commands
             .entity(entity)
-            .insert(Train3DModel)
+            .insert(Train3DModel::default())
             .insert(PbrBundle {
                 mesh: meshes.add(Cuboid::new(20.0, TRAIN_HEIGHT, 4.0)),
                 material: materials.add(color),

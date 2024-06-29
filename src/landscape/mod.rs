@@ -13,6 +13,7 @@ mod spawn_rails;
 use bevy::prelude::*;
 pub use coordinate_point::CoordinatePoint;
 pub use height_map::HeightMap;
+pub use open_street_map::Path;
 
 const TRIANGLE_SIZE: i32 = 10;
 const LANDSCAPE_SIZE: i32 = 1000;

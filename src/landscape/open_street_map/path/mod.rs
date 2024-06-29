@@ -23,13 +23,14 @@ impl Path {
     }
 }
 
-/*
 impl Path {
-    fn possible_connections_by_direction(&self, direction: Direction) -> &Vec<(PathId, Direction)> {
+    pub fn possible_connections_by_direction(
+        &self,
+        direction: Direction,
+    ) -> &Vec<(PathId, Direction)> {
         match direction {
             Direction::Forward => &self.forward_connections,
             Direction::Backward => &self.backward_connections,
         }
     }
 }
-*/

@@ -12,7 +12,6 @@ fn id() {
     assert_eq!(path.id(), (69, 420));
 }
 
-/*
 #[test]
 fn possible_connections_by_direction() {
     let forward_connections = vec![((0, 0), Direction::Forward)];
@@ -33,4 +32,3 @@ fn possible_connections_by_direction() {
         &backward_connections
     );
 }
-*/
