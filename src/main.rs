@@ -16,7 +16,7 @@ use bevy::{
     },
 };
 use bevy_egui::EguiPlugin;
-use train::{PaintScheme, PaintSchemeColor, Speed, ThrottleLever};
+use train::{PaintScheme, PaintSchemeColor};
 
 fn setup(mut commands: Commands) {
     commands
@@ -29,11 +29,6 @@ fn setup(mut commands: Commands) {
         .spawn(train::TrainBundle::br_218("BR 218 002", 0.0))
         .insert(PaintScheme {
             color: PaintSchemeColor::Pasteltuerkis,
-        })
-        .insert(Speed(-7.0))
-        .insert(ThrottleLever {
-            direction: train::Direction::Backward,
-            ..default()
         });
 }
 
