@@ -2,6 +2,7 @@ use super::*;
 use coverage_helper::test;
 use std::{fs::remove_file, path::Path};
 
+#[coverage(off)]
 fn temp_file() -> String {
     let temp_file = std::env::temp_dir().join("liechtenstein.osm.pbf.bin");
     temp_file.to_string_lossy().to_string()

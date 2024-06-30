@@ -3,6 +3,7 @@ use crate::landscape::{CoordinatePoint, Path};
 use coverage_helper::test;
 use std::{collections::HashMap, f32::EPSILON, time::Duration};
 
+#[coverage(off)]
 fn gen_data() -> OSMData {
     let mut rails = HashMap::default();
     rails.insert(

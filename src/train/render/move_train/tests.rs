@@ -6,6 +6,7 @@ use crate::{
 use coverage_helper::test;
 use std::{collections::HashMap, time::Duration};
 
+#[coverage(off)]
 fn gen_data() -> OSMData {
     let mut rails = HashMap::default();
     rails.insert(
