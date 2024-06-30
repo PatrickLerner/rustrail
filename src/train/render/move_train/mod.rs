@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-use super::Train3DModel;
+use super::TrainRailLocation;
 use crate::{
-    landscape::{HeightMap, OriginOffset},
-    train::Speed,
+    landscape::{HeightMap, OSMData, OriginOffset},
+    train::Direction,
     HEIGHT_OFFSET, TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
@@ -12,25 +12,40 @@ use bevy::prelude::*;
 const SPEED: f32 = 3.0; // m/s
 
 pub fn system(
-    mut trains: Query<(&mut Transform, &Speed), With<Train3DModel>>,
+    data: Res<OSMData>,
+    mut trains: Query<(&TrainRailLocation, &mut Transform)>,
     time: Res<Time>,
     height_map: Res<HeightMap>,
     origin_offset: Res<OriginOffset>,
 ) {
-    for (mut transform, speed) in trains.iter_mut() {
-        if speed.0.abs() > f32::EPSILON {
-            transform.translation.x += speed.0 * time.delta_seconds();
+    for (location, mut transform) in trains.iter_mut() {
+        let rail = data
+            .rails
+            .get(&location.id)
+            .expect("train location to be valid");
 
-            let h = height_map.height_at_position(
-                transform.translation.x as f64 + origin_offset.0 .0,
-                transform.translation.z as f64 + origin_offset.0 .1,
-            );
+        let (s, e) = match location.travel_direction {
+            Direction::Forward => (rail.start_coords, rail.end_coords),
+            Direction::Backward => (rail.end_coords, rail.start_coords),
+        };
 
-            let target = h + HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET;
-            let diff = target - transform.translation.y;
+        let diff = e - s;
+        let length = rail.length();
+        let diff = diff / length;
 
-            transform.translation.y +=
-                (SPEED * diff * time.delta_seconds()).clamp(-diff.abs(), diff.abs());
-        }
+        let dest = s + diff * location.distance;
+        let dest = dest - origin_offset.0;
+
+        // calculate height
+
+        let height =
+            height_map.height_at_position(dest.0 + origin_offset.0 .0, dest.1 + origin_offset.0 .1);
+        let height = height + HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET;
+
+        let target = Vec3::new(dest.0 as f32, height, -dest.1 as f32);
+        let diff = target - transform.translation;
+        transform.translation += (diff * SPEED * time.delta_seconds()).clamp(-diff.abs(), diff);
+
+        transform.rotation = Quat::from_rotation_y(rail.angle() as f32);
     }
 }
