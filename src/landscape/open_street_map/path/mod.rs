@@ -25,6 +25,11 @@ impl Path {
     pub fn length(&self) -> f64 {
         (self.end_coords - self.start_coords).length()
     }
+
+    pub fn angle(&self) -> f64 {
+        let diff = self.end_coords - self.start_coords;
+        f64::atan2(diff.1, diff.0)
+    }
 }
 
 impl Path {

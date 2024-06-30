@@ -59,3 +59,38 @@ fn length() {
 
     assert_eq!(path.length().floor(), 46.0);
 }
+
+#[test]
+fn angle() {
+    let path = Path {
+        start_coords: CoordinatePoint(0.0, 0.0),
+        end_coords: CoordinatePoint(10.0, 0.0),
+        ..default()
+    };
+
+    assert_eq!(path.angle(), 0.0);
+
+    let path = Path {
+        start_coords: CoordinatePoint(0.0, 0.0),
+        end_coords: CoordinatePoint(-33.0, -33.0),
+        ..default()
+    };
+
+    assert_eq!(path.angle(), std::f64::consts::PI * -0.75);
+
+    let path = Path {
+        start_coords: CoordinatePoint(0.0, 0.0),
+        end_coords: CoordinatePoint(-100.0, 0.0),
+        ..default()
+    };
+
+    assert_eq!(path.angle(), std::f64::consts::PI);
+
+    let path = Path {
+        start_coords: CoordinatePoint(0.0, 0.0),
+        end_coords: CoordinatePoint(-50.0, 50.0),
+        ..default()
+    };
+
+    assert_eq!(path.angle(), std::f64::consts::PI * 0.75);
+}

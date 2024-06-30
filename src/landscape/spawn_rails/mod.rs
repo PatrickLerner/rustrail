@@ -49,13 +49,12 @@ pub fn system(
                 let rail_start_coords = rail.start_coords - landscape.position;
                 let diff = rail_end_coords - rail_start_coords;
 
-                let distance = f64::sqrt(f64::powi(diff.0, 2) + f64::powi(diff.1, 2));
-                let angle = f64::atan2(diff.1, diff.0);
+                let length = rail.length();
+                let angle = rail.angle();
+                let direction = diff / length;
 
-                let mut remaining_distance = distance;
+                let mut remaining_distance = length;
                 let mut start_coords = rail.start_coords;
-
-                let direction = diff / distance;
 
                 while remaining_distance > 0.0 {
                     let distance =
