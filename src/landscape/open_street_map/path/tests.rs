@@ -32,3 +32,30 @@ fn possible_connections_by_direction() {
         &backward_connections
     );
 }
+
+#[test]
+fn length() {
+    let path = Path {
+        start_coords: CoordinatePoint(0.0, 0.0),
+        end_coords: CoordinatePoint(10.0, 0.0),
+        ..default()
+    };
+
+    assert_eq!(path.length(), 10.0);
+
+    let path = Path {
+        start_coords: CoordinatePoint(0.0, 0.0),
+        end_coords: CoordinatePoint(-33.0, -33.0),
+        ..default()
+    };
+
+    assert_eq!(path.length().floor(), 46.0);
+
+    let path = Path {
+        start_coords: CoordinatePoint(0.0, 0.0),
+        end_coords: CoordinatePoint(-33.0, 33.0),
+        ..default()
+    };
+
+    assert_eq!(path.length().floor(), 46.0);
+}
