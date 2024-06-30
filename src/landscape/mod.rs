@@ -13,7 +13,7 @@ mod spawn_rails;
 use bevy::prelude::*;
 pub use coordinate_point::CoordinatePoint;
 pub use height_map::HeightMap;
-pub use open_street_map::Path;
+pub use open_street_map::{OSMData, PathId};
 
 const TRIANGLE_SIZE: i32 = 10;
 const LANDSCAPE_SIZE: i32 = 1000;
@@ -21,7 +21,7 @@ const HALF_LANDSCAPE_SIZE: i32 = LANDSCAPE_SIZE / 2;
 const ORIGIN: (f64, f64) = (49.68134809269307, 8.61687829630227);
 // lifetime of a landscape. if it is not renewed, it will despawn
 const DEFAULT_TTL: f32 = 30.0;
-const SPAWN_RADIUS: i32 = 5;
+const SPAWN_RADIUS: i32 = 3;
 const MAX_SPAWN_PER_FRAME: usize = 3;
 
 const MAX_RAIL_SEGMENT_LENGTH: f64 = 3.0;

@@ -20,7 +20,7 @@ fn apply_transform() {
 
     let train_id = app
         .world
-        .spawn((Train3DModel, Transform::default(), Speed(1.0)))
+        .spawn((Train3DModel::default(), Transform::default(), Speed(1.0)))
         .id();
 
     app.update();
@@ -33,7 +33,7 @@ fn apply_transform() {
 
     let train_id = app
         .world
-        .spawn((Train3DModel, Transform::default(), Speed(30.0)))
+        .spawn((Train3DModel::default(), Transform::default(), Speed(30.0)))
         .id();
 
     let mut time = app.world.resource_mut::<Time>();

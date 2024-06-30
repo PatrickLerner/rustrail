@@ -7,6 +7,8 @@ mod render;
 use bevy::{app::PluginGroupBuilder, prelude::*};
 use serde::{Deserialize, Serialize};
 
+pub use render::Train3DModel;
+
 #[derive(Component, Default)]
 pub struct Name(pub String);
 

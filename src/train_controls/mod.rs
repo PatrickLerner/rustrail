@@ -6,7 +6,7 @@ use bevy_egui::{egui, EguiContexts};
 
 use crate::{
     camera,
-    train::{Acceleration, BrakeLever, Distance, Mass, Name, Speed, ThrottleLever},
+    train::{Acceleration, BrakeLever, Distance, Mass, Name, Speed, ThrottleLever, Train3DModel},
 };
 
 type TrainControlQuery<'a> = (
@@ -19,6 +19,7 @@ type TrainControlQuery<'a> = (
     &'a mut ThrottleLever,
     &'a mut BrakeLever,
     &'a Transform,
+    &'a mut Train3DModel,
 );
 
 #[coverage(off)]
@@ -37,6 +38,7 @@ fn train_controls(
         mut throttle_lever,
         mut brake_lever,
         transform,
+        mut model,
     ) in entries.iter_mut()
     {
         egui::Window::new(format!("Train: {}", name.0))
@@ -68,6 +70,8 @@ fn train_controls(
                         && can_change_direction
                     {
                         throttle_lever.direction = throttle_lever.direction.opposite();
+                        let path = model.path.as_mut().unwrap();
+                        path.travel_direction = path.travel_direction.opposite();
                     }
 
                     if ui.small_button("Follow").clicked() {

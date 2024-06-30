@@ -21,6 +21,11 @@ impl Path {
     pub fn id(&self) -> PathId {
         (self.start_id, self.end_id)
     }
+
+    // TODO: test
+    pub fn length(&self) -> f64 {
+        (self.end_coords - self.start_coords).length()
+    }
 }
 
 impl Path {

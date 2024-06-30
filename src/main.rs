@@ -16,9 +16,8 @@ use bevy::{
     },
 };
 use bevy_egui::EguiPlugin;
-use train::{PaintScheme, PaintSchemeColor};
+use train::{PaintScheme, PaintSchemeColor, Speed};
 
-#[coverage(off)]
 fn setup(mut commands: Commands) {
     commands
         .spawn(train::TrainBundle::br_218("BR 218 001", 400_000.0))
@@ -30,7 +29,8 @@ fn setup(mut commands: Commands) {
         .spawn(train::TrainBundle::br_218("BR 218 002", 0.0))
         .insert(PaintScheme {
             color: PaintSchemeColor::Pasteltuerkis,
-        });
+        })
+        .insert(Speed(7.0));
 }
 
 const HEIGHT_OFFSET: f32 = -101.0;
