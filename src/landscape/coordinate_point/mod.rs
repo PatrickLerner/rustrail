@@ -26,7 +26,6 @@ impl CoordinatePoint {
         Self(self.0.floor(), self.1.floor())
     }
 
-    // TODO: sqr distance ?
     pub fn length(&self) -> f64 {
         f64::sqrt(f64::powi(self.0, 2) + f64::powi(self.1, 2))
     }
