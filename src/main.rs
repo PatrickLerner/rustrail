@@ -16,7 +16,7 @@ use bevy::{
     },
 };
 use bevy_egui::EguiPlugin;
-use train::{PaintScheme, PaintSchemeColor, Speed};
+use train::{PaintScheme, PaintSchemeColor, Speed, ThrottleLever};
 
 fn setup(mut commands: Commands) {
     commands
@@ -30,7 +30,11 @@ fn setup(mut commands: Commands) {
         .insert(PaintScheme {
             color: PaintSchemeColor::Pasteltuerkis,
         })
-        .insert(Speed(7.0));
+        .insert(Speed(-7.0))
+        .insert(ThrottleLever {
+            direction: train::Direction::Backward,
+            ..default()
+        });
 }
 
 const HEIGHT_OFFSET: f32 = -101.0;

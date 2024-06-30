@@ -71,7 +71,6 @@ fn train_controls(
                     {
                         throttle_lever.direction = throttle_lever.direction.opposite();
                         let path = model.path.as_mut().unwrap();
-                        path.travel_direction = path.travel_direction.opposite();
                     }
 
                     if ui.small_button("Follow").clicked() {
