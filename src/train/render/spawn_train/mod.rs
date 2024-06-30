@@ -22,7 +22,10 @@ pub fn system(
     let id = data
         .rails
         .keys()
-        .find(|(s, _e)| *s == START_ID)
+        .find(
+            #[coverage(off)]
+            |(s, _e)| *s == START_ID,
+        )
         .expect("to find rail with start id");
 
     for (entity, paint_scheme) in trains.iter() {
