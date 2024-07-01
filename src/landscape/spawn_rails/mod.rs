@@ -1,15 +1,19 @@
 use crate::{
-    landscape::{MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE},
+    landscape::{BALLAST_HEIGHT, MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE},
     HEIGHT_OFFSET,
 };
 
-use super::{open_street_map::OSMData, HeightMap, Landscape, RAIL_HEIGHT, RAIL_WIDTH};
+use super::{
+    open_street_map::OSMData, HeightMap, Landscape, BALLAST_WIDTH, RAIL_HEIGHT, RAIL_WIDTH,
+};
 use bevy::prelude::*;
 
 #[derive(Default)]
 pub struct RailData {
     mesh: Handle<Mesh>,
     material: Handle<StandardMaterial>,
+    ballast_mesh: Handle<Mesh>,
+    ballast_texture: Handle<StandardMaterial>,
 }
 
 #[derive(Component)]
@@ -24,16 +28,16 @@ pub fn system(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     height_map: Res<HeightMap>,
+    asset_server: Res<AssetServer>,
 ) {
     for (entity, landscape) in landscapes.iter() {
         let rail_data = rail_data.get_or_insert_with(
             #[coverage(off)]
-            || {
-                // let material = materials.add(Color::rgb(0.180, 0.204, 0.251));
-                RailData {
-                    mesh: meshes.add(Cuboid::new(1.0, RAIL_HEIGHT, RAIL_WIDTH)),
-                    material: materials.add(Color::rgb(1.0, 0.204, 0.251)),
-                }
+            || RailData {
+                mesh: meshes.add(Cuboid::new(1.0, RAIL_HEIGHT, RAIL_WIDTH)),
+                material: materials.add(asset_server.load("steel.png")),
+                ballast_mesh: meshes.add(Cuboid::new(1.0, BALLAST_HEIGHT, BALLAST_WIDTH)),
+                ballast_texture: materials.add(asset_server.load("ballast.png")),
             },
         );
 
@@ -96,11 +100,18 @@ pub fn system(
                                     #[coverage(off)]
                                     |rail| {
                                         rail.spawn(PbrBundle {
+                                            mesh: rail_data.ballast_mesh.clone(),
+                                            material: rail_data.ballast_texture.clone(),
+                                            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                                            ..default()
+                                        });
+
+                                        rail.spawn(PbrBundle {
                                             mesh: rail_data.mesh.clone(),
                                             material: rail_data.material.clone(),
                                             transform: Transform::from_xyz(
                                                 0.0,
-                                                0.0,
+                                                BALLAST_HEIGHT,
                                                 RAIL_DISTANCE / -2.0,
                                             ),
                                             ..default()
@@ -111,7 +122,7 @@ pub fn system(
                                             material: rail_data.material.clone(),
                                             transform: Transform::from_xyz(
                                                 0.0,
-                                                0.0,
+                                                BALLAST_HEIGHT,
                                                 RAIL_DISTANCE / 2.0,
                                             ),
                                             ..default()

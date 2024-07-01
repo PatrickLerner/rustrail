@@ -26,6 +26,8 @@ const DEFAULT_TTL: f32 = 30.0;
 const SPAWN_RADIUS: i32 = 5;
 const MAX_SPAWN_PER_FRAME: usize = 3;
 
+const BALLAST_WIDTH: f32 = RAIL_DISTANCE + 1.75;
+const BALLAST_HEIGHT: f32 = 0.4;
 const MAX_RAIL_SEGMENT_LENGTH: f64 = 3.0;
 
 #[derive(Component)]
