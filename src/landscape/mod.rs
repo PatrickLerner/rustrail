@@ -5,6 +5,7 @@ mod coordinate_point;
 mod despawn_landscapes;
 mod height_map;
 mod init_height_map;
+mod load_asset_data;
 mod open_street_map;
 mod spawn_landscape_mesh;
 mod spawn_landscapes;
@@ -26,7 +27,22 @@ const DEFAULT_TTL: f32 = 30.0;
 const SPAWN_RADIUS: i32 = 5;
 const MAX_SPAWN_PER_FRAME: usize = 3;
 
+pub const BALLAST_WIDTH: f32 = RAIL_DISTANCE + 1.75;
+pub const BALLAST_HEIGHT: f32 = 0.4;
 const MAX_RAIL_SEGMENT_LENGTH: f64 = 3.0;
+
+pub const RAIL_HEIGHT: f32 = 0.2;
+const RAIL_DISTANCE: f32 = 1.435;
+pub const RAIL_WIDTH: f32 = 0.1;
+
+#[derive(Resource, Default)]
+pub struct AssetData {
+    rail_mesh: Handle<Mesh>,
+    rail_material: Handle<StandardMaterial>,
+    ballast_mesh: Handle<Mesh>,
+    ballast_texture: Handle<StandardMaterial>,
+    ground_texture: Handle<StandardMaterial>,
+}
 
 #[derive(Component)]
 pub struct Landscape {
@@ -46,17 +62,17 @@ impl Default for Landscape {
 #[derive(Resource)]
 pub struct OriginOffset(pub CoordinatePoint);
 
-pub const RAIL_HEIGHT: f32 = 0.2;
-const RAIL_DISTANCE: f32 = 1.435;
-const RAIL_WIDTH: f32 = 0.1;
-
 pub struct LandscapePlugin;
 
 impl Plugin for LandscapePlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(
             Startup,
-            (init_height_map::system, open_street_map::load_data),
+            (
+                init_height_map::system,
+                open_street_map::load_data,
+                load_asset_data::system,
+            ),
         )
         .add_systems(
             Update,

@@ -1,42 +1,22 @@
+use super::{open_street_map::OSMData, AssetData, HeightMap, Landscape};
 use crate::{
-    landscape::{MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE},
+    landscape::{BALLAST_HEIGHT, MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE},
     HEIGHT_OFFSET,
 };
-
-use super::{open_street_map::OSMData, HeightMap, Landscape, RAIL_HEIGHT, RAIL_WIDTH};
 use bevy::prelude::*;
-
-#[derive(Default)]
-pub struct RailData {
-    mesh: Handle<Mesh>,
-    material: Handle<StandardMaterial>,
-}
 
 #[derive(Component)]
 pub struct SpawnedRails;
 
 #[coverage(off)]
 pub fn system(
-    mut rail_data: Local<Option<RailData>>,
+    assets: Res<AssetData>,
     mut commands: Commands,
     data: Res<OSMData>,
     landscapes: Query<(Entity, &Landscape), Without<SpawnedRails>>,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
     height_map: Res<HeightMap>,
 ) {
     for (entity, landscape) in landscapes.iter() {
-        let rail_data = rail_data.get_or_insert_with(
-            #[coverage(off)]
-            || {
-                // let material = materials.add(Color::rgb(0.180, 0.204, 0.251));
-                RailData {
-                    mesh: meshes.add(Cuboid::new(1.0, RAIL_HEIGHT, RAIL_WIDTH)),
-                    material: materials.add(Color::rgb(1.0, 0.204, 0.251)),
-                }
-            },
-        );
-
         let addr = landscape.position.sector_coordinates();
 
         if let Some(segment) = data.sections.get(&addr) {
@@ -96,22 +76,29 @@ pub fn system(
                                     #[coverage(off)]
                                     |rail| {
                                         rail.spawn(PbrBundle {
-                                            mesh: rail_data.mesh.clone(),
-                                            material: rail_data.material.clone(),
+                                            mesh: assets.ballast_mesh.clone(),
+                                            material: assets.ballast_texture.clone(),
+                                            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                                            ..default()
+                                        });
+
+                                        rail.spawn(PbrBundle {
+                                            mesh: assets.rail_mesh.clone(),
+                                            material: assets.rail_material.clone(),
                                             transform: Transform::from_xyz(
                                                 0.0,
-                                                0.0,
+                                                BALLAST_HEIGHT,
                                                 RAIL_DISTANCE / -2.0,
                                             ),
                                             ..default()
                                         });
 
                                         rail.spawn(PbrBundle {
-                                            mesh: rail_data.mesh.clone(),
-                                            material: rail_data.material.clone(),
+                                            mesh: assets.rail_mesh.clone(),
+                                            material: assets.rail_material.clone(),
                                             transform: Transform::from_xyz(
                                                 0.0,
-                                                0.0,
+                                                BALLAST_HEIGHT,
                                                 RAIL_DISTANCE / 2.0,
                                             ),
                                             ..default()
