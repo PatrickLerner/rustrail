@@ -1,3 +1,4 @@
+use super::AssetData;
 use crate::{
     landscape::{
         HeightMap, Landscape, OriginOffset, HALF_LANDSCAPE_SIZE, MAX_SPAWN_PER_FRAME, TRIANGLE_SIZE,
@@ -16,16 +17,13 @@ use bevy::{
 pub struct SpawnedMesh;
 
 #[coverage(off)]
-#[allow(clippy::too_many_arguments)]
 pub fn system(
     landscapes: Query<(Entity, &Landscape), Without<SpawnedMesh>>,
     origin_offset: Res<OriginOffset>,
     height_map: Res<HeightMap>,
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
-    asset_server: Res<AssetServer>,
-    mut soil_texture: Local<Option<Handle<StandardMaterial>>>,
+    assets: Res<AssetData>,
 ) {
     for (entity, landscape) in landscapes.iter().take(MAX_SPAWN_PER_FRAME) {
         let position = landscape.position - origin_offset.0;
@@ -124,23 +122,13 @@ pub fn system(
 
         let mesh = meshes.add(mesh);
 
-        let material = soil_texture
-            .get_or_insert_with(
-                #[coverage(off)]
-                || {
-                    let soil = asset_server.load("soil.png");
-                    materials.add(soil)
-                },
-            )
-            .clone();
-
         commands.entity(entity).insert(SpawnedMesh).with_children(
             #[coverage(off)]
             |parent| {
                 parent.spawn(PbrBundle {
                     transform: Transform::from_xyz(0.0, 0.0, 0.0),
                     mesh,
-                    material,
+                    material: assets.ground_texture.clone(),
                     ..default()
                 });
             },
