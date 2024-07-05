@@ -4,8 +4,10 @@ use coverage_helper::test;
 #[test]
 fn plugin() {
     let mut app = App::default();
-    app.add_plugins(UIPlugin);
+    app.add_plugins(UIPlugins);
     assert!(app.is_plugin_added::<UIPlugin>());
+    assert!(app.is_plugin_added::<train_controls::TrainControlsPlugin>());
+    assert!(app.is_plugin_added::<train_spawn::TrainSpawnPlugin>());
 }
 
 #[test]

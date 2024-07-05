@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::{TrainComposition, WrappedValue};
+use crate::train::{TrainComposition, WrappedValue};
 use bevy::prelude::*;
 
 pub fn system<T: WrappedValue + Component>(

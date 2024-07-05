@@ -1,7 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-use bevy::{pbr::wireframe::WireframeConfig, prelude::*};
+mod train_controls;
+mod train_spawn;
+
+use bevy::{app::PluginGroupBuilder, pbr::wireframe::WireframeConfig, prelude::*};
 use bevy_egui::{egui, EguiContexts};
 
 #[coverage(off)]
@@ -24,11 +27,22 @@ fn wireframe_mode(
     }
 }
 
-pub struct UIPlugin;
+struct UIPlugin;
 
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
         app.add_systems(Startup, color_mode)
             .add_systems(Update, wireframe_mode);
+    }
+}
+
+pub struct UIPlugins;
+
+impl PluginGroup for UIPlugins {
+    fn build(self) -> bevy::app::PluginGroupBuilder {
+        PluginGroupBuilder::start::<Self>()
+            .add(UIPlugin)
+            .add(train_controls::TrainControlsPlugin)
+            .add(train_spawn::TrainSpawnPlugin)
     }
 }

@@ -3,7 +3,6 @@
 mod camera;
 mod landscape;
 mod train;
-mod train_controls;
 mod ui;
 
 use bevy::{
@@ -16,68 +15,6 @@ use bevy::{
     },
 };
 use bevy_egui::EguiPlugin;
-use train::{Name, PaintScheme, PaintSchemeColor, TrainComponent, TrainComposition};
-
-#[coverage(off)]
-fn setup(mut commands: Commands) {
-    let engine_1 = commands
-        .spawn(train::EngineBundle::br_218("BR 218 001"))
-        .insert(PaintScheme {
-            color: PaintSchemeColor::Orientrot,
-        })
-        .id();
-
-    let engine_2 = commands
-        .spawn(train::EngineBundle::br_218("BR 218 002"))
-        .insert(PaintScheme {
-            color: PaintSchemeColor::Pasteltuerkis,
-        })
-        .id();
-
-    let wagon_1 = commands
-        .spawn(train::EngineBundle::br_218("Fake Wagon 1"))
-        .insert(PaintScheme {
-            color: PaintSchemeColor::Fernblau,
-        })
-        .id();
-
-    commands.spawn(train::TrainBundle {
-        name: Name("RB 61".to_string()),
-        composition: TrainComposition {
-            components: vec![
-                TrainComponent::Engine(engine_1),
-                TrainComponent::Engine(engine_2),
-                TrainComponent::Engine(wagon_1),
-            ],
-        },
-        ..default()
-    });
-
-    let engine_3 = commands
-        .spawn(train::EngineBundle::br_218("BR 218 003"))
-        .insert(PaintScheme {
-            color: PaintSchemeColor::Lachsorange,
-        })
-        .id();
-
-    let wagon_2 = commands
-        .spawn(train::EngineBundle::br_218("Fake Wagon 2"))
-        .insert(PaintScheme {
-            color: PaintSchemeColor::Fernblau,
-        })
-        .id();
-
-    commands.spawn(train::TrainBundle {
-        name: Name("RE 61".to_string()),
-        composition: TrainComposition {
-            components: vec![
-                TrainComponent::Engine(engine_3),
-                TrainComponent::Engine(wagon_2),
-            ],
-        },
-        ..default()
-    });
-}
 
 const HEIGHT_OFFSET: f32 = -101.0;
 const TRAIN_HEIGHT: f32 = 5.0;
@@ -104,10 +41,8 @@ fn main() {
         })
         .add_plugins(EguiPlugin)
         .add_plugins(train::TrainPlugins)
-        .add_plugins(train_controls::TrainControlsPlugin)
         .add_plugins(camera::CameraPlugin)
-        .add_plugins(ui::UIPlugin)
+        .add_plugins(ui::UIPlugins)
         .add_plugins(landscape::LandscapePlugin)
-        .add_systems(Startup, setup)
         .run();
 }

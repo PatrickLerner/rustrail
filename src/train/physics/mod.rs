@@ -14,7 +14,7 @@ mod update_friction;
 mod update_speed;
 mod update_train_location;
 
-use super::*;
+use super::{ForceAirResistance, ForceBraking, ForceDriving, ForceFriction, Mass, MaxSpeed, Speed};
 use bevy::prelude::*;
 
 pub struct TrainPhysicsPlugin;

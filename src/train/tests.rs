@@ -13,20 +13,35 @@ fn direction_reverse() {
 fn bundle_initializer() {
     let mut app = App::default();
 
-    let bundle = EngineBundle::br_218("BR 218 001");
+    let bundles = vec![
+        EngineBundle::br_218("BR 218 001"),
+        EngineBundle::br_89("BR 89 001"),
+        EngineBundle::br_110("BR 110 001"),
+        EngineBundle::ice("ICE 1"),
+    ];
 
-    assert!(bundle.max_power.0 > 0.0);
-    assert!(bundle.max_speed.0 > 0.0);
-    assert!(bundle.mass.0 > 0.0);
-    assert_eq!(bundle.name.0, "BR 218 001");
+    for bundle in bundles {
+        assert!(bundle.max_power.0 > 0.0);
+        assert!(bundle.max_speed.0 > 0.0);
+        assert!(bundle.mass.0 > 0.0);
+        assert!(!bundle.name.0.is_empty());
 
-    app.world.spawn(bundle);
+        app.world.spawn(bundle);
+    }
 
     let bundle = EngineBundle::default();
 
     assert_eq!(bundle.max_power.0, 0.0);
     assert_eq!(bundle.max_speed.0, 0.0);
     assert_eq!(bundle.name.0, "");
+
+    app.world.spawn(bundle);
+
+    let bundle = WagonBundle::default();
+
+    assert_eq!(bundle.mass.0, 0.0);
+    assert_eq!(bundle.speed.0, 0.0);
+    assert_eq!(bundle.max_speed.0, 0.0);
 
     app.world.spawn(bundle);
 }
@@ -56,11 +71,13 @@ fn paint_scheme_color() {
         PaintSchemeColor::Verkehrsrot,
         PaintSchemeColor::Orientrot,
         PaintSchemeColor::Lichtgrau,
+        PaintSchemeColor::Achatgrau,
         PaintSchemeColor::Fernblau,
         PaintSchemeColor::Ozeanblau,
         PaintSchemeColor::Minttuerkis,
         PaintSchemeColor::Pasteltuerkis,
         PaintSchemeColor::Lachsorange,
+        PaintSchemeColor::Tiefschwarz,
     ];
 
     for paint_scheme in all {
@@ -82,7 +99,7 @@ fn train_composition() {
         components: vec![
             TrainComponent::Engine(Entity::from_raw(1)),
             TrainComponent::Engine(Entity::from_raw(2)),
-            TrainComponent::Engine(Entity::from_raw(3)),
+            TrainComponent::Wagon(Entity::from_raw(3)),
         ],
     };
 
