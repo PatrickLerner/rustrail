@@ -258,8 +258,7 @@ impl EngineBundle {
             max_speed: MaxSpeed(280.0 / 3.6),
             dimension: Dimension { length: 20.56 },
             paint_scheme: PaintScheme {
-                // NOTE: just to see engines differently, otherwise Lichtgrau
-                color: PaintSchemeColor::Achatgrau,
+                color: PaintSchemeColor::Lichtgrau,
             },
             ..Default::default()
         }
