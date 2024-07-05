@@ -1,10 +1,9 @@
 #[cfg(test)]
 mod tests;
 
-use super::TrainRailLocation;
 use crate::{
     landscape::{HeightMap, OSMData, OriginOffset},
-    train::Direction,
+    train::{Direction, TrackLocation},
     HEIGHT_OFFSET, TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
@@ -13,7 +12,7 @@ const SPEED: f32 = 3.0; // m/s
 
 pub fn system(
     data: Res<OSMData>,
-    mut engines: Query<(&TrainRailLocation, &mut Transform)>,
+    mut engines: Query<(&TrackLocation, &mut Transform)>,
     time: Res<Time>,
     height_map: Res<HeightMap>,
     origin_offset: Res<OriginOffset>,

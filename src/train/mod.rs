@@ -3,9 +3,12 @@ mod tests;
 
 mod physics;
 mod render;
+mod track_location;
 
 use bevy::{app::PluginGroupBuilder, prelude::*};
 use serde::{Deserialize, Serialize};
+
+pub use track_location::TrackLocation;
 
 #[derive(Component, Default)]
 pub struct Name(pub String);

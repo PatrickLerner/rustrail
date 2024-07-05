@@ -1,5 +1,8 @@
 use super::*;
-use crate::landscape::{CoordinatePoint, Path};
+use crate::{
+    landscape::{CoordinatePoint, Path},
+    train::{Direction, TrainComponent},
+};
 use coverage_helper::test;
 use std::{collections::HashMap, f32::EPSILON, time::Duration};
 
@@ -32,13 +35,65 @@ fn gen_data() -> OSMData {
 }
 
 #[test]
+fn updates_components() {
+    let mut app = App::new();
+
+    app.add_systems(Update, system);
+    app.insert_resource(gen_data());
+
+    let location = TrackLocation {
+        id: (0, 1),
+        travel_direction: Direction::Forward,
+        distance: 140.0,
+    };
+
+    let engine_id = app.world.spawn(location.clone()).id();
+
+    let train_id = app
+        .world
+        .spawn((
+            Transform::default(),
+            location,
+            Speed(5.0),
+            TrainComposition {
+                components: vec![TrainComponent::Engine(engine_id)],
+            },
+        ))
+        .id();
+
+    {
+        app.init_resource::<Time>();
+        let mut time = app.world.resource_mut::<Time>();
+        time.advance_by(Duration::from_millis(1500));
+    }
+
+    app.update();
+
+    let mut location = app.world.query::<&TrackLocation>();
+
+    {
+        let location = location.get(&app.world, train_id).unwrap();
+        assert_eq!(location.id, (1, 2));
+        assert_eq!(location.distance.floor(), 6.0);
+        assert_eq!(location.travel_direction, Direction::Forward);
+    }
+
+    {
+        let location = location.get(&app.world, engine_id).unwrap();
+        assert_eq!(location.id, (1, 2));
+        assert_eq!(location.distance.floor(), 6.0);
+        assert_eq!(location.travel_direction, Direction::Forward);
+    }
+}
+
+#[test]
 fn updates_distance() {
     let mut app = App::new();
 
     app.add_systems(Update, system);
     app.insert_resource(gen_data());
 
-    let location = TrainRailLocation {
+    let location = TrackLocation {
         id: (0, 1),
         travel_direction: Direction::Forward,
         distance: 140.0,
@@ -46,7 +101,12 @@ fn updates_distance() {
 
     let train_id = app
         .world
-        .spawn((Transform::default(), location, Speed(5.0)))
+        .spawn((
+            Transform::default(),
+            location,
+            Speed(5.0),
+            TrainComposition::default(),
+        ))
         .id();
 
     {
@@ -58,7 +118,7 @@ fn updates_distance() {
     app.update();
 
     {
-        let mut location = app.world.query::<&TrainRailLocation>();
+        let mut location = app.world.query::<&TrackLocation>();
         let location = location.get(&app.world, train_id).unwrap();
         assert_eq!(location.id, (1, 2));
         assert_eq!(location.distance.floor(), 6.0);
@@ -74,7 +134,7 @@ fn updates_distance() {
     app.update();
 
     {
-        let mut location = app.world.query::<&TrainRailLocation>();
+        let mut location = app.world.query::<&TrackLocation>();
         let location = location.get(&app.world, train_id).unwrap();
         assert_eq!(location.id, (1, 2));
         assert_eq!(location.distance.floor(), 13.0);
@@ -96,7 +156,7 @@ fn updates_distance() {
     app.update();
 
     {
-        let mut location = app.world.query::<&TrainRailLocation>();
+        let mut location = app.world.query::<&TrackLocation>();
         let location = location.get(&app.world, train_id).unwrap();
         assert_eq!(location.id, (0, 1));
         assert_eq!(location.distance.floor(), 140.0);
@@ -111,7 +171,7 @@ fn super_low_speed() {
     app.add_systems(Update, system);
     app.insert_resource(gen_data());
 
-    let location = TrainRailLocation {
+    let location = TrackLocation {
         id: (0, 1),
         travel_direction: Direction::Forward,
         distance: 0.0,
@@ -119,7 +179,12 @@ fn super_low_speed() {
 
     let train_id = app
         .world
-        .spawn((Transform::default(), location, Speed(EPSILON / 2.0)))
+        .spawn((
+            Transform::default(),
+            location,
+            Speed(EPSILON / 2.0),
+            TrainComposition::default(),
+        ))
         .id();
 
     {
@@ -131,7 +196,7 @@ fn super_low_speed() {
     app.update();
 
     {
-        let mut location = app.world.query::<&TrainRailLocation>();
+        let mut location = app.world.query::<&TrackLocation>();
         let location = location.get(&app.world, train_id).unwrap();
         assert_eq!(location.id, (0, 1));
         assert_eq!(location.distance, 0.0);

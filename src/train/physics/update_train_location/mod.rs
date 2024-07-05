@@ -1,17 +1,16 @@
 #[cfg(test)]
 mod tests;
 
-use super::TrainRailLocation;
 use crate::{
     landscape::OSMData,
-    train::{Speed, TrainComposition},
+    train::{Speed, TrackLocation, TrainComposition},
 };
 use bevy::prelude::*;
 
 pub fn system(
     data: Res<OSMData>,
     trains: Query<(Entity, &Speed, &TrainComposition)>,
-    mut locations: Query<&mut TrainRailLocation>,
+    mut locations: Query<&mut TrackLocation>,
     time: Res<Time>,
 ) {
     for (entity, speed, composition) in trains.iter() {

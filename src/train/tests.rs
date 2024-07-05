@@ -32,6 +32,17 @@ fn bundle_initializer() {
 }
 
 #[test]
+fn train_bundle_initializer() {
+    let mut app = App::default();
+
+    let bundle = TrainBundle::default();
+
+    assert_eq!(bundle.speed.0, 0.0);
+
+    app.world.spawn(bundle);
+}
+
+#[test]
 fn plugin() {
     let mut app = App::default();
     app.add_plugins(TrainPlugins);
@@ -63,4 +74,24 @@ fn paint_scheme_color() {
 fn paint_scheme() {
     let paint_scheme = PaintScheme::default();
     assert_eq!(paint_scheme.color, PaintSchemeColor::Verkehrsrot);
+}
+
+#[test]
+fn train_composition() {
+    let train_composition = TrainComposition {
+        components: vec![
+            TrainComponent::Engine(Entity::from_raw(1)),
+            TrainComponent::Engine(Entity::from_raw(2)),
+            TrainComponent::Engine(Entity::from_raw(3)),
+        ],
+    };
+
+    assert_eq!(
+        train_composition.entities(),
+        vec![
+            Entity::from_raw(1),
+            Entity::from_raw(2),
+            Entity::from_raw(3),
+        ],
+    )
 }

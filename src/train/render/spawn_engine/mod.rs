@@ -1,7 +1,7 @@
 use super::Train3DModel;
 use crate::{
     landscape::OSMData,
-    train::{render::TrainRailLocation, Dimension, Direction, PaintScheme, TrainComposition},
+    train::{Dimension, Direction, PaintScheme, TrackLocation, TrainComposition},
     TRAIN_HEIGHT, TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
@@ -10,7 +10,7 @@ const WAGON_DISTANCE: f64 = 1.0;
 
 #[coverage(off)]
 pub fn system(
-    trains: Query<(Entity, &TrainComposition), Without<TrainRailLocation>>,
+    trains: Query<(Entity, &TrainComposition), Without<TrackLocation>>,
     engines: Query<(Entity, &PaintScheme, &Dimension), Without<Train3DModel>>,
     dimensions: Query<&Dimension>,
     mut commands: Commands,
@@ -39,7 +39,7 @@ pub fn system(
             .entity(entity)
             .insert((
                 Train3DModel,
-                TrainRailLocation {
+                TrackLocation {
                     id: *id,
                     distance: 0.0,
                     travel_direction: Direction::Forward,
@@ -54,7 +54,7 @@ pub fn system(
     }
 
     for (entity, composition) in trains.iter() {
-        let mut location = TrainRailLocation {
+        let mut location = TrackLocation {
             id: *id,
             distance: 0.0,
             travel_direction: Direction::Forward,

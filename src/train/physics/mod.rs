@@ -8,6 +8,7 @@ mod update_distance;
 mod update_drive_force;
 mod update_friction;
 mod update_speed;
+mod update_train_location;
 
 use super::*;
 use bevy::prelude::*;
@@ -97,6 +98,7 @@ impl Plugin for TrainPhysicsPlugin {
                 update_acceleration::system,
                 update_speed::system,
                 update_distance::system,
+                update_train_location::system,
             ),
         );
     }
