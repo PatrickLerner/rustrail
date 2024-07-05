@@ -36,6 +36,14 @@ fn bundle_initializer() {
     assert_eq!(bundle.name.0, "");
 
     app.world.spawn(bundle);
+
+    let bundle = WagonBundle::default();
+
+    assert_eq!(bundle.mass.0, 0.0);
+    assert_eq!(bundle.speed.0, 0.0);
+    assert_eq!(bundle.max_speed.0, 0.0);
+
+    app.world.spawn(bundle);
 }
 
 #[test]
@@ -91,7 +99,7 @@ fn train_composition() {
         components: vec![
             TrainComponent::Engine(Entity::from_raw(1)),
             TrainComponent::Engine(Entity::from_raw(2)),
-            TrainComponent::Engine(Entity::from_raw(3)),
+            TrainComponent::Wagon(Entity::from_raw(3)),
         ],
     };
 

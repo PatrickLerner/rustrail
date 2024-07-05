@@ -12,10 +12,9 @@ pub fn system<T: WrappedValue + Component>(
         let mut sum = 0.0;
 
         for component_entity in composition.entities() {
-            let value = values
-                .get(component_entity)
-                .expect("component of train to experience force");
-            sum += value.get();
+            if let Ok(value) = values.get(component_entity) {
+                sum += value.get();
+            }
         }
 
         let mut train_value = values

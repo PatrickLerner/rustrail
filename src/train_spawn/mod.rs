@@ -1,7 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-use crate::train::{EngineBundle, Name, TrainBundle, TrainComponent, TrainComposition};
+use crate::train::{
+    Dimension, EngineBundle, Mass, MaxSpeed, Name, PaintScheme, PaintSchemeColor, TrainBundle,
+    TrainComponent, TrainComposition, WagonBundle,
+};
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
@@ -12,13 +15,44 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
         #[coverage(off)]
         |ui| {
             if ui.small_button("BR 218 (single engine)").clicked() {
-                let engine = commands.spawn(EngineBundle::br_218("BR 218 001")).id();
+                let mut components = vec![];
+                components.push(TrainComponent::Engine(
+                    commands.spawn(EngineBundle::br_218("BR 218 001")).id(),
+                ));
 
                 commands.spawn(TrainBundle {
                     name: Name("RB 61".to_string()),
-                    composition: TrainComposition {
-                        components: vec![TrainComponent::Engine(engine)],
-                    },
+                    composition: TrainComposition { components },
+                    ..default()
+                });
+            }
+
+            if ui.small_button("BR 218 (with wagons)").clicked() {
+                let mut components = vec![];
+                components.push(TrainComponent::Engine(
+                    commands.spawn(EngineBundle::br_218("BR 218 001")).id(),
+                ));
+
+                for _ in 0..25 {
+                    components.push(TrainComponent::Wagon(
+                        commands
+                            .spawn(WagonBundle {
+                                paint_scheme: PaintScheme {
+                                    color: PaintSchemeColor::Tiefschwarz,
+                                },
+                                mass: Mass(23_000.0),
+                                dimension: Dimension { length: 16.0 },
+                                // TODO: realistic
+                                max_speed: MaxSpeed(140.0),
+                                ..default()
+                            })
+                            .id(),
+                    ));
+                }
+
+                commands.spawn(TrainBundle {
+                    name: Name("RB 61".to_string()),
+                    composition: TrainComposition { components },
                     ..default()
                 });
             }
@@ -47,18 +81,36 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
                 });
             }
 
-            if ui.small_button("ICE 1 (no wagons)").clicked() {
-                let engine_front = commands.spawn(EngineBundle::ice("ICE 1 (Front)")).id();
-                let engine_rear = commands.spawn(EngineBundle::ice("ICE 1 (Rear)")).id();
+            if ui.small_button("ICE 1").clicked() {
+                let mut components = vec![];
+                components.push(TrainComponent::Engine(
+                    commands.spawn(EngineBundle::ice("ICE 1 (Front)")).id(),
+                ));
+
+                for _ in 0..25 {
+                    components.push(TrainComponent::Wagon(
+                        commands
+                            .spawn(WagonBundle {
+                                paint_scheme: PaintScheme {
+                                    color: PaintSchemeColor::Lichtgrau,
+                                },
+                                mass: Mass(52_000.0),
+                                dimension: Dimension { length: 26.43 },
+                                // TODO: realistic
+                                max_speed: MaxSpeed(280.0 / 3.6),
+                                ..default()
+                            })
+                            .id(),
+                    ));
+                }
+
+                components.push(TrainComponent::Engine(
+                    commands.spawn(EngineBundle::ice("ICE 1 (Rear)")).id(),
+                ));
 
                 commands.spawn(TrainBundle {
                     name: Name("RB 61".to_string()),
-                    composition: TrainComposition {
-                        components: vec![
-                            TrainComponent::Engine(engine_front),
-                            TrainComponent::Engine(engine_rear),
-                        ],
-                    },
+                    composition: TrainComposition { components },
                     ..default()
                 });
             }

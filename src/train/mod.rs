@@ -144,6 +144,7 @@ pub struct Dimension {
 
 pub enum TrainComponent {
     Engine(Entity),
+    Wagon(Entity),
 }
 
 #[derive(Component, Default)]
@@ -157,6 +158,7 @@ impl TrainComposition {
             .iter()
             .map(|component| match component {
                 TrainComponent::Engine(entity) => *entity,
+                TrainComponent::Wagon(entity) => *entity,
             })
             .collect()
     }
@@ -175,6 +177,17 @@ pub struct TrainBundle {
     pub force_braking: ForceBraking,
     pub force_friction: ForceFriction,
     pub force_air_resistance: ForceAirResistance,
+}
+
+#[derive(Bundle, Default)]
+pub struct WagonBundle {
+    pub mass: Mass,
+    pub max_speed: MaxSpeed,
+    pub speed: Speed,
+    pub dimension: Dimension,
+    pub force_friction: ForceFriction,
+    pub force_air_resistance: ForceAirResistance,
+    pub paint_scheme: PaintScheme,
 }
 
 #[derive(Bundle, Default)]
