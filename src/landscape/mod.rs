@@ -7,6 +7,7 @@ mod height_map;
 mod init_height_map;
 mod load_asset_data;
 mod open_street_map;
+mod spawn_buildings;
 mod spawn_landscape_mesh;
 mod spawn_landscapes;
 mod spawn_rails;
@@ -81,6 +82,7 @@ impl Plugin for LandscapePlugin {
                 spawn_landscape_mesh::system,
                 despawn_landscapes::system,
                 spawn_rails::system,
+                spawn_buildings::system,
             ),
         );
     }
