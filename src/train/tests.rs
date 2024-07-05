@@ -95,3 +95,22 @@ fn train_composition() {
         ],
     )
 }
+
+#[test]
+fn wrapped_value_derived() {
+    let mut items: Vec<Box<dyn WrappedValue>> = vec![
+        Box::new(Mass(0.0)),
+        Box::new(Speed(0.0)),
+        Box::new(MaxSpeed(0.0)),
+        Box::new(ForceDriving(0.0)),
+        Box::new(ForceBraking(0.0)),
+        Box::new(ForceFriction(0.0)),
+        Box::new(ForceAirResistance(0.0)),
+    ];
+
+    for item in items.iter_mut() {
+        assert_eq!(item.get(), 0.0);
+        item.set(item.get() + 1.0);
+        assert_eq!(item.get(), 1.0);
+    }
+}

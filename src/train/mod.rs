@@ -7,6 +7,7 @@ mod track_location;
 
 use bevy::{app::PluginGroupBuilder, prelude::*};
 use serde::{Deserialize, Serialize};
+use wrapped_value_derive_macro::WrappedValue;
 
 pub use track_location::TrackLocation;
 
@@ -61,89 +62,29 @@ trait WrappedValue {
 // m/s^2
 pub struct Acceleration(pub f32);
 
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Debug, WrappedValue)]
 // m/s
 pub struct Speed(pub f32);
 
-impl WrappedValue for Speed {
-    fn get(&self) -> f32 {
-        self.0
-    }
-
-    fn set(&mut self, value: f32) {
-        self.0 = value;
-    }
-}
-
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Debug, WrappedValue)]
 // m/s
 pub struct MaxSpeed(pub f32);
 
-impl WrappedValue for MaxSpeed {
-    fn get(&self) -> f32 {
-        self.0
-    }
-
-    fn set(&mut self, value: f32) {
-        self.0 = value;
-    }
-}
-
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Debug, WrappedValue)]
 // N
 pub struct ForceDriving(pub f32);
 
-impl WrappedValue for ForceDriving {
-    fn get(&self) -> f32 {
-        self.0
-    }
-
-    fn set(&mut self, value: f32) {
-        self.0 = value;
-    }
-}
-
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Debug, WrappedValue)]
 // N
 pub struct ForceBraking(pub f32);
 
-impl WrappedValue for ForceBraking {
-    fn get(&self) -> f32 {
-        self.0
-    }
-
-    fn set(&mut self, value: f32) {
-        self.0 = value;
-    }
-}
-
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Debug, WrappedValue)]
 // N
 pub struct ForceFriction(pub f32);
 
-impl WrappedValue for ForceFriction {
-    fn get(&self) -> f32 {
-        self.0
-    }
-
-    fn set(&mut self, value: f32) {
-        self.0 = value;
-    }
-}
-
-#[derive(Component, Default, Debug)]
+#[derive(Component, Default, Debug, WrappedValue)]
 // N
 pub struct ForceAirResistance(pub f32);
-
-impl WrappedValue for ForceAirResistance {
-    fn get(&self) -> f32 {
-        self.0
-    }
-
-    fn set(&mut self, value: f32) {
-        self.0 = value;
-    }
-}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
 pub enum Direction {
@@ -183,19 +124,9 @@ pub struct BrakeLever {
 // kW
 pub struct MaxPower(pub f32);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, WrappedValue)]
 // kg
 pub struct Mass(pub f32);
-
-impl WrappedValue for Mass {
-    fn get(&self) -> f32 {
-        self.0
-    }
-
-    fn set(&mut self, value: f32) {
-        self.0 = value;
-    }
-}
 
 #[derive(Component, Default)]
 // m
