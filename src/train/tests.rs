@@ -13,14 +13,21 @@ fn direction_reverse() {
 fn bundle_initializer() {
     let mut app = App::default();
 
-    let bundle = EngineBundle::br_218("BR 218 001");
+    let bundles = vec![
+        EngineBundle::br_218("BR 218 001"),
+        EngineBundle::br_89("BR 89 001"),
+        EngineBundle::br_110("BR 110 001"),
+        EngineBundle::ice("ICE 1"),
+    ];
 
-    assert!(bundle.max_power.0 > 0.0);
-    assert!(bundle.max_speed.0 > 0.0);
-    assert!(bundle.mass.0 > 0.0);
-    assert_eq!(bundle.name.0, "BR 218 001");
+    for bundle in bundles {
+        assert!(bundle.max_power.0 > 0.0);
+        assert!(bundle.max_speed.0 > 0.0);
+        assert!(bundle.mass.0 > 0.0);
+        assert!(!bundle.name.0.is_empty());
 
-    app.world.spawn(bundle);
+        app.world.spawn(bundle);
+    }
 
     let bundle = EngineBundle::default();
 

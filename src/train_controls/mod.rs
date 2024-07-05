@@ -44,55 +44,67 @@ fn train_controls(
         if let Ok((entity, name, speed, mass, mut throttle_lever, mut brake_lever)) =
             trains.get_mut(entity)
         {
-            egui::TopBottomPanel::bottom("info").show(contexts.ctx_mut(), |ui| {
-                ui.horizontal(|ui| {
-                    if trains_count > 1 {
-                        egui::ComboBox::from_label("")
-                            .selected_text(&name.0)
-                            .show_ui(ui, |ui| {
-                                for (entity, name) in options.into_iter() {
-                                    ui.selectable_value(
-                                        &mut selected_engine as &mut Option<Entity>,
-                                        Some(entity),
-                                        name,
+            egui::TopBottomPanel::bottom("info").show(
+                contexts.ctx_mut(),
+                #[coverage(off)]
+                |ui| {
+                    ui.horizontal(
+                        #[coverage(off)]
+                        |ui| {
+                            if trains_count > 1 {
+                                egui::ComboBox::from_label("")
+                                    .selected_text(&name.0)
+                                    .show_ui(
+                                        ui,
+                                        #[coverage(off)]
+                                        |ui| {
+                                            for (entity, name) in options.into_iter() {
+                                                ui.selectable_value(
+                                                    &mut selected_engine as &mut Option<Entity>,
+                                                    Some(entity),
+                                                    name,
+                                                );
+                                            }
+                                        },
                                     );
-                                }
-                            });
-                    }
+                            }
 
-                    ui.label(format!("{:.2} km/h", speed.0 * 3.6));
-                    ui.separator();
-                    ui.label(format!(
-                        "Throttle: {:.0}%",
-                        throttle_lever.percentage * 100.0
-                    ));
-                    ui.add(
-                        egui::Slider::new(&mut throttle_lever.percentage, 0.0..=1.0)
-                            .show_value(false),
-                    );
-                    ui.separator();
-                    ui.label(format!("Brake: {:.0}%", brake_lever.percentage * 100.0));
-                    ui.add(
-                        egui::Slider::new(&mut brake_lever.percentage, 0.0..=1.0).show_value(false),
-                    );
-                    ui.separator();
-                    ui.label(format!("{:.2} t", mass.0 / 1000.0));
-                    ui.separator();
-                    let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
-                    if ui
-                        .small_button(format!("{:?}", throttle_lever.direction))
-                        .clicked()
-                        && can_change_direction
-                    {
-                        throttle_lever.direction = throttle_lever.direction.opposite();
-                    }
+                            ui.label(format!("{:.2} km/h", speed.0 * 3.6));
+                            ui.separator();
+                            ui.label(format!(
+                                "Throttle: {:.0}%",
+                                throttle_lever.percentage * 100.0
+                            ));
+                            ui.add(
+                                egui::Slider::new(&mut throttle_lever.percentage, 0.0..=1.0)
+                                    .show_value(false),
+                            );
+                            ui.separator();
+                            ui.label(format!("Brake: {:.0}%", brake_lever.percentage * 100.0));
+                            ui.add(
+                                egui::Slider::new(&mut brake_lever.percentage, 0.0..=1.0)
+                                    .show_value(false),
+                            );
+                            ui.separator();
+                            ui.label(format!("{:.2} t", mass.0 / 1000.0));
+                            ui.separator();
+                            let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
+                            if ui
+                                .small_button(format!("{:?}", throttle_lever.direction))
+                                .clicked()
+                                && can_change_direction
+                            {
+                                throttle_lever.direction = throttle_lever.direction.opposite();
+                            }
 
-                    if ui.small_button("Follow").clicked() {
-                        let mut camera = camera.single_mut();
-                        camera.follow = Some(entity);
-                    }
-                });
-            });
+                            if ui.small_button("Follow").clicked() {
+                                let mut camera = camera.single_mut();
+                                camera.follow = Some(entity);
+                            }
+                        },
+                    );
+                },
+            );
         } else {
             *selected_engine = None;
         }
