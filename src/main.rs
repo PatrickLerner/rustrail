@@ -3,8 +3,6 @@
 mod camera;
 mod landscape;
 mod train;
-mod train_controls;
-mod train_spawn;
 mod ui;
 
 use bevy::{
@@ -43,10 +41,8 @@ fn main() {
         })
         .add_plugins(EguiPlugin)
         .add_plugins(train::TrainPlugins)
-        .add_plugins(train_controls::TrainControlsPlugin)
-        .add_plugins(train_spawn::TrainSpawnPlugin)
         .add_plugins(camera::CameraPlugin)
-        .add_plugins(ui::UIPlugin)
+        .add_plugins(ui::UIPlugins)
         .add_plugins(landscape::LandscapePlugin)
         .run();
 }
