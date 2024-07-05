@@ -25,10 +25,7 @@ fn gen_train(app: &mut App, weight: f32, mode: GenTrainMode) -> Entity {
             } else {
                 0.0
             }),
-            Mass {
-                engine: weight,
-                wagons: 0.0,
-            },
+            Mass(weight),
         ))
         .id()
 }
@@ -56,10 +53,7 @@ fn positive_force_balance() {
             ForceFriction(10.0),
             ForceAirResistance(10.0),
             ForceBraking(0.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 
@@ -92,10 +86,7 @@ fn negative_force_balance() {
             ForceFriction(10.0),
             ForceAirResistance(10.0),
             ForceBraking(0.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 
@@ -119,10 +110,7 @@ fn clamp_to_speed_if_deceleration_is_more() {
             ForceFriction(10000.0),
             ForceAirResistance(10000.0),
             ForceBraking(20000.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 
@@ -142,10 +130,7 @@ fn clamp_to_speed_if_deceleration_is_more() {
             ForceFriction(10000.0),
             ForceAirResistance(10000.0),
             ForceBraking(20000.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 

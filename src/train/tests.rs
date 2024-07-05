@@ -10,39 +10,22 @@ fn direction_reverse() {
 }
 
 #[test]
-fn mass_sum() {
-    let mass = Mass {
-        engine: 1.0,
-        wagons: 2.0,
-    };
-    assert_eq!(mass.total(), 3.0);
-
-    let mass = Mass {
-        engine: -1.0,
-        wagons: 2.0,
-    };
-    assert_eq!(mass.total(), 1.0);
-}
-
-#[test]
 fn bundle_initializer() {
     let mut app = App::default();
 
-    let bundle = TrainBundle::br_218("BR 218 001", 123000.0);
+    let bundle = EngineBundle::br_218("BR 218 001");
 
     assert!(bundle.max_power.0 > 0.0);
     assert!(bundle.max_speed.0 > 0.0);
-    assert!(bundle.mass.engine > 0.0);
-    assert_eq!(bundle.mass.wagons, 123000.0);
+    assert!(bundle.mass.0 > 0.0);
     assert_eq!(bundle.name.0, "BR 218 001");
 
     app.world.spawn(bundle);
 
-    let bundle = TrainBundle::default();
+    let bundle = EngineBundle::default();
 
     assert_eq!(bundle.max_power.0, 0.0);
     assert_eq!(bundle.max_speed.0, 0.0);
-    assert_eq!(bundle.mass.total(), 0.0);
     assert_eq!(bundle.name.0, "");
 
     app.world.spawn(bundle);

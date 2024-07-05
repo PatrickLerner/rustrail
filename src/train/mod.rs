@@ -49,23 +49,23 @@ pub struct PaintScheme {
     pub color: PaintSchemeColor,
 }
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 // m/s^2
 pub struct Acceleration(pub f32);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 // m/s
 pub struct Speed(pub f32);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 // m/s
 pub struct MaxSpeed(pub f32);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 // N
 pub struct ForceDriving(pub f32);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 // N
 pub struct ForceBraking(pub f32);
 
@@ -107,59 +107,88 @@ pub struct BrakeLever {
 // kW
 pub struct MaxPower(pub f32);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 // N
 pub struct ForceFriction(pub f32);
 
-#[derive(Component, Default)]
+#[derive(Component, Default, Debug)]
 // N
 pub struct ForceAirResistance(pub f32);
 
 #[derive(Component, Default)]
 // kg
-pub struct Mass {
-    pub engine: f32,
-    pub wagons: f32,
-}
-
-impl Mass {
-    pub fn total(&self) -> f32 {
-        self.engine + self.wagons
-    }
-}
+pub struct Mass(pub f32);
 
 #[derive(Component, Default)]
 // m
 pub struct Distance(pub f32);
 
+#[derive(Component, Default, Clone)]
+pub struct Dimension {
+    // m
+    pub length: f32,
+}
+
+pub enum TrainComponent {
+    Engine(Entity),
+}
+
+#[derive(Component, Default)]
+pub struct TrainComposition {
+    pub components: Vec<TrainComponent>,
+}
+
+impl TrainComposition {
+    fn entities(&self) -> Vec<Entity> {
+        self.components
+            .iter()
+            .map(|component| match component {
+                TrainComponent::Engine(entity) => *entity,
+            })
+            .collect()
+    }
+}
+
 #[derive(Bundle, Default)]
 pub struct TrainBundle {
+    pub name: Name,
+    pub composition: TrainComposition,
+    pub speed: Speed,
+    pub max_speed: MaxSpeed,
+    pub mass: Mass,
+    pub acceleration: Acceleration,
+    pub distance: Distance,
+    pub force_driving: ForceDriving,
+    pub force_braking: ForceBraking,
+    pub force_friction: ForceFriction,
+    pub force_air_resistance: ForceAirResistance,
+}
+
+#[derive(Bundle, Default)]
+pub struct EngineBundle {
     name: Name,
-    speed: Speed,
-    acceleration: Acceleration,
     mass: Mass,
     max_power: MaxPower,
     max_speed: MaxSpeed,
+    speed: Speed,
+    dimension: Dimension,
     throttle_lever: ThrottleLever,
     brake_lever: BrakeLever,
     force_driving: ForceDriving,
     force_braking: ForceBraking,
     force_friction: ForceFriction,
     force_air_resistance: ForceAirResistance,
-    distance: Distance,
     paint_scheme: PaintScheme,
 }
 
-impl TrainBundle {
-    pub fn br_218(name: &str, wagon_mass: f32) -> Self {
+impl EngineBundle {
+    pub fn br_218(name: &str) -> Self {
         Self {
             name: Name(name.to_owned()),
-            mass: Mass {
-                engine: 78_000.0,
-                wagons: wagon_mass,
-            },
+            mass: Mass(78_000.0),
             max_power: MaxPower(1839.0),
             max_speed: MaxSpeed(140.0 / 3.6),
+            dimension: Dimension { length: 16.4 },
             ..Default::default()
         }
     }

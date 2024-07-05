@@ -9,7 +9,7 @@ pub fn system(mut entries: Query<(&mut ForceFriction, &Mass)>) {
     let g = 9.81;
 
     for (mut friction, mass) in entries.iter_mut() {
-        let n = mass.total() * g;
+        let n = mass.0 * g;
         friction.0 = my_rolling * n;
     }
 }

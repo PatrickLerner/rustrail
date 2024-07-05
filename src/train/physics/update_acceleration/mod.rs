@@ -41,7 +41,7 @@ pub fn system(
         };
 
         let force = (positive_force - negative_force) * direction;
-        acceleration.0 = force / mass.total();
+        acceleration.0 = force / mass.0;
 
         let sign = direction.signum();
         if sign * -acceleration.0 > sign * speed.0 {

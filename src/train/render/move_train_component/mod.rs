@@ -13,12 +13,12 @@ const SPEED: f32 = 3.0; // m/s
 
 pub fn system(
     data: Res<OSMData>,
-    mut trains: Query<(&TrainRailLocation, &mut Transform)>,
+    mut engines: Query<(&TrainRailLocation, &mut Transform)>,
     time: Res<Time>,
     height_map: Res<HeightMap>,
     origin_offset: Res<OriginOffset>,
 ) {
-    for (location, mut transform) in trains.iter_mut() {
+    for (location, mut transform) in engines.iter_mut() {
         let rail = data
             .rails
             .get(&location.id)
