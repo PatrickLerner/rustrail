@@ -35,7 +35,7 @@ fn setup(mut commands: Commands) {
         .id();
 
     let wagon_1 = commands
-        .spawn(train::EngineBundle::br_218("Wagon"))
+        .spawn(train::EngineBundle::br_218("Fake Wagon 1"))
         .insert(PaintScheme {
             color: PaintSchemeColor::Fernblau,
         })
@@ -63,7 +63,7 @@ fn setup(mut commands: Commands) {
         .id();
 
     let wagon_2 = commands
-        .spawn(train::EngineBundle::br_218("Wagon"))
+        .spawn(train::EngineBundle::br_218("Fake Wagon 2"))
         .insert(PaintScheme {
             color: PaintSchemeColor::Fernblau,
         })
