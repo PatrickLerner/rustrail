@@ -76,7 +76,7 @@ impl MeshBuilder {
                         y,
                         z: pos[1],
                     },
-                    normal: normal.clone(),
+                    normal,
                     uv: Vec2::new(0.0, 0.0),
                 });
             }

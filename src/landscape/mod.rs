@@ -7,6 +7,7 @@ mod height_map;
 mod init_height_map;
 mod load_asset_data;
 mod open_street_map;
+mod spawn_areas;
 mod spawn_buildings;
 mod spawn_landscape_mesh;
 mod spawn_landscapes;
@@ -43,6 +44,8 @@ pub struct AssetData {
     ballast_mesh: Handle<Mesh>,
     ballast_texture: Handle<StandardMaterial>,
     ground_texture: Handle<StandardMaterial>,
+    platform_material: Handle<StandardMaterial>,
+    building_material: Handle<StandardMaterial>,
 }
 
 #[derive(Component)]
@@ -83,6 +86,7 @@ impl Plugin for LandscapePlugin {
                 despawn_landscapes::system,
                 spawn_rails::system,
                 spawn_buildings::system,
+                spawn_areas::system,
             ),
         );
     }

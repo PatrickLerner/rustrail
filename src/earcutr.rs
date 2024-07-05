@@ -89,7 +89,7 @@ impl PolygonMeshBuilder {
             let next_earcutr_result = earcutr::earcut(&vertices, &interior_indices, 2).unwrap();
             earcutr_result.merge(EarcutrResult {
                 triangle_indices: next_earcutr_result,
-                vertices: vertices,
+                vertices,
             });
         }
 

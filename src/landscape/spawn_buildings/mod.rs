@@ -1,15 +1,8 @@
-use super::{HeightMap, Landscape, OSMData, OriginOffset};
+use super::{AssetData, HeightMap, Landscape, OSMData};
 use crate::{
-    earcutr::generate_mesh_earcutr,
-    landscape::{open_street_map::BuildingType, LANDSCAPE_SIZE},
-    HEIGHT_OFFSET,
+    earcutr::generate_mesh_earcutr, landscape::open_street_map::BuildingType, HEIGHT_OFFSET,
 };
-use bevy::{
-    prelude::*,
-    render::texture::{
-        ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor,
-    },
-};
+use bevy::prelude::*;
 
 const PLATFORM_HEIGHT: f32 = 0.55;
 const BUILDING_HEIGHT: f32 = 4.0;
@@ -27,12 +20,10 @@ pub struct SpawnedBuildings;
 pub fn system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
     landscapes: Query<(Entity, &Landscape), Without<SpawnedBuildings>>,
     height_map: Res<HeightMap>,
-    asset_server: Res<AssetServer>,
     data: Res<OSMData>,
-    origin_offset: Res<OriginOffset>,
+    assets: Res<AssetData>,
 ) {
     for (entity, landscape) in landscapes.iter() {
         let mut count = 0;
@@ -40,44 +31,22 @@ pub fn system(
         let sector = landscape.position.sector_coordinates();
         log::debug!("spawning buildings for tile {:?}", sector);
 
-        // let building_material = materials.add(Color::rgb(0.693, 0.740, 0.827));
-
-        let building = asset_server.load_with_settings(
-            "facade.png",
-            |s: &mut ImageLoaderSettings| match &mut s.sampler {
-                ImageSampler::Default => {
-                    s.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
-                        address_mode_u: ImageAddressMode::Repeat,
-                        address_mode_v: ImageAddressMode::Repeat,
-                        ..default()
-                    });
-                }
-                ImageSampler::Descriptor(sampler) => {
-                    sampler.address_mode_u = ImageAddressMode::Repeat;
-                    sampler.address_mode_v = ImageAddressMode::Repeat;
-                }
-            },
-        );
-        let building_material = materials.add(building);
-
-        let platform_material = materials.add(Color::rgb(0.847, 0.871, 0.914));
-
         if let Some(section_data) = data.sections.get(&sector) {
             for building in section_data.buildings.iter() {
+                // TODO: add more textures
                 let material = match building.building_type {
-                    BuildingType::Building => building_material.clone(),
-                    BuildingType::Industrial => building_material.clone(),
-                    BuildingType::Office => building_material.clone(),
-                    BuildingType::Commercial => building_material.clone(),
-                    BuildingType::Roof => building_material.clone(),
-                    BuildingType::Platform => platform_material.clone(),
+                    BuildingType::Building => assets.building_material.clone(),
+                    BuildingType::Industrial => assets.building_material.clone(),
+                    BuildingType::Office => assets.building_material.clone(),
+                    BuildingType::Commercial => assets.building_material.clone(),
+                    BuildingType::Roof => assets.building_material.clone(),
+                    BuildingType::Platform => assets.platform_material.clone(),
                 };
 
                 let coordinates: Vec<Vec2> = building
                     .coordinates
                     .iter()
                     .map(|coordinate| {
-                        // TODO: use coords
                         let coordinates: Vec2 = (*coordinate - landscape.position).into();
                         coordinates * Vec2::new(1.0, -1.0)
                     })
@@ -122,9 +91,7 @@ pub fn system(
                     0.0
                 };
 
-                let mesh = generate_mesh_earcutr(path_2d.clone(), extrude_amount);
-
-                let mesh = meshes.add(mesh);
+                let mesh = meshes.add(generate_mesh_earcutr(path_2d.clone(), extrude_amount));
 
                 let position_height = height_map.height_at_position(
                     center.x as f64 + landscape.position.0,

@@ -16,6 +16,7 @@ rand = "0.8.5"
 wrapped_value_derive_macro = { path = "lib/wrapped_value_derive_macro" }
 earcutr = "0.4"
 geo = "0.26"
+fast_poisson = "1.0.0"
 
 [dev-dependencies]
 coverage-helper = "0.2"

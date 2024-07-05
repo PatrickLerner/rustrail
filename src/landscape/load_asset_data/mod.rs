@@ -1,5 +1,10 @@
 use super::{BALLAST_HEIGHT, BALLAST_WIDTH, RAIL_HEIGHT, RAIL_WIDTH};
-use bevy::prelude::*;
+use bevy::{
+    prelude::*,
+    render::texture::{
+        ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor,
+    },
+};
 
 use super::AssetData;
 
@@ -16,5 +21,23 @@ pub fn system(
         ballast_mesh: meshes.add(Cuboid::new(1.0, BALLAST_HEIGHT, BALLAST_WIDTH)),
         ballast_texture: materials.add(asset_server.load("ballast.png")),
         ground_texture: materials.add(asset_server.load("soil.png")),
+        platform_material: materials.add(Color::rgb(0.847, 0.871, 0.914)),
+        building_material: materials.add(asset_server.load_with_settings(
+            "facade.png",
+            #[coverage(off)]
+            |s: &mut ImageLoaderSettings| match &mut s.sampler {
+                ImageSampler::Default => {
+                    s.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
+                        address_mode_u: ImageAddressMode::Repeat,
+                        address_mode_v: ImageAddressMode::Repeat,
+                        ..default()
+                    });
+                }
+                ImageSampler::Descriptor(sampler) => {
+                    sampler.address_mode_u = ImageAddressMode::Repeat;
+                    sampler.address_mode_v = ImageAddressMode::Repeat;
+                }
+            },
+        )),
     });
 }
