@@ -48,8 +48,7 @@ fn train_controls(
                             .text("BrakeLever"),
                     );
 
-                    // let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
-                    let can_change_direction = true;
+                    let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
                     if ui
                         .small_button(format!("{:?}", throttle_lever.direction))
                         .clicked()
