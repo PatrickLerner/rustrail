@@ -56,11 +56,13 @@ fn paint_scheme_color() {
         PaintSchemeColor::Verkehrsrot,
         PaintSchemeColor::Orientrot,
         PaintSchemeColor::Lichtgrau,
+        PaintSchemeColor::Achatgrau,
         PaintSchemeColor::Fernblau,
         PaintSchemeColor::Ozeanblau,
         PaintSchemeColor::Minttuerkis,
         PaintSchemeColor::Pasteltuerkis,
         PaintSchemeColor::Lachsorange,
+        PaintSchemeColor::Tiefschwarz,
     ];
 
     for paint_scheme in all {

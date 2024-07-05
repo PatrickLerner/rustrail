@@ -24,6 +24,7 @@ Requires a download of OpenStreetMap Data (e.g. [geofabrik][]) that must be plac
 ## Research / Sources
 
 - [Fahrdynamik des Schienenverkehrs, Dietrich Wende](https://link.springer.com/book/10.1007/978-3-322-82961-0)
+- [Das System Bahn: Der ICE](https://www.db-systemtechnik.de/resource/blob/1665152/b1e975afc4621103696b63e8247d37ce/Aktuell_D_Schulbroschuere-Regensburg_Das-System-Bahn-der-ICE-data.pdf)
 
 ## Developer notes
 
