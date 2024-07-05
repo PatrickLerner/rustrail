@@ -13,73 +13,107 @@ mod update_train_location;
 use super::*;
 use bevy::prelude::*;
 
-fn sum_component_force_to_train(
+fn apply_min_component_value_to_train<T: WrappedValue + Component>(
     trains: Query<(Entity, &TrainComposition)>,
-    mut forces: Query<(
-        &mut ForceDriving,
-        &mut ForceBraking,
-        &mut ForceFriction,
-        &mut ForceAirResistance,
-    )>,
-    mut speeds: Query<&mut Speed>,
-    mut masses: Query<&mut Mass>,
-    mut max_speeds: Query<&mut MaxSpeed>,
+    mut values: Query<&mut T>,
 ) {
     for (train_entity, composition) in trains.iter() {
+        let mut min_value = f32::MAX;
+
+        for component_entity in composition.entities() {
+            let value = values
+                .get(component_entity)
+                .expect("component of train to experience force");
+            min_value = f32::min(min_value, value.get());
+        }
+
+        let mut train_value = values
+            .get_mut(train_entity)
+            .expect("train to experience all forces");
+
+        train_value.set(min_value);
+    }
+}
+
+fn apply_first_component_value_to_train<T: WrappedValue + Component>(
+    trains: Query<(Entity, &TrainComposition)>,
+    mut values: Query<&mut T>,
+) {
+    for (train_entity, composition) in trains.iter() {
+        let value = {
+            let components = composition.entities();
+
+            let component_entity = components.first().expect("train to have a component");
+
+            let value = values
+                .get(*component_entity)
+                .expect("component of train to experience force");
+
+            value.get()
+        };
+
+        let mut train_value = values
+            .get_mut(train_entity)
+            .expect("train to experience all forces");
+
+        train_value.set(value);
+    }
+}
+
+fn apply_sum_component_values_to_train<T: WrappedValue + Component>(
+    trains: Query<(Entity, &TrainComposition)>,
+    mut values: Query<&mut T>,
+) {
+    for (train_entity, composition) in trains.iter() {
+        let mut sum = 0.0;
+
+        for component_entity in composition.entities() {
+            let value = values
+                .get(component_entity)
+                .expect("component of train to experience force");
+            sum += value.get();
+        }
+
+        let mut train_value = values
+            .get_mut(train_entity)
+            .expect("train to experience all forces");
+
+        train_value.set(sum);
+    }
+}
+
+fn apply_train_value_to_components<T: WrappedValue + Component>(
+    trains: Query<(Entity, &TrainComposition)>,
+    mut values: Query<&mut T>,
+) {
+    for (train_entity, composition) in trains.iter() {
+        let train_value = {
+            let train_value = values
+                .get(train_entity)
+                .expect("train to experience all forces");
+            train_value.get()
+        };
+
+        for component_entity in composition.entities() {
+            let mut value = values
+                .get_mut(component_entity)
+                .expect("component of train to experience force");
+
+            value.set(train_value);
+        }
+    }
+}
+
+fn train_component_sync(trains: Query<(Entity, &TrainComposition)>, mut speeds: Query<&mut Speed>) {
+    for (train_entity, composition) in trains.iter() {
         let speed = speeds.get(train_entity).expect("train to have speed").0;
-        let mut max_speed = f32::MAX;
 
-        let mut mass = 0.0;
-        let mut f_dr = 0.0;
-        let mut f_br = 0.0;
-        let mut f_fr = 0.0;
-        let mut f_ar = 0.0;
-
-        for (index, component_entity) in composition.entities().into_iter().enumerate() {
-            let (cf_dr, cf_br, cf_fr, cf_ar) = forces
-                .get(component_entity)
-                .expect("component of train to experience all forces");
-            f_dr += cf_dr.0;
-            f_br += cf_br.0;
-            f_fr += cf_fr.0;
-            // TODO: direction
-            if index == 0 {
-                f_ar = cf_ar.0;
-            }
-
-            mass += masses
-                .get(component_entity)
-                .expect("component to have mass")
-                .0;
-
+        for component_entity in composition.entities() {
             speeds
                 .get_mut(component_entity)
                 .expect("component to have speed")
                 .0 = speed;
-
-            max_speed = f32::min(
-                max_speed,
-                max_speeds
-                    .get_mut(component_entity)
-                    .expect("component to have max speed")
-                    .0,
-            );
         }
-
-        let (mut tf_dr, mut tf_br, mut tf_fr, mut tf_ar) = forces
-            .get_mut(train_entity)
-            .expect("train to experience all forces");
-
-        tf_dr.0 = f_dr;
-        tf_br.0 = f_br;
-        tf_fr.0 = f_fr;
-        tf_ar.0 = f_ar;
-
-        masses.get_mut(train_entity).expect("train to have mass").0 = mass;
-        max_speeds
-            .get_mut(train_entity)
-            .expect("train to have max speed")
-            .0 = max_speed;
     }
 }
 
@@ -90,7 +124,15 @@ impl Plugin for TrainPhysicsPlugin {
         app.add_systems(
             Update,
             (
-                sum_component_force_to_train,
+                apply_train_value_to_components::<Speed>,
+                apply_min_component_value_to_train::<MaxSpeed>,
+                apply_sum_component_values_to_train::<Mass>,
+                apply_sum_component_values_to_train::<ForceDriving>,
+                apply_sum_component_values_to_train::<ForceBraking>,
+                apply_sum_component_values_to_train::<ForceFriction>,
+                // TODO: should not be first in list if driving backwards should be last
+                apply_first_component_value_to_train::<ForceAirResistance>,
+                train_component_sync,
                 update_drive_force::system,
                 update_braking_force::system,
                 update_friction::system,

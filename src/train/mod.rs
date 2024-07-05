@@ -52,6 +52,11 @@ pub struct PaintScheme {
     pub color: PaintSchemeColor,
 }
 
+trait WrappedValue {
+    fn get(&self) -> f32;
+    fn set(&mut self, value: f32);
+}
+
 #[derive(Component, Default, Debug)]
 // m/s^2
 pub struct Acceleration(pub f32);
@@ -60,17 +65,85 @@ pub struct Acceleration(pub f32);
 // m/s
 pub struct Speed(pub f32);
 
+impl WrappedValue for Speed {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value;
+    }
+}
+
 #[derive(Component, Default, Debug)]
 // m/s
 pub struct MaxSpeed(pub f32);
+
+impl WrappedValue for MaxSpeed {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value;
+    }
+}
 
 #[derive(Component, Default, Debug)]
 // N
 pub struct ForceDriving(pub f32);
 
+impl WrappedValue for ForceDriving {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value;
+    }
+}
+
 #[derive(Component, Default, Debug)]
 // N
 pub struct ForceBraking(pub f32);
+
+impl WrappedValue for ForceBraking {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value;
+    }
+}
+
+#[derive(Component, Default, Debug)]
+// N
+pub struct ForceFriction(pub f32);
+
+impl WrappedValue for ForceFriction {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value;
+    }
+}
+
+#[derive(Component, Default, Debug)]
+// N
+pub struct ForceAirResistance(pub f32);
+
+impl WrappedValue for ForceAirResistance {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value;
+    }
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
 pub enum Direction {
@@ -110,17 +183,19 @@ pub struct BrakeLever {
 // kW
 pub struct MaxPower(pub f32);
 
-#[derive(Component, Default, Debug)]
-// N
-pub struct ForceFriction(pub f32);
-
-#[derive(Component, Default, Debug)]
-// N
-pub struct ForceAirResistance(pub f32);
-
 #[derive(Component, Default)]
 // kg
 pub struct Mass(pub f32);
+
+impl WrappedValue for Mass {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value;
+    }
+}
 
 #[derive(Component, Default)]
 // m
