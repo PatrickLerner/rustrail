@@ -8,24 +8,12 @@ fn higher_mass_higher_friction() {
 
     let light_train = app
         .world
-        .spawn((
-            ForceFriction::default(),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
-        ))
+        .spawn((ForceFriction::default(), Mass(7000.0)))
         .id();
 
     let heavy_train = app
         .world
-        .spawn((
-            ForceFriction::default(),
-            Mass {
-                engine: 70000.0,
-                wagons: 0.0,
-            },
-        ))
+        .spawn((ForceFriction::default(), Mass(70000.0)))
         .id();
 
     app.update();

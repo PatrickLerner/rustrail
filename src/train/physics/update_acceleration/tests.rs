@@ -25,10 +25,7 @@ fn gen_train(app: &mut App, weight: f32, mode: GenTrainMode) -> Entity {
             } else {
                 0.0
             }),
-            Mass {
-                engine: weight,
-                wagons: 0.0,
-            },
+            Mass(weight),
         ))
         .id()
 }
@@ -56,10 +53,7 @@ fn positive_force_balance() {
             ForceFriction(10.0),
             ForceAirResistance(10.0),
             ForceBraking(0.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 
@@ -92,10 +86,7 @@ fn negative_force_balance() {
             ForceFriction(10.0),
             ForceAirResistance(10.0),
             ForceBraking(0.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 
@@ -119,10 +110,7 @@ fn clamp_to_speed_if_deceleration_is_more() {
             ForceFriction(10000.0),
             ForceAirResistance(10000.0),
             ForceBraking(20000.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 
@@ -142,10 +130,7 @@ fn clamp_to_speed_if_deceleration_is_more() {
             ForceFriction(10000.0),
             ForceAirResistance(10000.0),
             ForceBraking(20000.0),
-            Mass {
-                engine: 7000.0,
-                wagons: 0.0,
-            },
+            Mass(7000.0),
         ))
         .id();
 
@@ -189,4 +174,17 @@ fn heavier_things_decelerate_less() {
         app.world.get::<Acceleration>(high_weight).unwrap().0
             > app.world.get::<Acceleration>(low_weight).unwrap().0
     );
+}
+
+#[test]
+fn no_mass() {
+    let mut app = App::new();
+    app.add_systems(Update, system);
+
+    let train_id = gen_train(&mut app, 0.0, GenTrainMode::Driving);
+
+    app.update();
+
+    assert!(app.world.get::<Acceleration>(train_id).is_some());
+    assert_eq!(app.world.get::<Acceleration>(train_id).unwrap().0, 0.0);
 }

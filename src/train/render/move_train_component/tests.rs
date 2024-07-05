@@ -32,7 +32,7 @@ fn apply_transform_forwards() {
     app.insert_resource(OriginOffset(CoordinatePoint(0.0, 0.0)));
     app.insert_resource(gen_data());
 
-    let location = TrainRailLocation {
+    let location = TrackLocation {
         id: (0, 1),
         travel_direction: Direction::Forward,
         distance: 0.0,
@@ -59,7 +59,7 @@ fn apply_transform_forwards() {
         assert_eq!(transform.translation.y, HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET);
     }
 
-    let location = TrainRailLocation {
+    let location = TrackLocation {
         id: (0, 1),
         travel_direction: Direction::Forward,
         distance: 141.42135624,
@@ -111,7 +111,7 @@ fn apply_transform_backwards() {
     app.insert_resource(OriginOffset(CoordinatePoint(0.0, 0.0)));
     app.insert_resource(gen_data());
 
-    let location = TrainRailLocation {
+    let location = TrackLocation {
         id: (0, 1),
         travel_direction: Direction::Backward,
         distance: 0.0,
@@ -138,7 +138,7 @@ fn apply_transform_backwards() {
         assert_eq!(transform.translation.y, HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET);
     }
 
-    let location = TrainRailLocation {
+    let location = TrackLocation {
         id: (0, 1),
         travel_direction: Direction::Backward,
         distance: 141.42135624,

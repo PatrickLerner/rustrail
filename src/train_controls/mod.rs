@@ -6,15 +6,13 @@ use bevy_egui::{egui, EguiContexts};
 
 use crate::{
     camera,
-    train::{Acceleration, BrakeLever, Distance, Mass, Name, Speed, ThrottleLever},
+    train::{BrakeLever, Mass, Name, Speed, ThrottleLever},
 };
 
-type TrainControlQuery<'a> = (
+type EngineControlQuery<'a> = (
     Entity,
     &'a Name,
     &'a Speed,
-    &'a Acceleration,
-    &'a Distance,
     &'a Mass,
     &'a mut ThrottleLever,
     &'a mut BrakeLever,
@@ -23,21 +21,12 @@ type TrainControlQuery<'a> = (
 
 #[coverage(off)]
 fn train_controls(
-    mut entries: Query<TrainControlQuery>,
+    mut engines: Query<EngineControlQuery>,
     mut contexts: EguiContexts,
     mut camera: Query<&mut camera::GameCameraState>,
 ) {
-    for (
-        entity,
-        name,
-        speed,
-        acceleration,
-        distance,
-        mass,
-        mut throttle_lever,
-        mut brake_lever,
-        transform,
-    ) in entries.iter_mut()
+    for (entity, name, speed, mass, mut throttle_lever, mut brake_lever, transform) in
+        engines.iter_mut()
     {
         egui::Window::new(format!("Train: {}", name.0))
             .id(egui::Id::new(entity))
@@ -46,9 +35,7 @@ fn train_controls(
                 #[coverage(off)]
                 |ui| {
                     ui.label(format!("speed {:.1} km/h", speed.0 * 3.6,));
-                    ui.label(format!("acceleration {:.3} m/s^2", acceleration.0));
-                    ui.label(format!("distance {:.0} m", distance.0));
-                    ui.label(format!("mass {:.0} t", mass.total() / 1000.0));
+                    ui.label(format!("mass {:.0} t", mass.0 / 1000.0));
                     ui.label(format!("pos {:?}", transform.translation));
 
                     ui.add(

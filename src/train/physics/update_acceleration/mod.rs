@@ -4,7 +4,7 @@ mod tests;
 use crate::train::{
     Acceleration, ForceAirResistance, ForceBraking, ForceDriving, ForceFriction, Mass, Speed,
 };
-use bevy::prelude::*;
+use bevy::{prelude::*, utils::petgraph::matrix_graph::Zero};
 
 pub fn system(
     mut entries: Query<(
@@ -27,6 +27,11 @@ pub fn system(
         mass,
     ) in entries.iter_mut()
     {
+        if mass.0.is_zero() {
+            acceleration.0 = 0.0;
+            return;
+        }
+
         let negative_force = force_friction.0 + force_air_resistance.0 + force_braking.0;
         let positive_force = force_driving.0.abs();
 
@@ -41,7 +46,7 @@ pub fn system(
         };
 
         let force = (positive_force - negative_force) * direction;
-        acceleration.0 = force / mass.total();
+        acceleration.0 = force / mass.0;
 
         let sign = direction.signum();
         if sign * -acceleration.0 > sign * speed.0 {

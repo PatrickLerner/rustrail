@@ -13,6 +13,7 @@ osmpbfreader = "0.16"
 bincode = "1.3"
 serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
+wrapped_value_derive_macro = { path = "lib/wrapped_value_derive_macro" }
 
 [dev-dependencies]
 coverage-helper = "0.2"

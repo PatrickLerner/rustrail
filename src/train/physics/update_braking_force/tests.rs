@@ -4,14 +4,7 @@ use coverage_helper::test;
 #[coverage(off)]
 fn spawn_train(app: &mut App, brake: BrakeLever, mass: f32) -> Entity {
     app.world
-        .spawn((
-            ForceBraking::default(),
-            Mass {
-                engine: mass,
-                wagons: 0.0,
-            },
-            brake,
-        ))
+        .spawn((ForceBraking::default(), Mass(mass), brake))
         .id()
 }
 
