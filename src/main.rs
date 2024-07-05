@@ -16,7 +16,7 @@ use bevy::{
     },
 };
 use bevy_egui::EguiPlugin;
-use train::{Mass, Name, PaintScheme, PaintSchemeColor, TrainComponent, TrainComposition};
+use train::{Name, PaintScheme, PaintSchemeColor, TrainComponent, TrainComposition};
 
 #[coverage(off)]
 fn setup(mut commands: Commands) {
@@ -43,8 +43,6 @@ fn setup(mut commands: Commands) {
 
     commands.spawn(train::TrainBundle {
         name: Name("RB 61".to_string()),
-        // TODO: speed poison
-        mass: Mass(1.0),
         composition: TrainComposition {
             components: vec![
                 TrainComponent::Engine(engine_1),
@@ -71,8 +69,6 @@ fn setup(mut commands: Commands) {
 
     commands.spawn(train::TrainBundle {
         name: Name("RE 61".to_string()),
-        // TODO: speed poison
-        mass: Mass(1.0),
         composition: TrainComposition {
             components: vec![
                 TrainComponent::Engine(engine_3),

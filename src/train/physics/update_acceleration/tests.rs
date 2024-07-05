@@ -175,3 +175,16 @@ fn heavier_things_decelerate_less() {
             > app.world.get::<Acceleration>(low_weight).unwrap().0
     );
 }
+
+#[test]
+fn no_mass() {
+    let mut app = App::new();
+    app.add_systems(Update, system);
+
+    let train_id = gen_train(&mut app, 0.0, GenTrainMode::Driving);
+
+    app.update();
+
+    assert!(app.world.get::<Acceleration>(train_id).is_some());
+    assert_eq!(app.world.get::<Acceleration>(train_id).unwrap().0, 0.0);
+}
