@@ -15,10 +15,9 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
         #[coverage(off)]
         |ui| {
             if ui.small_button("BR 218 (single engine)").clicked() {
-                let mut components = vec![];
-                components.push(TrainComponent::Engine(
+                let components = vec![TrainComponent::Engine(
                     commands.spawn(EngineBundle::br_218("BR 218 001")).id(),
-                ));
+                )];
 
                 commands.spawn(TrainBundle {
                     name: Name("RB 61".to_string()),
@@ -28,10 +27,9 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
             }
 
             if ui.small_button("BR 218 (with wagons)").clicked() {
-                let mut components = vec![];
-                components.push(TrainComponent::Engine(
+                let mut components = vec![TrainComponent::Engine(
                     commands.spawn(EngineBundle::br_218("BR 218 001")).id(),
-                ));
+                )];
 
                 for _ in 0..25 {
                     components.push(TrainComponent::Wagon(
@@ -82,10 +80,9 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
             }
 
             if ui.small_button("ICE 1").clicked() {
-                let mut components = vec![];
-                components.push(TrainComponent::Engine(
+                let mut components = vec![TrainComponent::Engine(
                     commands.spawn(EngineBundle::ice("ICE 1 (Front)")).id(),
-                ));
+                )];
 
                 for _ in 0..25 {
                     components.push(TrainComponent::Wagon(
