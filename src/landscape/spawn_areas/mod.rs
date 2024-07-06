@@ -74,12 +74,19 @@ pub fn system(
                             TREE_DENSITY * 2.0,
                         );
 
-                        let mut count = 0;
+                        let mut points: Vec<(f64, f64)> =
+                            points.iter().map(|point| (point[0], point[1])).collect();
 
-                        for [x, y] in points.iter() {
+                        if points.is_empty() {
+                            // if nothing is spawned, we spawn at least a single lone tree in the
+                            // center
+                            points.push((0.0, 0.0));
+                        }
+
+                        log::debug!("{} trees spawned", points.len());
+
+                        for (x, y) in points {
                             if polygon.contains(&point!(x: x as f32, y: y as f32)) {
-                                count += 1;
-
                                 let position_height = height_map.height_at_position(
                                     center.x as f64 + landscape.position.0,
                                     -center.y as f64 + landscape.position.1,
@@ -123,9 +130,6 @@ pub fn system(
                                 });
                             }
                         }
-
-                        // TODO: sometiems spawns 0
-                        log::debug!("{} trees spawned", count);
                     }
                     AreaType::Water => {
                         let extrude_amount = 0.1;
