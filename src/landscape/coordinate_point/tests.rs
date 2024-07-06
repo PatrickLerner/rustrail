@@ -60,3 +60,25 @@ fn sector_coordinates() {
     assert_eq!(b.sector_coordinates(), (0, 0));
     assert_eq!(c.sector_coordinates(), (-1, 0));
 }
+
+#[test]
+fn coordinate_view() {
+    let coordinates = Coordinates(vec![
+        CoordinatePoint(0.0, 0.0),
+        CoordinatePoint(-10.0, 100.0),
+        CoordinatePoint(100.0, 100.0),
+    ]);
+
+    let view = coordinates.view_for_landscape_position(&CoordinatePoint(10.0, 10.0));
+
+    assert_eq!(view.list.len(), 3);
+    assert_eq!(view.list[0], Vec2::new(-45.0, 50.0));
+
+    // NOTE: the view also negates all y values
+    assert_eq!(view.min_x, -20.0);
+    assert_eq!(view.max_x, 90.0);
+    assert_eq!(view.min_y, -90.0);
+    assert_eq!(view.max_y, 10.0);
+
+    assert_eq!(view.center, Vec2::new(35.0, -40.0));
+}
