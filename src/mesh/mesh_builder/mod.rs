@@ -1,3 +1,7 @@
+#[cfg(test)]
+mod tests;
+
+use super::earcutr::{EarcutrInput, PolygonMeshBuilder};
 use bevy::{
     prelude::*,
     render::{
@@ -8,7 +12,11 @@ use bevy::{
 };
 use geo::{CoordsIter, LineString, Polygon};
 
-use super::earcutr::{EarcutrInput, PolygonMeshBuilder};
+pub struct Vertex {
+    pub pos: Vec3,
+    pub normal: Vec3,
+    pub uv: Vec2,
+}
 
 pub struct MeshBuilder {
     vertices: Vec<Vertex>,
@@ -123,12 +131,6 @@ impl MeshBuilder {
 
         mesh
     }
-}
-
-pub struct Vertex {
-    pub pos: Vec3,
-    pub normal: Vec3,
-    pub uv: Vec2,
 }
 
 // Copied from rgis/geo-bevy
