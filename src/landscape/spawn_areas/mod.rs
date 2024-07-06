@@ -77,8 +77,8 @@ pub fn system(
                         for (x, y) in points {
                             if polygon.contains(&point!(x: x as f32, y: y as f32)) {
                                 let position_height = height_map.height_at_position(
-                                    coordinates.center.x as f64 + landscape.position.0,
-                                    -coordinates.center.y as f64 + landscape.position.1,
+                                    coordinates.center.x as f64 + x + landscape.position.0,
+                                    -coordinates.center.y as f64 - y + landscape.position.1,
                                 ) + HEIGHT_OFFSET;
 
                                 let transform = Transform::from_xyz(
