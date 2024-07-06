@@ -66,7 +66,9 @@ impl MeshBuilder {
         self.add_triangle(c3, c4, c1);
     }
 
-    // Adds a polygon in the XZ plane
+    /// Adds a polygon in the XZ plane
+    // turn off coverage here because we cannot cover the panic cases :(
+    #[coverage(off)]
     pub fn triangulate_polygon(&mut self, polygon: &Polygon, y: f32, normal: Vec3) {
         let mesh = generate_2d_mesh(polygon_to_earcutr_input(polygon));
 
