@@ -17,6 +17,7 @@ const LEVEL_HEIGHT: f32 = 5.0;
 #[derive(Component)]
 pub struct SpawnedBuildings;
 
+#[coverage(off)]
 pub fn system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -90,14 +91,17 @@ pub fn system(
                     coordinates.center.y,
                 );
 
-                commands.entity(entity).with_children(|parent| {
-                    parent.spawn(PbrBundle {
-                        mesh,
-                        material: material.clone(),
-                        transform,
-                        ..default()
-                    });
-                });
+                commands.entity(entity).with_children(
+                    #[coverage(off)]
+                    |parent| {
+                        parent.spawn(PbrBundle {
+                            mesh,
+                            material: material.clone(),
+                            transform,
+                            ..default()
+                        });
+                    },
+                );
 
                 count += 1;
             }

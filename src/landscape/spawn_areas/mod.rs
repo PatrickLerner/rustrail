@@ -13,6 +13,7 @@ const TREE_TRUNK_WIDTH: f32 = 1.5;
 #[derive(Component)]
 pub struct SpawnedAreas;
 
+#[coverage(off)]
 pub fn system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -51,7 +52,10 @@ pub fn system(
                         let path_2d: Vec<(f32, f32)> = coordinates
                             .list
                             .iter()
-                            .map(|item| (item.x, item.y))
+                            .map(
+                                #[coverage(off)]
+                                |item| (item.x, item.y),
+                            )
                             .collect();
                         let polygon = Polygon::new(LineString::from(path_2d), vec![]);
 
@@ -63,8 +67,13 @@ pub fn system(
                             TREE_DENSITY * 2.0,
                         );
 
-                        let mut points: Vec<(f64, f64)> =
-                            points.iter().map(|point| (point[0], point[1])).collect();
+                        let mut points: Vec<(f64, f64)> = points
+                            .iter()
+                            .map(
+                                #[coverage(off)]
+                                |point| (point[0], point[1]),
+                            )
+                            .collect();
 
                         if points.is_empty() {
                             // if nothing is spawned, we spawn at least a single lone tree in the
@@ -87,36 +96,42 @@ pub fn system(
                                     coordinates.center.y + y as f32,
                                 );
 
-                                commands.entity(entity).with_children(|parent| {
-                                    parent
-                                        .spawn(PbrBundle {
-                                            transform,
-                                            ..default()
-                                        })
-                                        .with_children(|tree| {
-                                            tree.spawn(PbrBundle {
-                                                mesh: trunk_mesh.clone(),
-                                                material: trunk_material.clone(),
-                                                transform: Transform::from_xyz(
-                                                    0.0,
-                                                    (TREE_HEIGHT - TREE_CROWN_HEIGHT) / 2.0,
-                                                    0.0,
-                                                ),
+                                commands.entity(entity).with_children(
+                                    #[coverage(off)]
+                                    |parent| {
+                                        parent
+                                            .spawn(PbrBundle {
+                                                transform,
                                                 ..default()
-                                            });
+                                            })
+                                            .with_children(
+                                                #[coverage(off)]
+                                                |tree| {
+                                                    tree.spawn(PbrBundle {
+                                                        mesh: trunk_mesh.clone(),
+                                                        material: trunk_material.clone(),
+                                                        transform: Transform::from_xyz(
+                                                            0.0,
+                                                            (TREE_HEIGHT - TREE_CROWN_HEIGHT) / 2.0,
+                                                            0.0,
+                                                        ),
+                                                        ..default()
+                                                    });
 
-                                            tree.spawn(PbrBundle {
-                                                mesh: crown_mesh.clone(),
-                                                material: crown_material.clone(),
-                                                transform: Transform::from_xyz(
-                                                    0.0,
-                                                    TREE_HEIGHT - 0.5 * TREE_CROWN_HEIGHT,
-                                                    0.0,
-                                                ),
-                                                ..default()
-                                            });
-                                        });
-                                });
+                                                    tree.spawn(PbrBundle {
+                                                        mesh: crown_mesh.clone(),
+                                                        material: crown_material.clone(),
+                                                        transform: Transform::from_xyz(
+                                                            0.0,
+                                                            TREE_HEIGHT - 0.5 * TREE_CROWN_HEIGHT,
+                                                            0.0,
+                                                        ),
+                                                        ..default()
+                                                    });
+                                                },
+                                            );
+                                    },
+                                );
                             }
                         }
                     }
@@ -139,14 +154,17 @@ pub fn system(
 
                         let material = materials.add(Color::rgb(0.369, 0.506, 0.675));
 
-                        commands.entity(entity).with_children(|parent| {
-                            parent.spawn(PbrBundle {
-                                mesh,
-                                material: material.clone(),
-                                transform,
-                                ..default()
-                            });
-                        });
+                        commands.entity(entity).with_children(
+                            #[coverage(off)]
+                            |parent| {
+                                parent.spawn(PbrBundle {
+                                    mesh,
+                                    material: material.clone(),
+                                    transform,
+                                    ..default()
+                                });
+                            },
+                        );
                     }
                 }
 
