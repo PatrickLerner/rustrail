@@ -1,5 +1,5 @@
 use super::{HeightMap, Landscape, OSMData};
-use crate::{earcutr::generate_mesh_earcutr, landscape::open_street_map::AreaType, HEIGHT_OFFSET};
+use crate::{landscape::open_street_map::AreaType, mesh::generate_mesh, HEIGHT_OFFSET};
 use bevy::prelude::*;
 use fast_poisson::Poisson2D;
 use geo::{point, Contains, LineString, Polygon};
@@ -54,9 +54,10 @@ pub fn system(
                             .iter()
                             .map(
                                 #[coverage(off)]
-                                |item| (item.x, item.y),
+                                |item| (item.0 as f32, item.1 as f32),
                             )
                             .collect();
+
                         let polygon = Polygon::new(LineString::from(path_2d), vec![]);
 
                         let points = Poisson2D::new().with_dimensions(
@@ -86,14 +87,14 @@ pub fn system(
                         for (x, y) in points {
                             if polygon.contains(&point!(x: x as f32, y: y as f32)) {
                                 let position_height = height_map.height_at_position(
-                                    coordinates.center.x as f64 + x + landscape.position.0,
-                                    -coordinates.center.y as f64 - y + landscape.position.1,
+                                    coordinates.center.0 + x + landscape.position.0,
+                                    -coordinates.center.1 - y + landscape.position.1,
                                 ) + HEIGHT_OFFSET;
 
                                 let transform = Transform::from_xyz(
-                                    coordinates.center.x + x as f32,
+                                    (coordinates.center.0 + x) as f32,
                                     position_height,
-                                    coordinates.center.y + y as f32,
+                                    (coordinates.center.1 + y) as f32,
                                 );
 
                                 commands.entity(entity).with_children(
@@ -137,19 +138,17 @@ pub fn system(
                     }
                     AreaType::Water => {
                         let extrude_amount = 0.1;
-                        let mesh = generate_mesh_earcutr(coordinates.list.clone(), extrude_amount);
-
-                        let mesh = meshes.add(mesh);
+                        let mesh = meshes.add(generate_mesh(coordinates.list, extrude_amount));
 
                         let position_height = height_map.height_at_position(
-                            coordinates.center.x as f64 + landscape.position.0,
-                            -coordinates.center.y as f64 + landscape.position.1,
+                            coordinates.center.0 + landscape.position.0,
+                            -coordinates.center.1 + landscape.position.1,
                         ) + HEIGHT_OFFSET;
 
                         let transform = Transform::from_xyz(
-                            coordinates.center.x,
+                            coordinates.center.0 as f32,
                             position_height,
-                            coordinates.center.y,
+                            coordinates.center.1 as f32,
                         );
 
                         let material = materials.add(Color::rgb(0.369, 0.506, 0.675));

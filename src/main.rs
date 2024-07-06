@@ -1,7 +1,6 @@
 #![feature(coverage_attribute)]
 
 mod camera;
-mod earcutr;
 mod landscape;
 mod mesh;
 mod train;

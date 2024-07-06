@@ -88,7 +88,7 @@ impl MeshBuilder {
                 self.indices.push(offset + idx);
             }
             // Somehow reversing the indices seems to fix the culling issues.
-            // TODO figure out why. Most likely a winding order related.
+            // Most likely a winding order related.
             self.indices.reverse();
         } else {
             unreachable!()

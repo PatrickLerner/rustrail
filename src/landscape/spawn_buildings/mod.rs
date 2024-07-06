@@ -1,7 +1,5 @@
 use super::{AssetData, HeightMap, Landscape, OSMData};
-use crate::{
-    earcutr::generate_mesh_earcutr, landscape::open_street_map::BuildingType, HEIGHT_OFFSET,
-};
+use crate::{landscape::open_street_map::BuildingType, mesh::generate_mesh, HEIGHT_OFFSET};
 use bevy::prelude::*;
 
 const PLATFORM_HEIGHT: f32 = 0.55;
@@ -75,20 +73,17 @@ pub fn system(
                     0.0
                 };
 
-                let mesh = meshes.add(generate_mesh_earcutr(
-                    coordinates.list.clone(),
-                    extrude_amount,
-                ));
+                let mesh = meshes.add(generate_mesh(coordinates.list, extrude_amount));
 
                 let position_height = height_map.height_at_position(
-                    coordinates.center.x as f64 + landscape.position.0,
-                    -coordinates.center.y as f64 + landscape.position.1,
+                    coordinates.center.0 as f64 + landscape.position.0,
+                    -coordinates.center.1 as f64 + landscape.position.1,
                 ) + HEIGHT_OFFSET;
 
                 let transform = Transform::from_xyz(
-                    coordinates.center.x,
+                    coordinates.center.0 as f32,
                     offset + position_height,
-                    coordinates.center.y,
+                    coordinates.center.1 as f32,
                 );
 
                 commands.entity(entity).with_children(

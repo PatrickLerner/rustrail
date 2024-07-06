@@ -1,7 +1,8 @@
 //! This code in file is mostly borrowed from [bevy-earcutr](https://github.com/frewsxcv/bevy-earcutr)
 //! With minor adjustments to make it work for our implementation.
 
-use crate::mesh::MeshBuilder;
+use super::mesh_builder::MeshBuilder;
+use crate::landscape::CoordinatePoint;
 use bevy::{
     prelude::*,
     render::{mesh::Indices, render_asset::RenderAssetUsages, render_resource::PrimitiveTopology},
@@ -49,13 +50,6 @@ impl PolygonMeshBuilder {
             z_index: 0.,
         }
     }
-
-    /*
-    pub fn with_z_index(mut self, z_index: f32) -> Self {
-        self.z_index = z_index;
-        self
-    }
-    */
 
     /// Call for `add_earcutr_input` for each polygon you want to add to the mesh.
     pub fn add_earcutr_input(&mut self, earcutr_input: EarcutrInput) {
@@ -126,14 +120,14 @@ fn build_mesh_from_bevy(triangle_indices: BevyIndices, vertices: BevyVertices) -
     mesh
 }
 
-pub fn generate_mesh_earcutr(path_2d: Vec<Vec2>, extrude_amount: f32) -> Mesh {
-    // detect counter clockwise
+pub fn generate_mesh(path_2d: Vec<CoordinatePoint>, extrude_amount: f32) -> Mesh {
+    // detect if we are counter clockwise so that we can reverse the path if so
     let mut path_2d = path_2d;
     let sum = path_2d
         .iter()
         .fold((path_2d.last().unwrap(), 0.0), |acc, item| {
             let last = acc.0;
-            let result = (last.x - item.x) * (last.y + item.y);
+            let result = (last.0 - item.0) * (last.1 + item.1);
             (item, acc.1 + result)
         });
 
@@ -152,7 +146,7 @@ pub fn generate_mesh_earcutr(path_2d: Vec<Vec2>, extrude_amount: f32) -> Mesh {
         LineString::new(
             path_2d
                 .iter()
-                .map(|p| coord! {x: p.x as f64, y: p.y as f64})
+                .map(|p| coord! {x: p.0 , y: p.1})
                 .collect::<Vec<_>>(),
         ),
         vec![],
