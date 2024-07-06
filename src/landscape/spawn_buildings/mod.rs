@@ -76,8 +76,8 @@ pub fn system(
                 let mesh = meshes.add(generate_3d_mesh(coordinates.list, extrude_amount));
 
                 let position_height = height_map.height_at_position(
-                    coordinates.center.0 as f64 + landscape.position.0,
-                    -coordinates.center.1 as f64 + landscape.position.1,
+                    coordinates.center.0 + landscape.position.0,
+                    -coordinates.center.1 + landscape.position.1,
                 ) + HEIGHT_OFFSET;
 
                 let transform = Transform::from_xyz(

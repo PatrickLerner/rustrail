@@ -62,8 +62,8 @@ pub fn system(
 
                         let points = Poisson2D::new().with_dimensions(
                             [
-                                (coordinates.max_x - coordinates.min_x) as f64,
-                                (coordinates.max_y - coordinates.min_y) as f64,
+                                (coordinates.max_x - coordinates.min_x),
+                                (coordinates.max_y - coordinates.min_y),
                             ],
                             TREE_DENSITY * 2.0,
                         );
