@@ -1,5 +1,6 @@
 use super::*;
 use coverage_helper::test;
+use geo::Polygon;
 
 #[test]
 fn base() {
@@ -58,4 +59,59 @@ fn quad() {
 
     assert_eq!(mesh.count_vertices(), 4);
     assert_eq!(mesh.indices().unwrap().len(), 6);
+}
+
+#[test]
+fn triangulate_hexagon() {
+    let mut builder = MeshBuilder::new();
+
+    let hexagon = Polygon::new(
+        LineString::from(vec![
+            (1.0, 0.0),
+            (0.5, 0.866),
+            (-0.5, 0.866),
+            (-1.0, 0.0),
+            (-0.5, -0.866),
+            (0.5, -0.866),
+        ]),
+        vec![],
+    );
+
+    builder.triangulate_polygon(&hexagon, 0.0, Vec3::Y);
+
+    let mesh = builder.build();
+
+    assert_eq!(mesh.count_vertices(), 7);
+    assert_eq!(mesh.indices().unwrap().len(), 12);
+}
+
+#[test]
+fn triangulate_hexagon_with_hole() {
+    let mut builder = MeshBuilder::new();
+
+    let hexagon = Polygon::new(
+        LineString::from(vec![
+            (1.0, 0.0),
+            (0.5, 0.866),
+            (-0.5, 0.866),
+            (-1.0, 0.0),
+            (-0.5, -0.866),
+            (0.5, -0.866),
+            (1.0, 0.0),
+        ]),
+        vec![LineString::from(vec![
+            (0.25, 0.0),
+            (0.0, 0.433),
+            (-0.25, 0.0),
+            (0.0, -0.433),
+            (0.25, 0.0),
+        ])],
+    );
+
+    builder.triangulate_polygon(&hexagon, 0.0, Vec3::Y);
+
+    let mesh = builder.build();
+
+    assert_eq!(mesh.count_vertices(), 12);
+    assert_eq!(mesh.indices().unwrap().len(), 30);
 }

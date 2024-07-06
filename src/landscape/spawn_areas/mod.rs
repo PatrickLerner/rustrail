@@ -1,5 +1,5 @@
 use super::{HeightMap, Landscape, OSMData};
-use crate::{landscape::open_street_map::AreaType, mesh::generate_mesh, HEIGHT_OFFSET};
+use crate::{landscape::open_street_map::AreaType, mesh::generate_3d_mesh, HEIGHT_OFFSET};
 use bevy::prelude::*;
 use fast_poisson::Poisson2D;
 use geo::{point, Contains, LineString, Polygon};
@@ -138,7 +138,7 @@ pub fn system(
                     }
                     AreaType::Water => {
                         let extrude_amount = 0.1;
-                        let mesh = meshes.add(generate_mesh(coordinates.list, extrude_amount));
+                        let mesh = meshes.add(generate_3d_mesh(coordinates.list, extrude_amount));
 
                         let position_height = height_map.height_at_position(
                             coordinates.center.0 + landscape.position.0,

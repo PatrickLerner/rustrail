@@ -1,6 +1,9 @@
 //! This code in file is mostly borrowed from [bevy-earcutr](https://github.com/frewsxcv/bevy-earcutr)
 //! With minor adjustments to make it work for our implementation.
 
+#[cfg(test)]
+mod tests;
+
 use super::mesh_builder::MeshBuilder;
 use crate::landscape::CoordinatePoint;
 use bevy::{
@@ -27,71 +30,7 @@ pub struct EarcutrResult {
     pub triangle_indices: EarcutrIndices,
 }
 
-impl EarcutrResult {
-    fn merge(&mut self, mut other: EarcutrResult) {
-        let base_triangle_index = self.vertices.len() / 2;
-        for other_triangle_index in other.triangle_indices {
-            self.triangle_indices
-                .push(other_triangle_index + base_triangle_index);
-        }
-        self.vertices.append(&mut other.vertices);
-    }
-}
-
-pub struct PolygonMeshBuilder {
-    earcutr_inputs: Vec<EarcutrInput>,
-    z_index: f32,
-}
-
-impl PolygonMeshBuilder {
-    pub fn new() -> Self {
-        PolygonMeshBuilder {
-            earcutr_inputs: vec![],
-            z_index: 0.,
-        }
-    }
-
-    /// Call for `add_earcutr_input` for each polygon you want to add to the mesh.
-    pub fn add_earcutr_input(&mut self, earcutr_input: EarcutrInput) {
-        self.earcutr_inputs.push(earcutr_input);
-    }
-
-    pub fn build(self) -> Option<Mesh> {
-        let z_index = self.z_index;
-        let result = self.run_earcutr()?;
-        Some(build_mesh_from_earcutr(result, z_index))
-    }
-
-    fn run_earcutr(self) -> Option<EarcutrResult> {
-        let mut earcutr_inputs_iter = self.earcutr_inputs.into_iter();
-
-        // Earcut the first polygon
-        let first_input = earcutr_inputs_iter.next()?;
-        let first_triangle_indices =
-            earcutr::earcut(&first_input.vertices, &first_input.interior_indices, 2).unwrap();
-        let mut earcutr_result = EarcutrResult {
-            triangle_indices: first_triangle_indices,
-            vertices: first_input.vertices,
-        };
-
-        // Earcut any additional polygons and merge the results into the result of the first polygon
-        for earcutr_input in earcutr_inputs_iter {
-            let EarcutrInput {
-                vertices,
-                interior_indices,
-            } = earcutr_input;
-            let next_earcutr_result = earcutr::earcut(&vertices, &interior_indices, 2).unwrap();
-            earcutr_result.merge(EarcutrResult {
-                triangle_indices: next_earcutr_result,
-                vertices,
-            });
-        }
-
-        Some(earcutr_result)
-    }
-}
-
-pub fn build_mesh_from_earcutr(earcutr_result: EarcutrResult, z_index: f32) -> Mesh {
+fn build_mesh_from_earcutr(earcutr_result: EarcutrResult, z_index: f32) -> Mesh {
     let indices = earcutr_result
         .triangle_indices
         .into_iter()
@@ -120,7 +59,19 @@ fn build_mesh_from_bevy(triangle_indices: BevyIndices, vertices: BevyVertices) -
     mesh
 }
 
-pub fn generate_mesh(path_2d: Vec<CoordinatePoint>, extrude_amount: f32) -> Mesh {
+pub fn generate_2d_mesh(earcutr_input: EarcutrInput) -> Mesh {
+    let triangle_indices =
+        earcutr::earcut(&earcutr_input.vertices, &earcutr_input.interior_indices, 2).unwrap();
+
+    let result = EarcutrResult {
+        triangle_indices,
+        vertices: earcutr_input.vertices,
+    };
+
+    build_mesh_from_earcutr(result, 0.0)
+}
+
+pub fn generate_3d_mesh(path_2d: Vec<CoordinatePoint>, extrude_amount: f32) -> Mesh {
     // detect if we are counter clockwise so that we can reverse the path if so
     let mut path_2d = path_2d;
     let sum = path_2d

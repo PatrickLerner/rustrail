@@ -1,5 +1,5 @@
 use super::{AssetData, HeightMap, Landscape, OSMData};
-use crate::{landscape::open_street_map::BuildingType, mesh::generate_mesh, HEIGHT_OFFSET};
+use crate::{landscape::open_street_map::BuildingType, mesh::generate_3d_mesh, HEIGHT_OFFSET};
 use bevy::prelude::*;
 
 const PLATFORM_HEIGHT: f32 = 0.55;
@@ -73,7 +73,7 @@ pub fn system(
                     0.0
                 };
 
-                let mesh = meshes.add(generate_mesh(coordinates.list, extrude_amount));
+                let mesh = meshes.add(generate_3d_mesh(coordinates.list, extrude_amount));
 
                 let position_height = height_map.height_at_position(
                     coordinates.center.0 as f64 + landscape.position.0,

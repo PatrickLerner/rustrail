@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use super::earcutr::{EarcutrInput, PolygonMeshBuilder};
+use super::earcutr::{generate_2d_mesh, EarcutrInput};
 use bevy::{
     prelude::*,
     render::{
@@ -68,38 +68,38 @@ impl MeshBuilder {
 
     // Adds a polygon in the XZ plane
     pub fn triangulate_polygon(&mut self, polygon: &Polygon, y: f32, normal: Vec3) {
-        let mut builder = PolygonMeshBuilder::new();
-        builder.add_earcutr_input(polygon_to_earcutr_input(polygon));
-        let mesh = builder.build().unwrap();
+        let mesh = generate_2d_mesh(polygon_to_earcutr_input(polygon));
 
         // Extract positions from the mesh. It'll use XY and ignore Z, but we use XZ
         let offset = self.vertices.len() as u32;
-        if let Some(VertexAttributeValues::Float32x3(positions)) =
-            mesh.attribute(Mesh::ATTRIBUTE_POSITION)
-        {
-            for pos in positions {
-                self.add_vertex(Vertex {
-                    pos: Vec3 {
-                        x: pos[0],
-                        y,
-                        z: pos[1],
-                    },
-                    normal,
-                    uv: Vec2::new(0.0, 0.0),
-                });
+
+        match mesh.attribute(Mesh::ATTRIBUTE_POSITION) {
+            Some(VertexAttributeValues::Float32x3(positions)) => {
+                for pos in positions {
+                    self.add_vertex(Vertex {
+                        pos: Vec3 {
+                            x: pos[0],
+                            y,
+                            z: pos[1],
+                        },
+                        normal,
+                        uv: Vec2::new(0.0, 0.0),
+                    });
+                }
             }
-        } else {
-            unreachable!()
+            _ => panic!("Expected Float32x3 positions attribute"),
         }
-        if let Some(Indices::U32(indices)) = mesh.indices() {
-            for idx in indices {
-                self.indices.push(offset + idx);
+
+        match mesh.indices() {
+            Some(Indices::U32(indices)) => {
+                for idx in indices {
+                    self.indices.push(offset + idx);
+                }
+                // Somehow reversing the indices seems to fix the culling issues.
+                // Most likely a winding order related.
+                self.indices.reverse();
             }
-            // Somehow reversing the indices seems to fix the culling issues.
-            // Most likely a winding order related.
-            self.indices.reverse();
-        } else {
-            unreachable!()
+            _ => panic!("Expected U32 indices"),
         }
     }
 
