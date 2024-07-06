@@ -43,26 +43,9 @@ pub fn system(
                     BuildingType::Platform => assets.platform_material.clone(),
                 };
 
-                let coordinates: Vec<Vec2> = building
+                let coordinates = building
                     .coordinates
-                    .iter()
-                    .map(|coordinate| {
-                        let coordinates: Vec2 = (*coordinate - landscape.position).into();
-                        coordinates * Vec2::new(1.0, -1.0)
-                    })
-                    .collect();
-
-                // normalize so that first element is zero
-                let x: Vec<f32> = coordinates.iter().map(|e| e.x).collect();
-                let y: Vec<f32> = coordinates.iter().map(|e| e.y).collect();
-
-                let max_x = *x.iter().max_by(|a, b| a.total_cmp(b)).unwrap();
-                let max_y = *y.iter().max_by(|a, b| a.total_cmp(b)).unwrap();
-                let min_x = *x.iter().min_by(|a, b| a.total_cmp(b)).unwrap();
-                let min_y = *y.iter().min_by(|a, b| a.total_cmp(b)).unwrap();
-
-                let center = Vec2::new(max_x + min_x, max_y + min_y) / 2.0;
-                let path_2d: Vec<Vec2> = coordinates.iter().map(|item| *item - center).collect();
+                    .view_for_landscape_position(&landscape.position);
 
                 let extrude_amount = if let Some(level) = building.levels {
                     if level == 0 {
@@ -91,14 +74,21 @@ pub fn system(
                     0.0
                 };
 
-                let mesh = meshes.add(generate_mesh_earcutr(path_2d.clone(), extrude_amount));
+                let mesh = meshes.add(generate_mesh_earcutr(
+                    coordinates.list.clone(),
+                    extrude_amount,
+                ));
 
                 let position_height = height_map.height_at_position(
-                    center.x as f64 + landscape.position.0,
-                    -center.y as f64 + landscape.position.1,
+                    coordinates.center.x as f64 + landscape.position.0,
+                    -coordinates.center.y as f64 + landscape.position.1,
                 ) + HEIGHT_OFFSET;
 
-                let transform = Transform::from_xyz(center.x, offset + position_height, center.y);
+                let transform = Transform::from_xyz(
+                    coordinates.center.x,
+                    offset + position_height,
+                    coordinates.center.y,
+                );
 
                 commands.entity(entity).with_children(|parent| {
                     parent.spawn(PbrBundle {

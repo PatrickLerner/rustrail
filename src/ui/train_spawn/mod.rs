@@ -84,7 +84,7 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
                     commands.spawn(EngineBundle::ice("ICE 1 (Front)")).id(),
                 )];
 
-                for _ in 0..25 {
+                for _ in 0..9 {
                     components.push(TrainComponent::Wagon(
                         commands
                             .spawn(WagonBundle {
