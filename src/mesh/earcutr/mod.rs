@@ -1,5 +1,6 @@
-//! This code in file is mostly borrowed from [bevy-earcutr](https://github.com/frewsxcv/bevy-earcutr)
-//! With minor adjustments to make it work for our implementation.
+//! This code in file is generally borrowed from [bevy-earcutr](https://github.com/frewsxcv/bevy-earcutr)
+//! With adjustments to make it work for our implementation. Nonetheless, you can consider it
+//! Copyright (c) 2022 Corey Farwell, licensed under MIT as well
 
 #[cfg(test)]
 mod tests;
