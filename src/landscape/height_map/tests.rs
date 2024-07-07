@@ -42,3 +42,13 @@ fn height_extraction() {
     test_height!(NEBELHORN, NEBELHORN_HEIGHT);
     test_height!(ZUGSPITZE, ZUGSPITZE_HEIGHT);
 }
+
+#[test]
+fn test_dummy() {
+    let height_map = HeightMap::test_dummy();
+
+    assert_eq!(height_map.height_at_position(0.0, 0.0), 0.0);
+    assert_eq!(height_map.height_at_position(-1000.0, -1000.0), 0.0);
+    assert_eq!(height_map.height_at_position(10.0, 42.5523), 0.0);
+    assert_eq!(height_map.height_at_position(17.22, -412412.0), 0.0);
+}

@@ -43,7 +43,8 @@ pub fn system(
 
         let target = Vec3::new(dest.0 as f32, height, -dest.1 as f32);
         let diff = target - transform.translation;
-        transform.translation += (diff * SPEED * time.delta_seconds()).clamp(-diff.abs(), diff);
+        transform.translation +=
+            (diff * SPEED * time.delta_seconds()).clamp(-diff.abs(), diff.abs());
 
         transform.rotation = Quat::from_rotation_y(rail.angle() as f32);
     }
