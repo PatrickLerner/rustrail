@@ -38,7 +38,6 @@ pub fn system(
 
         let height =
             height_map.height_at_position(dest.0 + origin_offset.0 .0, dest.1 + origin_offset.0 .1);
-        let height = height;
 
         let target = Vec3::new(dest.0 as f32, height, -dest.1 as f32);
         let diff = target - transform.translation;
