@@ -6,6 +6,10 @@ mod train_spawn;
 
 use bevy::{app::PluginGroupBuilder, pbr::wireframe::WireframeConfig, prelude::*};
 use bevy_egui::{egui, EguiContexts};
+use iyes_perf_ui::{
+    diagnostics::{PerfUiEntryEntityCount, PerfUiEntryFPS},
+    PerfUiPlugin, PerfUiRoot,
+};
 
 #[coverage(off)]
 fn color_mode(mut contexts: EguiContexts, mut commands: Commands) {
@@ -27,11 +31,19 @@ fn wireframe_mode(
     }
 }
 
+fn setup_performance_monitoring(mut commands: Commands) {
+    commands.spawn((
+        PerfUiRoot::default(),
+        PerfUiEntryFPS::default(),
+        PerfUiEntryEntityCount::default(),
+    ));
+}
+
 struct UIPlugin;
 
 impl Plugin for UIPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Startup, color_mode)
+        app.add_systems(Startup, (color_mode, setup_performance_monitoring))
             .add_systems(Update, wireframe_mode);
     }
 }
@@ -41,6 +53,9 @@ pub struct UIPlugins;
 impl PluginGroup for UIPlugins {
     fn build(self) -> bevy::app::PluginGroupBuilder {
         PluginGroupBuilder::start::<Self>()
+            .add(bevy::diagnostic::FrameTimeDiagnosticsPlugin)
+            .add(bevy::diagnostic::EntityCountDiagnosticsPlugin)
+            .add(PerfUiPlugin)
             .add(UIPlugin)
             .add(train_controls::TrainControlsPlugin)
             .add(train_spawn::TrainSpawnPlugin)
