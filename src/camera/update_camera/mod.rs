@@ -1,9 +1,8 @@
 #[cfg(test)]
 mod tests;
 
-use crate::landscape::{HeightMap, OriginOffset};
-
 use super::{EguiUnlocked, GameCameraSettings, GameCameraState};
+use crate::landscape::{HeightMap, OriginOffset};
 use bevy::input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel};
 use bevy::prelude::*;
 use std::f32::consts::{FRAC_PI_2, PI, TAU};
