@@ -46,6 +46,9 @@ pub struct AssetData {
     ground_texture: Handle<StandardMaterial>,
     platform_material: Handle<StandardMaterial>,
     building_material: Handle<StandardMaterial>,
+    office_material: Handle<StandardMaterial>,
+    industrial_material: Handle<StandardMaterial>,
+    commercial_material: Handle<StandardMaterial>,
 }
 
 #[derive(Component)]

@@ -9,6 +9,27 @@ use bevy::{
 use super::AssetData;
 
 #[coverage(off)]
+fn load_repeating_asset(asset_server: &AssetServer, file_name: &str) -> Handle<Image> {
+    asset_server.load_with_settings(
+        file_name.to_owned(),
+        #[coverage(off)]
+        |s: &mut ImageLoaderSettings| match &mut s.sampler {
+            ImageSampler::Default => {
+                s.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
+                    address_mode_u: ImageAddressMode::Repeat,
+                    address_mode_v: ImageAddressMode::Repeat,
+                    ..default()
+                });
+            }
+            ImageSampler::Descriptor(sampler) => {
+                sampler.address_mode_u = ImageAddressMode::Repeat;
+                sampler.address_mode_v = ImageAddressMode::Repeat;
+            }
+        },
+    )
+}
+
+#[coverage(off)]
 pub fn system(
     mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
@@ -22,22 +43,9 @@ pub fn system(
         ballast_texture: materials.add(asset_server.load("ballast.png")),
         ground_texture: materials.add(asset_server.load("soil.png")),
         platform_material: materials.add(Color::rgb(0.847, 0.871, 0.914)),
-        building_material: materials.add(asset_server.load_with_settings(
-            "facade.png",
-            #[coverage(off)]
-            |s: &mut ImageLoaderSettings| match &mut s.sampler {
-                ImageSampler::Default => {
-                    s.sampler = ImageSampler::Descriptor(ImageSamplerDescriptor {
-                        address_mode_u: ImageAddressMode::Repeat,
-                        address_mode_v: ImageAddressMode::Repeat,
-                        ..default()
-                    });
-                }
-                ImageSampler::Descriptor(sampler) => {
-                    sampler.address_mode_u = ImageAddressMode::Repeat;
-                    sampler.address_mode_v = ImageAddressMode::Repeat;
-                }
-            },
-        )),
+        building_material: materials.add(load_repeating_asset(&asset_server, "building.png")),
+        office_material: materials.add(load_repeating_asset(&asset_server, "office.png")),
+        industrial_material: materials.add(load_repeating_asset(&asset_server, "industrial.png")),
+        commercial_material: materials.add(load_repeating_asset(&asset_server, "commercial.png")),
     });
 }

@@ -35,9 +35,9 @@ pub fn system(
                 // TODO: add more textures
                 let material = match building.building_type {
                     BuildingType::Building => assets.building_material.clone(),
-                    BuildingType::Industrial => assets.building_material.clone(),
-                    BuildingType::Office => assets.building_material.clone(),
-                    BuildingType::Commercial => assets.building_material.clone(),
+                    BuildingType::Industrial => assets.industrial_material.clone(),
+                    BuildingType::Office => assets.office_material.clone(),
+                    BuildingType::Commercial => assets.commercial_material.clone(),
                     BuildingType::Roof => assets.building_material.clone(),
                     BuildingType::Platform => assets.platform_material.clone(),
                 };
