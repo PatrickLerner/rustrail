@@ -1,9 +1,6 @@
 use super::AssetData;
-use crate::{
-    landscape::{
-        HeightMap, Landscape, OriginOffset, HALF_LANDSCAPE_SIZE, MAX_SPAWN_PER_FRAME, TRIANGLE_SIZE,
-    },
-    HEIGHT_OFFSET,
+use crate::landscape::{
+    HeightMap, Landscape, OriginOffset, HALF_LANDSCAPE_SIZE, MAX_SPAWN_PER_FRAME, TRIANGLE_SIZE,
 };
 use bevy::{
     prelude::*,
@@ -55,9 +52,7 @@ pub fn system(
                     .height_at_position(sx + landscape.position.0, sy + landscape.position.1);
 
                 verticies.push(Vec3::new(
-                    sx as f32,
-                    h + HEIGHT_OFFSET,
-                    // NOTE: - on z due to bevy's inane projection
+                    sx as f32, h, // NOTE: - on z due to bevy's inane projection
                     -sy as f32,
                 ));
                 normals.push(Vec3::new(0.0, 0.0, 0.0));

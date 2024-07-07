@@ -17,7 +17,6 @@ use bevy::{
 };
 use bevy_egui::EguiPlugin;
 
-const HEIGHT_OFFSET: f32 = -101.0;
 const TRAIN_HEIGHT: f32 = 5.0;
 const TRAIN_HEIGHT_OFFSET: f32 = 1.5 + TRAIN_HEIGHT / 2.0;
 

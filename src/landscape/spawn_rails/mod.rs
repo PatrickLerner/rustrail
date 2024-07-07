@@ -1,8 +1,5 @@
 use super::{open_street_map::OSMData, AssetData, HeightMap, Landscape};
-use crate::{
-    landscape::{BALLAST_HEIGHT, MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE},
-    HEIGHT_OFFSET,
-};
+use crate::landscape::{BALLAST_HEIGHT, MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -48,7 +45,7 @@ pub fn system(
                     let start_height =
                         height_map.height_at_position(start_coords.0, start_coords.1);
                     let end_height = height_map.height_at_position(end_coords.0, end_coords.1);
-                    let position_height = (start_height + end_height) / 2.0 + HEIGHT_OFFSET;
+                    let position_height = (start_height + end_height) / 2.0;
 
                     let lift_angle =
                         f64::atan2(end_height as f64 - start_height as f64, distance) as f32;
