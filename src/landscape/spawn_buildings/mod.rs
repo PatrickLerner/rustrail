@@ -32,7 +32,6 @@ pub fn system(
 
         if let Some(section_data) = data.sections.get(&sector) {
             for building in section_data.buildings.iter() {
-                // TODO: add more textures
                 let material = match building.building_type {
                     BuildingType::Building => assets.building_material.clone(),
                     BuildingType::Industrial => assets.industrial_material.clone(),
