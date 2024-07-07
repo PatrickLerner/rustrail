@@ -3,11 +3,13 @@ mod tests;
 
 mod helpers;
 
-use helpers::*;
-
 use super::{Path, PathId};
-use crate::{landscape::CoordinatePoint, train::Direction};
+use crate::{
+    landscape::{coordinate_point::Coordinates, CoordinatePoint},
+    train::Direction,
+};
 use bevy::prelude::*;
+use helpers::*;
 use proj::Proj;
 use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, error::Error};
@@ -28,7 +30,7 @@ pub struct SectionData {
 #[derive(Default, Debug, Deserialize, Serialize)]
 pub struct BuildingData {
     pub building_type: BuildingType,
-    pub coordinates: Vec<CoordinatePoint>,
+    pub coordinates: Coordinates,
     pub levels: Option<u8>,
     pub layer: Option<u8>,
 }
@@ -36,7 +38,7 @@ pub struct BuildingData {
 #[derive(Default, Debug, Deserialize, Serialize)]
 pub struct AreaData {
     pub area_type: AreaType,
-    pub coordinates: Vec<CoordinatePoint>,
+    pub coordinates: Coordinates,
 }
 
 #[derive(Debug, PartialEq, Deserialize, Serialize)]
@@ -166,7 +168,7 @@ impl OSMData {
 
                         if is_wood(way) {
                             let area = AreaData {
-                                coordinates,
+                                coordinates: Coordinates(coordinates),
                                 ..default()
                             };
 
@@ -174,7 +176,7 @@ impl OSMData {
                         } else if is_water(way) {
                             let area = AreaData {
                                 area_type: AreaType::Water,
-                                coordinates,
+                                coordinates: Coordinates(coordinates),
                             };
 
                             sector.areas.push(area);
@@ -197,7 +199,7 @@ impl OSMData {
 
                             let mut building = BuildingData {
                                 building_type,
-                                coordinates,
+                                coordinates: Coordinates(coordinates),
                                 ..default()
                             };
 

@@ -2,6 +2,7 @@
 
 mod camera;
 mod landscape;
+mod mesh;
 mod train;
 mod ui;
 

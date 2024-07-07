@@ -14,6 +14,8 @@ fn coord_arithmetic() {
 
     assert_eq!(i_a + i_a, i_b);
     assert_eq!(i_a - i_a, z);
+
+    assert_eq!(b * i_a, i_b);
 }
 
 #[test]
@@ -59,4 +61,35 @@ fn sector_coordinates() {
     assert_eq!(a.sector_coordinates(), (1, 2));
     assert_eq!(b.sector_coordinates(), (0, 0));
     assert_eq!(c.sector_coordinates(), (-1, 0));
+}
+
+#[test]
+fn coordinate_view() {
+    let coordinates = Coordinates(vec![
+        CoordinatePoint(0.0, 0.0),
+        CoordinatePoint(-10.0, 100.0),
+        CoordinatePoint(100.0, 100.0),
+    ]);
+
+    let view = coordinates.view_for_landscape_position(&CoordinatePoint(10.0, 10.0));
+
+    assert_eq!(view.list.len(), 3);
+    assert_eq!(view.list[0], CoordinatePoint(-45.0, 50.0));
+
+    // NOTE: the view also negates all y values
+    assert_eq!(view.min_x, -20.0);
+    assert_eq!(view.max_x, 90.0);
+    assert_eq!(view.min_y, -90.0);
+    assert_eq!(view.max_y, 10.0);
+
+    assert_eq!(view.center, CoordinatePoint(35.0, -40.0));
+}
+
+#[test]
+fn serialization() {
+    let coord = CoordinatePoint(123.0, 456.0);
+    let data = bincode::serialize(&coord).unwrap();
+    let coord: CoordinatePoint = bincode::deserialize(&data).unwrap();
+    assert_eq!(coord.0, 123.0);
+    assert_eq!(coord.1, 456.0);
 }

@@ -2,7 +2,7 @@ mod osm_data;
 mod path;
 
 use bevy::prelude::*;
-pub use osm_data::OSMData;
+pub use osm_data::{AreaType, BuildingType, OSMData};
 pub use path::{Path, PathId};
 
 #[coverage(off)]
