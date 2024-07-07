@@ -56,7 +56,7 @@ fn apply_transform_forwards() {
         let transform = transform.get(&app.world, train_id).unwrap();
         assert_eq!(transform.translation.x, 0.0);
         assert_eq!(transform.translation.z, 0.0);
-        assert_eq!(transform.translation.y, HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET);
+        assert_eq!(transform.translation.y, 0.0);
     }
 
     let location = TrackLocation {
@@ -82,7 +82,7 @@ fn apply_transform_forwards() {
         // moves partially to final destination
         assert_eq!(transform.translation.x, 30.0);
         assert_eq!(transform.translation.z, -30.0);
-        assert_eq!(transform.translation.y, -29.1);
+        assert_eq!(transform.translation.y, 0.0);
     }
 
     {
@@ -97,7 +97,7 @@ fn apply_transform_forwards() {
         // moves partially to final destination
         assert_eq!(transform.translation.x, 100.0);
         assert_eq!(transform.translation.z, -100.0);
-        assert_eq!(transform.translation.y, HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET);
+        assert_eq!(transform.translation.y, 0.0);
     }
 }
 
@@ -135,7 +135,7 @@ fn apply_transform_backwards() {
         let transform = transform.get(&app.world, train_id).unwrap();
         assert_eq!(transform.translation.x, 100.0);
         assert_eq!(transform.translation.z, -100.0);
-        assert_eq!(transform.translation.y, HEIGHT_OFFSET + TRAIN_HEIGHT_OFFSET);
+        assert_eq!(transform.translation.y, 0.0);
     }
 
     let location = TrackLocation {
@@ -161,6 +161,6 @@ fn apply_transform_backwards() {
         // moves partially to final destination
         assert_eq!(transform.translation.x.round(), 0.0);
         assert_eq!(transform.translation.z.round(), 0.0);
-        assert_eq!(transform.translation.y, -29.1);
+        assert_eq!(transform.translation.y, 0.0);
     }
 }

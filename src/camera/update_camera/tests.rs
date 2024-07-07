@@ -16,6 +16,8 @@ fn mock_egui_is_locked() -> EguiUnlocked {
 fn no_movement() {
     let mut app = App::new();
 
+    app.world.insert_resource(OriginOffset::default());
+    app.world.insert_resource(HeightMap::test_dummy());
     let camera = app.world.spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
@@ -69,6 +71,8 @@ fn no_movement() {
 fn zoom_in_out() {
     let mut app = App::new();
 
+    app.world.insert_resource(OriginOffset::default());
+    app.world.insert_resource(HeightMap::test_dummy());
     let camera = app.world.spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
@@ -180,6 +184,8 @@ fn zoom_in_out() {
 fn panning_with_egui_locked() {
     let mut app = App::new();
 
+    app.world.insert_resource(OriginOffset::default());
+    app.world.insert_resource(HeightMap::test_dummy());
     let camera = app.world.spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
@@ -215,6 +221,8 @@ fn panning_with_egui_locked() {
 fn panning() {
     let mut app = App::new();
 
+    app.world.insert_resource(OriginOffset::default());
+    app.world.insert_resource(HeightMap::test_dummy());
     let camera = app.world.spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
@@ -253,6 +261,8 @@ fn panning() {
 fn orbit() {
     let mut app = App::new();
 
+    app.world.insert_resource(OriginOffset::default());
+    app.world.insert_resource(HeightMap::test_dummy());
     let camera = app.world.spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();

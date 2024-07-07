@@ -2,6 +2,7 @@
 mod tests;
 
 use super::{EguiUnlocked, GameCameraSettings, GameCameraState};
+use crate::landscape::{HeightMap, OriginOffset};
 use bevy::input::mouse::{MouseMotion, MouseScrollUnit, MouseWheel};
 use bevy::prelude::*;
 use std::f32::consts::{FRAC_PI_2, PI, TAU};
@@ -14,6 +15,8 @@ pub fn system(
     mut evr_motion: EventReader<MouseMotion>,
     mut evr_scroll: EventReader<MouseWheel>,
     mut q_camera: Query<(&GameCameraSettings, &mut GameCameraState, &mut Transform)>,
+    height_map: Res<HeightMap>,
+    origin_offset: Res<OriginOffset>,
 ) {
     // First, accumulate the total amount of
     // mouse motion and scroll, from all pending events:
@@ -117,7 +120,7 @@ pub fn system(
         // vectors from the camera's transform, and use
         // them to move the center point. Multiply by the
         // radius to make the pan adapt to the current zoom.
-        if total_pan != Vec2::ZERO {
+        if total_pan != Vec2::ZERO || state.is_added() {
             any = true;
             let radius = state.radius;
             // state.center += transform.right() * total_pan.x * radius;
@@ -126,6 +129,10 @@ pub fn system(
             let vec = Quat::from_rotation_y(state.yaw) * vec;
 
             state.center += vec;
+            state.center.y = height_map.height_at_position(
+                state.center.x as f64 + origin_offset.0 .0,
+                state.center.y as f64 + origin_offset.0 .1,
+            );
         }
 
         // Finally, compute the new camera transform.

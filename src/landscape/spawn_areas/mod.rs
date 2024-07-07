@@ -1,5 +1,5 @@
 use super::{HeightMap, Landscape, OSMData};
-use crate::{landscape::open_street_map::AreaType, mesh::generate_3d_mesh, HEIGHT_OFFSET};
+use crate::{landscape::open_street_map::AreaType, mesh::generate_3d_mesh};
 use bevy::prelude::*;
 use fast_poisson::Poisson2D;
 use geo::{point, Contains, LineString, Polygon};
@@ -89,7 +89,7 @@ pub fn system(
                                 let position_height = height_map.height_at_position(
                                     coordinates.center.0 + x + landscape.position.0,
                                     -coordinates.center.1 - y + landscape.position.1,
-                                ) + HEIGHT_OFFSET;
+                                );
 
                                 let transform = Transform::from_xyz(
                                     (coordinates.center.0 + x) as f32,
@@ -143,7 +143,7 @@ pub fn system(
                         let position_height = height_map.height_at_position(
                             coordinates.center.0 + landscape.position.0,
                             -coordinates.center.1 + landscape.position.1,
-                        ) + HEIGHT_OFFSET;
+                        );
 
                         let transform = Transform::from_xyz(
                             coordinates.center.0 as f32,

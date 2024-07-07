@@ -44,13 +44,19 @@ pub fn system(
                     distance: 0.0,
                     travel_direction: Direction::Forward,
                 },
+                PbrBundle::default(),
             ))
-            .insert(PbrBundle {
-                mesh: meshes.add(Cuboid::new(dimension.length, TRAIN_HEIGHT, 4.0)),
-                material: materials.add(color),
-                transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, -0.0),
-                ..default()
-            });
+            .with_children(
+                #[coverage(off)]
+                |parent| {
+                    parent.spawn(PbrBundle {
+                        mesh: meshes.add(Cuboid::new(dimension.length, TRAIN_HEIGHT, 4.0)),
+                        material: materials.add(color),
+                        transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, 0.0),
+                        ..default()
+                    });
+                },
+            );
     }
 
     for (entity, composition) in trains.iter() {
