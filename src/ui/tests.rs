@@ -11,6 +11,17 @@ fn plugin() {
 }
 
 #[test]
+fn performance_monitoring() {
+    let mut app = App::default();
+    assert_eq!(app.world.entities().len(), 0);
+
+    app.add_systems(Update, setup_performance_monitoring);
+    app.update();
+
+    assert_eq!(app.world.entities().len(), 1);
+}
+
+#[test]
 fn test_wireframe_mode() {
     let mut app = App::new();
 
