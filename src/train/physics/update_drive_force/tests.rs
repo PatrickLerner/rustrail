@@ -4,7 +4,7 @@ use coverage_helper::test;
 
 #[coverage(off)]
 fn spawn_train(app: &mut App, throttle: ThrottleLever, speed: f32) -> Entity {
-    app.world
+    app.world_mut()
         .spawn((
             ForceDriving::default(),
             MaxPower(1000.0),
@@ -23,8 +23,8 @@ fn no_throttle_no_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceDriving>(train_id).is_some());
-    assert_eq!(app.world.get::<ForceDriving>(train_id).unwrap().0, 0.0);
+    assert!(app.world().get::<ForceDriving>(train_id).is_some());
+    assert_eq!(app.world().get::<ForceDriving>(train_id).unwrap().0, 0.0);
 }
 
 #[test]
@@ -43,8 +43,8 @@ fn forward_throttle_forward_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceDriving>(train_id).is_some());
-    assert!(app.world.get::<ForceDriving>(train_id).unwrap().0 > 0.0);
+    assert!(app.world().get::<ForceDriving>(train_id).is_some());
+    assert!(app.world().get::<ForceDriving>(train_id).unwrap().0 > 0.0);
 }
 
 #[test]
@@ -63,8 +63,8 @@ fn forward_throttle_backward_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceDriving>(train_id).is_some());
-    assert!(app.world.get::<ForceDriving>(train_id).unwrap().0 < 0.0);
+    assert!(app.world().get::<ForceDriving>(train_id).is_some());
+    assert!(app.world().get::<ForceDriving>(train_id).unwrap().0 < 0.0);
 }
 
 #[test]
@@ -92,11 +92,11 @@ fn more_throttle_more_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceDriving>(low_throttle).is_some());
-    assert!(app.world.get::<ForceDriving>(high_throttle).is_some());
+    assert!(app.world().get::<ForceDriving>(low_throttle).is_some());
+    assert!(app.world().get::<ForceDriving>(high_throttle).is_some());
     assert!(
-        app.world.get::<ForceDriving>(low_throttle).unwrap().0
-            < app.world.get::<ForceDriving>(high_throttle).unwrap().0
+        app.world().get::<ForceDriving>(low_throttle).unwrap().0
+            < app.world().get::<ForceDriving>(high_throttle).unwrap().0
     );
 }
 
@@ -125,10 +125,10 @@ fn more_speed_less_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceDriving>(low_speed).is_some());
-    assert!(app.world.get::<ForceDriving>(high_speed).is_some());
+    assert!(app.world().get::<ForceDriving>(low_speed).is_some());
+    assert!(app.world().get::<ForceDriving>(high_speed).is_some());
     assert!(
-        app.world.get::<ForceDriving>(low_speed).unwrap().0
-            > app.world.get::<ForceDriving>(high_speed).unwrap().0
+        app.world().get::<ForceDriving>(low_speed).unwrap().0
+            > app.world().get::<ForceDriving>(high_speed).unwrap().0
     );
 }

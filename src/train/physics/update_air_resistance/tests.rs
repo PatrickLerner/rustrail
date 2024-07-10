@@ -3,7 +3,7 @@ use coverage_helper::test;
 
 #[coverage(off)]
 fn spawn_train(app: &mut App, speed: f32) -> Entity {
-    app.world
+    app.world_mut()
         .spawn((ForceAirResistance::default(), Speed(speed)))
         .id()
 }
@@ -17,9 +17,9 @@ fn no_speed_no_resistance() {
 
     app.update();
 
-    assert!(app.world.get::<ForceAirResistance>(train_id).is_some());
+    assert!(app.world().get::<ForceAirResistance>(train_id).is_some());
     assert_eq!(
-        app.world.get::<ForceAirResistance>(train_id).unwrap().0,
+        app.world().get::<ForceAirResistance>(train_id).unwrap().0,
         0.0
     );
 }
@@ -34,11 +34,11 @@ fn higher_speed_higher_resistance() {
 
     app.update();
 
-    assert!(app.world.get::<ForceAirResistance>(slow_train).is_some());
-    assert!(app.world.get::<ForceAirResistance>(fast_train).is_some());
+    assert!(app.world().get::<ForceAirResistance>(slow_train).is_some());
+    assert!(app.world().get::<ForceAirResistance>(fast_train).is_some());
     assert!(
-        app.world.get::<ForceAirResistance>(slow_train).unwrap().0
-            < app.world.get::<ForceAirResistance>(fast_train).unwrap().0
+        app.world().get::<ForceAirResistance>(slow_train).unwrap().0
+            < app.world().get::<ForceAirResistance>(fast_train).unwrap().0
     );
 }
 
@@ -53,19 +53,19 @@ fn negative_positive_speed_equal() {
     app.update();
 
     assert!(app
-        .world
+        .world()
         .get::<ForceAirResistance>(backwards_train)
         .is_some());
     assert!(app
-        .world
+        .world()
         .get::<ForceAirResistance>(forwards_train)
         .is_some());
     assert_eq!(
-        app.world
+        app.world()
             .get::<ForceAirResistance>(backwards_train)
             .unwrap()
             .0,
-        app.world
+        app.world()
             .get::<ForceAirResistance>(forwards_train)
             .unwrap()
             .0

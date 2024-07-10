@@ -3,7 +3,7 @@ use coverage_helper::test;
 
 #[coverage(off)]
 fn spawn_train(app: &mut App, brake: BrakeLever, mass: f32) -> Entity {
-    app.world
+    app.world_mut()
         .spawn((ForceBraking::default(), Mass(mass), brake))
         .id()
 }
@@ -17,8 +17,8 @@ fn no_brake_no_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceBraking>(train_id).is_some());
-    assert_eq!(app.world.get::<ForceBraking>(train_id).unwrap().0, 0.0);
+    assert!(app.world().get::<ForceBraking>(train_id).is_some());
+    assert_eq!(app.world().get::<ForceBraking>(train_id).unwrap().0, 0.0);
 }
 
 #[test]
@@ -30,8 +30,8 @@ fn brake_applies_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceBraking>(train_id).is_some());
-    assert!(app.world.get::<ForceBraking>(train_id).unwrap().0 > 0.0);
+    assert!(app.world().get::<ForceBraking>(train_id).is_some());
+    assert!(app.world().get::<ForceBraking>(train_id).unwrap().0 > 0.0);
 }
 
 #[test]
@@ -45,11 +45,11 @@ fn more_brake_more_force() {
 
     app.update();
 
-    assert!(app.world.get::<ForceBraking>(low_brake).is_some());
-    assert!(app.world.get::<ForceBraking>(high_brake).is_some());
+    assert!(app.world().get::<ForceBraking>(low_brake).is_some());
+    assert!(app.world().get::<ForceBraking>(high_brake).is_some());
     assert!(
-        app.world.get::<ForceBraking>(low_brake).unwrap().0
-            < app.world.get::<ForceBraking>(high_brake).unwrap().0
+        app.world().get::<ForceBraking>(low_brake).unwrap().0
+            < app.world().get::<ForceBraking>(high_brake).unwrap().0
     );
 }
 
@@ -64,10 +64,10 @@ fn more_weight_more_brake() {
 
     app.update();
 
-    assert!(app.world.get::<ForceBraking>(low_weight).is_some());
-    assert!(app.world.get::<ForceBraking>(high_weight).is_some());
+    assert!(app.world().get::<ForceBraking>(low_weight).is_some());
+    assert!(app.world().get::<ForceBraking>(high_weight).is_some());
     assert!(
-        app.world.get::<ForceBraking>(low_weight).unwrap().0
-            < app.world.get::<ForceBraking>(high_weight).unwrap().0
+        app.world().get::<ForceBraking>(low_weight).unwrap().0
+            < app.world().get::<ForceBraking>(high_weight).unwrap().0
     );
 }
