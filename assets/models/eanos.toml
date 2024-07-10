@@ -1,5 +1,5 @@
 file_name = "eanos.glb"
-max_speed = 576
+max_speed = 160
 mass = 20000
 
 [dimension]

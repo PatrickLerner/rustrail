@@ -30,9 +30,21 @@ pub struct Acceleration(pub f32);
 // m/s
 pub struct Speed(pub f32);
 
-#[derive(Component, Default, Debug, WrappedValue, Deserialize)]
+impl Speed {
+    pub fn as_kmh(&self) -> f32 {
+        self.0 * 3.6
+    }
+}
+
+#[derive(Component, Default, Debug, WrappedValue)]
 // m/s
 pub struct MaxSpeed(pub f32);
+
+impl MaxSpeed {
+    pub fn from_kmh(value: f32) -> Self {
+        Self(value / 3.6)
+    }
+}
 
 #[derive(Component, Default, Debug, WrappedValue)]
 // N
@@ -153,7 +165,7 @@ pub struct WagonBundle {
 #[derive(Deserialize)]
 struct WagonData {
     file_name: String,
-    max_speed: MaxSpeed,
+    max_speed: f32,
     mass: Mass,
     dimension: Dimension,
 }
@@ -165,7 +177,7 @@ impl WagonBundle {
 
         Self {
             load_model_file: LoadModelFile(format!("models/{}", data.file_name)),
-            max_speed: data.max_speed,
+            max_speed: MaxSpeed::from_kmh(data.max_speed),
             mass: data.mass,
             dimension: data.dimension,
             ..default()
@@ -193,7 +205,7 @@ pub struct EngineBundle {
 #[derive(Deserialize)]
 struct EngineData {
     file_name: String,
-    max_speed: MaxSpeed,
+    max_speed: f32,
     mass: Mass,
     max_power: MaxPower,
     dimension: Dimension,
@@ -206,7 +218,7 @@ impl EngineBundle {
 
         Self {
             load_model_file: LoadModelFile(format!("models/{}", data.file_name)),
-            max_speed: data.max_speed,
+            max_speed: MaxSpeed::from_kmh(data.max_speed),
             mass: data.mass,
             max_power: data.max_power,
             dimension: data.dimension,

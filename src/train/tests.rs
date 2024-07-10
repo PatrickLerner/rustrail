@@ -101,3 +101,12 @@ fn wrapped_value_derived() {
         assert_eq!(item.get(), 1.0);
     }
 }
+
+#[test]
+fn meter_per_second_conversions() {
+    let speed = Speed(10.0);
+    assert_eq!(speed.as_kmh(), 36.0);
+
+    let max_speed = MaxSpeed::from_kmh(36.0);
+    assert_eq!(max_speed.0, 10.0);
+}
