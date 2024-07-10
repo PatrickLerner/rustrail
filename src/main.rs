@@ -20,6 +20,8 @@ use landscape::{BALLAST_HEIGHT, RAIL_HEIGHT};
 
 const TRAIN_HEIGHT_OFFSET: f32 = BALLAST_HEIGHT + RAIL_HEIGHT;
 
+fn moving_things() {}
+
 #[coverage(off)]
 fn main() {
     App::new()
@@ -44,5 +46,6 @@ fn main() {
         .add_plugins(camera::CameraPlugin)
         .add_plugins(ui::UIPlugins)
         .add_plugins(landscape::LandscapePlugin)
+        .add_systems(Update, moving_things)
         .run();
 }

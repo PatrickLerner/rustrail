@@ -4,7 +4,7 @@ mod tests;
 use super::GameCameraState;
 use bevy::prelude::*;
 
-const SPEED: f32 = 3.0; // m/s
+const SPEED: f32 = 5.0; // m/s
 
 pub fn system(
     mut q_camera: Query<&mut GameCameraState>,

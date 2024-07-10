@@ -6,6 +6,7 @@ mod spawn_light;
 mod update_camera;
 mod update_follow;
 
+use crate::moving_things;
 use bevy::prelude::*;
 use bevy_egui::EguiContexts;
 
@@ -81,7 +82,7 @@ impl Plugin for CameraPlugin {
             Update,
             (
                 egui_unlocked.pipe(update_camera::system),
-                update_follow::system,
+                update_follow::system.before(moving_things),
             )
                 .run_if(any_with_component::<GameCameraState>),
         )
