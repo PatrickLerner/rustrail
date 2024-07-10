@@ -15,7 +15,7 @@ serde = { version = "1", features = ["derive"] }
 rand = "0.8.5"
 wrapped_value_derive_macro = { path = "lib/wrapped_value_derive_macro" }
 earcutr = "0.4"
-geo = "0.26"
+geo = "0.28"
 fast_poisson = "1.0.0"
 iyes_perf_ui = "0.2"
 toml = "0.8"
