@@ -8,4 +8,4 @@ Model License:
 * requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
 
 If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
-This work is based on "BR111" (https://sketchfab.com/3d-models/eanos-open-wagon-84c77d21f2d341ecbb95da58907e05c1) by accessviolation (https://sketchfab.com/accessviolation) licensed under CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
+This work is based on "eanos" (https://sketchfab.com/3d-models/eanos-open-wagon-84c77d21f2d341ecbb95da58907e05c1) by accessviolation (https://sketchfab.com/accessviolation) licensed under CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
