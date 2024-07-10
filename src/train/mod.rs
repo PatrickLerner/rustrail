@@ -14,7 +14,7 @@ pub use track_location::TrackLocation;
 #[derive(Component, Default)]
 pub struct Name(pub String);
 
-#[derive(Component, Default, Debug, Deserialize)]
+#[derive(Component, Default, Debug)]
 pub struct LoadModelFile(pub String);
 
 trait WrappedValue {
