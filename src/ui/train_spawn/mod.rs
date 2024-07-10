@@ -55,6 +55,47 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
                 });
             }
 
+            if ui.small_button("BR 111 (single engine)").clicked() {
+                let engine = commands.spawn(EngineBundle::br_111("BR 111 001")).id();
+
+                commands.spawn(TrainBundle {
+                    name: Name("RB 61".to_string()),
+                    composition: TrainComposition {
+                        components: vec![TrainComponent::Engine(engine)],
+                    },
+                    ..default()
+                });
+            }
+
+            if ui.small_button("BR 111 (with wagons)").clicked() {
+                let mut components = vec![TrainComponent::Engine(
+                    commands.spawn(EngineBundle::br_111("BR 111 001")).id(),
+                )];
+
+                for _ in 0..25 {
+                    components.push(TrainComponent::Wagon(
+                        commands
+                            .spawn(WagonBundle {
+                                paint_scheme: PaintScheme {
+                                    color: PaintSchemeColor::Tiefschwarz,
+                                },
+                                mass: Mass(23_000.0),
+                                dimension: Dimension { length: 16.0 },
+                                // TODO: realistic
+                                max_speed: MaxSpeed(150.0),
+                                ..default()
+                            })
+                            .id(),
+                    ));
+                }
+
+                commands.spawn(TrainBundle {
+                    name: Name("RB 61".to_string()),
+                    composition: TrainComposition { components },
+                    ..default()
+                });
+            }
+
             if ui.small_button("E10 / BR 110 (single engine)").clicked() {
                 let engine = commands.spawn(EngineBundle::br_110("BR 110 001")).id();
 

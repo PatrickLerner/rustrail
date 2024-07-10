@@ -1,21 +1,25 @@
 use super::Train3DModel;
 use crate::{
     landscape::OSMData,
-    train::{Dimension, Direction, PaintScheme, TrackLocation, TrainComposition},
-    TRAIN_HEIGHT, TRAIN_HEIGHT_OFFSET,
+    train::{Dimension, Direction, ForceDriving, PaintScheme, TrackLocation, TrainComposition},
+    TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
 
-const WAGON_DISTANCE: f64 = 1.0;
+const WAGON_DISTANCE: f64 = 0.0;
 
 #[coverage(off)]
 pub fn system(
     trains: Query<(Entity, &TrainComposition), Without<TrackLocation>>,
-    engines: Query<(Entity, &PaintScheme, &Dimension), Without<Train3DModel>>,
+    engines: Query<
+        (Entity, &PaintScheme, &Dimension, Option<&ForceDriving>),
+        Without<Train3DModel>,
+    >,
     dimensions: Query<&Dimension>,
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    // mut meshes: ResMut<Assets<Mesh>>,
+    // mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
     data: Res<OSMData>,
 ) {
     if trains.is_empty() {
@@ -32,8 +36,14 @@ pub fn system(
         )
         .expect("to find rail with start id");
 
-    for (entity, paint_scheme, dimension) in engines.iter() {
+    for (entity, paint_scheme, dimension, f_d) in engines.iter() {
         let color: Color = paint_scheme.color.into();
+
+        let my_gltf = if f_d.is_some() {
+            asset_server.load("BR111.glb#Scene0")
+        } else {
+            asset_server.load("eanos.glb#Scene0")
+        };
 
         commands
             .entity(entity)
@@ -49,11 +59,10 @@ pub fn system(
             .with_children(
                 #[coverage(off)]
                 |parent| {
-                    parent.spawn(PbrBundle {
-                        mesh: meshes.add(Cuboid::new(dimension.length, TRAIN_HEIGHT, 4.0)),
-                        material: materials.add(color),
+                    parent.spawn(SceneBundle {
+                        scene: my_gltf,
                         transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, 0.0),
-                        ..default()
+                        ..Default::default()
                     });
                 },
             );

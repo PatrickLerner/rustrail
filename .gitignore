@@ -1,3 +1,4 @@
 /target
 *.pbf
 *.pbf.bin
+assets/*.blend1

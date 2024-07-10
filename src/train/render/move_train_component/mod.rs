@@ -44,6 +44,11 @@ pub fn system(
         transform.translation +=
             (diff * SPEED * time.delta_seconds()).clamp(-diff.abs(), diff.abs());
 
-        transform.rotation = Quat::from_rotation_y(rail.angle() as f32);
+        let mut angle = rail.angle();
+        if location.travel_direction == Direction::Backward {
+            angle += std::f64::consts::PI;
+        }
+
+        transform.rotation = Quat::from_rotation_y(angle as f32);
     }
 }

@@ -222,6 +222,20 @@ impl EngineBundle {
         }
     }
 
+    pub fn br_111(name: &str) -> Self {
+        Self {
+            name: Name(name.to_owned()),
+            mass: Mass(83_000.0),
+            max_power: MaxPower(3700.0),
+            max_speed: MaxSpeed(160.0 / 3.6),
+            dimension: Dimension { length: 16.75 },
+            paint_scheme: PaintScheme {
+                color: PaintSchemeColor::Verkehrsrot,
+            },
+            ..Default::default()
+        }
+    }
+
     pub fn br_110(name: &str) -> Self {
         Self {
             name: Name(name.to_owned()),
