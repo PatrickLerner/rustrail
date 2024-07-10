@@ -6,15 +6,12 @@ mod train_spawn;
 
 use bevy::{app::PluginGroupBuilder, pbr::wireframe::WireframeConfig, prelude::*};
 use bevy_egui::{egui, EguiContexts};
-use iyes_perf_ui::{
-    diagnostics::{PerfUiEntryEntityCount, PerfUiEntryFPS},
-    PerfUiPlugin, PerfUiRoot,
-};
+use iyes_perf_ui::prelude::*;
 
 #[coverage(off)]
 fn color_mode(mut contexts: EguiContexts, mut commands: Commands) {
     // commands.spawn(Camera2dBundle::default());
-    commands.insert_resource(ClearColor(Color::rgb(
+    commands.insert_resource(ClearColor(Color::srgb(
         230.0 / 255.0,
         230.0 / 255.0,
         230.0 / 255.0,

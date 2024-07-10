@@ -40,7 +40,8 @@ pub fn system(
         ballast_mesh: meshes.add(Cuboid::new(1.0, BALLAST_HEIGHT, BALLAST_WIDTH)),
         ballast_texture: materials.add(asset_server.load("textures/ballast.png")),
         ground_texture: materials.add(asset_server.load("textures/soil.png")),
-        platform_material: materials.add(Color::rgb(0.847, 0.871, 0.914)),
+        // TODO: material
+        platform_material: materials.add(Color::srgb(0.847, 0.871, 0.914)),
         building_material: materials
             .add(load_repeating_asset(&asset_server, "textures/building.png")),
         office_material: materials.add(load_repeating_asset(&asset_server, "textures/office.png")),
