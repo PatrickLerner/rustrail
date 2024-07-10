@@ -1,8 +1,5 @@
 use super::*;
-use crate::{
-    landscape::{CoordinatePoint, Path},
-    train::render::Train3DModel,
-};
+use crate::landscape::{CoordinatePoint, Path};
 use coverage_helper::test;
 use std::{collections::HashMap, time::Duration};
 
@@ -38,10 +35,7 @@ fn apply_transform_forwards() {
         distance: 0.0,
     };
 
-    let train_id = app
-        .world
-        .spawn((Train3DModel, Transform::default(), location))
-        .id();
+    let train_id = app.world.spawn((Transform::default(), location)).id();
 
     {
         app.init_resource::<Time>();
@@ -65,10 +59,7 @@ fn apply_transform_forwards() {
         distance: 141.42135624,
     };
 
-    let train_id = app
-        .world
-        .spawn((Train3DModel, Transform::default(), location))
-        .id();
+    let train_id = app.world.spawn((Transform::default(), location)).id();
 
     {
         let mut time = app.world.resource_mut::<Time>();
@@ -117,10 +108,7 @@ fn apply_transform_backwards() {
         distance: 0.0,
     };
 
-    let train_id = app
-        .world
-        .spawn((Train3DModel, Transform::default(), location))
-        .id();
+    let train_id = app.world.spawn((Transform::default(), location)).id();
 
     {
         app.init_resource::<Time>();
@@ -144,10 +132,7 @@ fn apply_transform_backwards() {
         distance: 141.42135624,
     };
 
-    let train_id = app
-        .world
-        .spawn((Train3DModel, Transform::default(), location))
-        .id();
+    let train_id = app.world.spawn((Transform::default(), location)).id();
 
     {
         let mut time = app.world.resource_mut::<Time>();

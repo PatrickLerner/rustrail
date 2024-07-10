@@ -1,7 +1,6 @@
-use super::Train3DModel;
 use crate::{
     landscape::OSMData,
-    train::{Dimension, Direction, ForceDriving, PaintScheme, TrackLocation, TrainComposition},
+    train::{Dimension, Direction, LoadModelFile, TrackLocation, TrainComposition},
     TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
@@ -11,10 +10,7 @@ const WAGON_DISTANCE: f64 = 0.0;
 #[coverage(off)]
 pub fn system(
     trains: Query<(Entity, &TrainComposition), Without<TrackLocation>>,
-    engines: Query<
-        (Entity, &PaintScheme, &Dimension, Option<&ForceDriving>),
-        Without<Train3DModel>,
-    >,
+    engines: Query<(Entity, &LoadModelFile)>,
     dimensions: Query<&Dimension>,
     mut commands: Commands,
     // mut meshes: ResMut<Assets<Mesh>>,
@@ -36,19 +32,12 @@ pub fn system(
         )
         .expect("to find rail with start id");
 
-    for (entity, paint_scheme, dimension, f_d) in engines.iter() {
-        let color: Color = paint_scheme.color.into();
-
-        let my_gltf = if f_d.is_some() {
-            asset_server.load("BR111.glb#Scene0")
-        } else {
-            asset_server.load("eanos.glb#Scene0")
-        };
+    for (entity, load_model_file) in engines.iter() {
+        let model = asset_server.load(format!("{}#Scene0", load_model_file.0));
 
         commands
             .entity(entity)
             .insert((
-                Train3DModel,
                 TrackLocation {
                     id: *id,
                     distance: 0.0,
@@ -56,11 +45,12 @@ pub fn system(
                 },
                 PbrBundle::default(),
             ))
+            .remove::<LoadModelFile>()
             .with_children(
                 #[coverage(off)]
                 |parent| {
                     parent.spawn(SceneBundle {
-                        scene: my_gltf,
+                        scene: model,
                         transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, 0.0),
                         ..Default::default()
                     });

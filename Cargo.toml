@@ -18,6 +18,7 @@ earcutr = "0.4"
 geo = "0.26"
 fast_poisson = "1.0.0"
 iyes_perf_ui = "0.2"
+toml = "0.8"
 
 [dev-dependencies]
 coverage-helper = "0.2"

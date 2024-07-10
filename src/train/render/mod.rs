@@ -6,9 +6,6 @@ mod spawn_engine;
 
 use bevy::prelude::*;
 
-#[derive(Component, Default)]
-pub struct Train3DModel;
-
 pub struct TrainRenderPlugin;
 
 impl Plugin for TrainRenderPlugin {
