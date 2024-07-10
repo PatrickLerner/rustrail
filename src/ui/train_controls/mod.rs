@@ -69,7 +69,7 @@ fn train_controls(
                                     );
                             }
 
-                            ui.label(format!("{:.2} km/h", speed.0 * 3.6));
+                            ui.label(format!("{:.2} km/h", speed.as_kmh()));
                             ui.separator();
                             ui.label(format!(
                                 "Throttle: {:.0}%",

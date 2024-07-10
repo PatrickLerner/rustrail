@@ -13,27 +13,25 @@ fn direction_reverse() {
 fn bundle_initializer() {
     let mut app = App::default();
 
-    let bundles = vec![
-        EngineBundle::br_218("BR 218 001"),
-        EngineBundle::br_89("BR 89 001"),
-        EngineBundle::br_110("BR 110 001"),
-        EngineBundle::ice("ICE 1"),
-    ];
+    let bundle = EngineBundle::from_file("assets/models/BR111.toml");
 
-    for bundle in bundles {
-        assert!(bundle.max_power.0 > 0.0);
-        assert!(bundle.max_speed.0 > 0.0);
-        assert!(bundle.mass.0 > 0.0);
-        assert!(!bundle.name.0.is_empty());
+    assert!(bundle.max_power.0 > 0.0);
+    assert!(bundle.max_speed.0 > 0.0);
+    assert!(bundle.mass.0 > 0.0);
+    assert_eq!(bundle.name.0, "");
 
-        app.world.spawn(bundle);
-    }
+    app.world.spawn(bundle);
 
     let bundle = EngineBundle::default();
 
     assert_eq!(bundle.max_power.0, 0.0);
     assert_eq!(bundle.max_speed.0, 0.0);
     assert_eq!(bundle.name.0, "");
+
+    let bundle = WagonBundle::from_file("assets/models/eanos.toml");
+
+    assert!(bundle.mass.0 > 0.0);
+    assert!(bundle.max_speed.0 > 0.0);
 
     app.world.spawn(bundle);
 
@@ -63,34 +61,6 @@ fn plugin() {
     app.add_plugins(TrainPlugins);
     assert!(app.is_plugin_added::<TrainRenderPlugin>());
     assert!(app.is_plugin_added::<TrainPhysicsPlugin>());
-}
-
-#[test]
-fn paint_scheme_color() {
-    let all = vec![
-        PaintSchemeColor::Verkehrsrot,
-        PaintSchemeColor::Orientrot,
-        PaintSchemeColor::Lichtgrau,
-        PaintSchemeColor::Achatgrau,
-        PaintSchemeColor::Fernblau,
-        PaintSchemeColor::Ozeanblau,
-        PaintSchemeColor::Minttuerkis,
-        PaintSchemeColor::Pasteltuerkis,
-        PaintSchemeColor::Lachsorange,
-        PaintSchemeColor::Tiefschwarz,
-    ];
-
-    for paint_scheme in all {
-        // we just force the type here because if a hex value is invalid
-        // the into while panic
-        let _color: Color = paint_scheme.into();
-    }
-}
-
-#[test]
-fn paint_scheme() {
-    let paint_scheme = PaintScheme::default();
-    assert_eq!(paint_scheme.color, PaintSchemeColor::Verkehrsrot);
 }
 
 #[test]
@@ -130,4 +100,13 @@ fn wrapped_value_derived() {
         item.set(item.get() + 1.0);
         assert_eq!(item.get(), 1.0);
     }
+}
+
+#[test]
+fn meter_per_second_conversions() {
+    let speed = Speed(10.0);
+    assert_eq!(speed.as_kmh(), 36.0);
+
+    let max_speed = MaxSpeed::from_kmh(36.0);
+    assert_eq!(max_speed.0, 10.0);
 }

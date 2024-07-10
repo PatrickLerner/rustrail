@@ -1,21 +1,21 @@
-use super::Train3DModel;
 use crate::{
     landscape::OSMData,
-    train::{Dimension, Direction, PaintScheme, TrackLocation, TrainComposition},
-    TRAIN_HEIGHT, TRAIN_HEIGHT_OFFSET,
+    train::{Dimension, Direction, LoadModelFile, TrackLocation, TrainComposition},
+    TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
 
-const WAGON_DISTANCE: f64 = 1.0;
+const WAGON_DISTANCE: f64 = 0.0;
 
 #[coverage(off)]
 pub fn system(
     trains: Query<(Entity, &TrainComposition), Without<TrackLocation>>,
-    engines: Query<(Entity, &PaintScheme, &Dimension), Without<Train3DModel>>,
+    engines: Query<(Entity, &LoadModelFile)>,
     dimensions: Query<&Dimension>,
     mut commands: Commands,
-    mut meshes: ResMut<Assets<Mesh>>,
-    mut materials: ResMut<Assets<StandardMaterial>>,
+    // mut meshes: ResMut<Assets<Mesh>>,
+    // mut materials: ResMut<Assets<StandardMaterial>>,
+    asset_server: Res<AssetServer>,
     data: Res<OSMData>,
 ) {
     if trains.is_empty() {
@@ -32,13 +32,12 @@ pub fn system(
         )
         .expect("to find rail with start id");
 
-    for (entity, paint_scheme, dimension) in engines.iter() {
-        let color: Color = paint_scheme.color.into();
+    for (entity, load_model_file) in engines.iter() {
+        let model = asset_server.load(format!("{}#Scene0", load_model_file.0));
 
         commands
             .entity(entity)
             .insert((
-                Train3DModel,
                 TrackLocation {
                     id: *id,
                     distance: 0.0,
@@ -46,14 +45,14 @@ pub fn system(
                 },
                 PbrBundle::default(),
             ))
+            .remove::<LoadModelFile>()
             .with_children(
                 #[coverage(off)]
                 |parent| {
-                    parent.spawn(PbrBundle {
-                        mesh: meshes.add(Cuboid::new(dimension.length, TRAIN_HEIGHT, 4.0)),
-                        material: materials.add(color),
+                    parent.spawn(SceneBundle {
+                        scene: model,
                         transform: Transform::from_xyz(0.0, TRAIN_HEIGHT_OFFSET, 0.0),
-                        ..default()
+                        ..Default::default()
                     });
                 },
             );

@@ -1,12 +1,10 @@
-use super::{BALLAST_HEIGHT, BALLAST_WIDTH, RAIL_HEIGHT, RAIL_WIDTH};
+use super::{AssetData, BALLAST_HEIGHT, BALLAST_WIDTH, RAIL_HEIGHT, RAIL_WIDTH};
 use bevy::{
     prelude::*,
     render::texture::{
         ImageAddressMode, ImageLoaderSettings, ImageSampler, ImageSamplerDescriptor,
     },
 };
-
-use super::AssetData;
 
 #[coverage(off)]
 fn load_repeating_asset(asset_server: &AssetServer, file_name: &str) -> Handle<Image> {
@@ -38,14 +36,21 @@ pub fn system(
 ) {
     commands.insert_resource(AssetData {
         rail_mesh: meshes.add(Cuboid::new(1.0, RAIL_HEIGHT, RAIL_WIDTH)),
-        rail_material: materials.add(asset_server.load("steel.png")),
+        rail_material: materials.add(asset_server.load("textures/steel.png")),
         ballast_mesh: meshes.add(Cuboid::new(1.0, BALLAST_HEIGHT, BALLAST_WIDTH)),
-        ballast_texture: materials.add(asset_server.load("ballast.png")),
-        ground_texture: materials.add(asset_server.load("soil.png")),
+        ballast_texture: materials.add(asset_server.load("textures/ballast.png")),
+        ground_texture: materials.add(asset_server.load("textures/soil.png")),
         platform_material: materials.add(Color::rgb(0.847, 0.871, 0.914)),
-        building_material: materials.add(load_repeating_asset(&asset_server, "building.png")),
-        office_material: materials.add(load_repeating_asset(&asset_server, "office.png")),
-        industrial_material: materials.add(load_repeating_asset(&asset_server, "industrial.png")),
-        commercial_material: materials.add(load_repeating_asset(&asset_server, "commercial.png")),
+        building_material: materials
+            .add(load_repeating_asset(&asset_server, "textures/building.png")),
+        office_material: materials.add(load_repeating_asset(&asset_server, "textures/office.png")),
+        industrial_material: materials.add(load_repeating_asset(
+            &asset_server,
+            "textures/industrial.png",
+        )),
+        commercial_material: materials.add(load_repeating_asset(
+            &asset_server,
+            "textures/commercial.png",
+        )),
     });
 }

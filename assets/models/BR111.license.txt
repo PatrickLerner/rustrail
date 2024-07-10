@@ -1,0 +1,11 @@
+Model Information:
+* title:	BR111
+* source:	https://sketchfab.com/3d-models/br111-e75c407050594952a86e95ce8053bf53
+* author:	accessviolation (https://sketchfab.com/accessviolation)
+
+Model License:
+* license type:	CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "BR111" (https://sketchfab.com/3d-models/br111-e75c407050594952a86e95ce8053bf53) by accessviolation (https://sketchfab.com/accessviolation) licensed under CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)

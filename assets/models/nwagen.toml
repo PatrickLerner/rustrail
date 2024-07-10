@@ -1,0 +1,6 @@
+file_name = "nwagen.glb"
+max_speed = 120
+mass = 35000
+
+[dimension]
+length = 26.4

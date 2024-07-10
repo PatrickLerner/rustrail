@@ -16,9 +16,9 @@ use bevy::{
     },
 };
 use bevy_egui::EguiPlugin;
+use landscape::{BALLAST_HEIGHT, RAIL_HEIGHT};
 
-const TRAIN_HEIGHT: f32 = 5.0;
-const TRAIN_HEIGHT_OFFSET: f32 = 1.5 + TRAIN_HEIGHT / 2.0;
+const TRAIN_HEIGHT_OFFSET: f32 = BALLAST_HEIGHT + RAIL_HEIGHT;
 
 #[coverage(off)]
 fn main() {

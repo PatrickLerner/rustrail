@@ -2,48 +2,46 @@
 mod tests;
 
 use crate::train::{
-    Dimension, EngineBundle, Mass, MaxSpeed, Name, PaintScheme, PaintSchemeColor, TrainBundle,
-    TrainComponent, TrainComposition, WagonBundle,
+    EngineBundle, Name, TrainBundle, TrainComponent, TrainComposition, WagonBundle,
 };
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
 #[coverage(off)]
-fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
+fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>) {
     egui::Window::new("Debug: Spawn train").show(
         contexts.ctx_mut(),
         #[coverage(off)]
         |ui| {
-            if ui.small_button("BR 218 (single engine)").clicked() {
-                let components = vec![TrainComponent::Engine(
-                    commands.spawn(EngineBundle::br_218("BR 218 001")).id(),
-                )];
+            if ui.small_button("BR 111 (single engine)").clicked() {
+                *id += 1;
+                let engine = commands
+                    .spawn(EngineBundle::from_file("assets/models/BR111.toml"))
+                    .insert(Name(format!("BR 111 {:0>3}", id.to_string())))
+                    .id();
 
                 commands.spawn(TrainBundle {
                     name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
+                    composition: TrainComposition {
+                        components: vec![TrainComponent::Engine(engine)],
+                    },
                     ..default()
                 });
             }
 
-            if ui.small_button("BR 218 (with wagons)").clicked() {
-                let mut components = vec![TrainComponent::Engine(
-                    commands.spawn(EngineBundle::br_218("BR 218 001")).id(),
-                )];
+            if ui.small_button("BR 111 (with wagons)").clicked() {
+                *id += 1;
+                let engine = commands
+                    .spawn(EngineBundle::from_file("assets/models/BR111.toml"))
+                    .insert(Name(format!("BR 111 {:0>3}", id.to_string())))
+                    .id();
+
+                let mut components = vec![TrainComponent::Engine(engine)];
 
                 for _ in 0..25 {
                     components.push(TrainComponent::Wagon(
                         commands
-                            .spawn(WagonBundle {
-                                paint_scheme: PaintScheme {
-                                    color: PaintSchemeColor::Tiefschwarz,
-                                },
-                                mass: Mass(23_000.0),
-                                dimension: Dimension { length: 16.0 },
-                                // TODO: realistic
-                                max_speed: MaxSpeed(140.0),
-                                ..default()
-                            })
+                            .spawn(WagonBundle::from_file("assets/models/eanos.toml"))
                             .id(),
                     ));
                 }
@@ -55,55 +53,52 @@ fn train_controls(mut commands: Commands, mut contexts: EguiContexts) {
                 });
             }
 
-            if ui.small_button("E10 / BR 110 (single engine)").clicked() {
-                let engine = commands.spawn(EngineBundle::br_110("BR 110 001")).id();
+            if ui
+                .small_button("BR 111 (double engine, with wagons)")
+                .clicked()
+            {
+                let mut components = vec![];
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition {
-                        components: vec![TrainComponent::Engine(engine)],
-                    },
-                    ..default()
-                });
-            }
+                for _ in 0..2 {
+                    *id += 1;
+                    let engine = commands
+                        .spawn(EngineBundle::from_file("assets/models/BR111.toml"))
+                        .insert(Name(format!("BR 111 {:0>3}", id.to_string())))
+                        .id();
+                    components.push(TrainComponent::Engine(engine));
+                }
 
-            if ui.small_button("BR 89 (single engine)").clicked() {
-                let engine = commands.spawn(EngineBundle::br_89("BR 89 001")).id();
-
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition {
-                        components: vec![TrainComponent::Engine(engine)],
-                    },
-                    ..default()
-                });
-            }
-
-            if ui.small_button("ICE 1").clicked() {
-                let mut components = vec![TrainComponent::Engine(
-                    commands.spawn(EngineBundle::ice("ICE 1 (Front)")).id(),
-                )];
-
-                for _ in 0..9 {
+                for _ in 0..25 {
                     components.push(TrainComponent::Wagon(
                         commands
-                            .spawn(WagonBundle {
-                                paint_scheme: PaintScheme {
-                                    color: PaintSchemeColor::Lichtgrau,
-                                },
-                                mass: Mass(52_000.0),
-                                dimension: Dimension { length: 26.43 },
-                                // TODO: realistic
-                                max_speed: MaxSpeed(280.0 / 3.6),
-                                ..default()
-                            })
+                            .spawn(WagonBundle::from_file("assets/models/eanos.toml"))
                             .id(),
                     ));
                 }
 
-                components.push(TrainComponent::Engine(
-                    commands.spawn(EngineBundle::ice("ICE 1 (Rear)")).id(),
-                ));
+                commands.spawn(TrainBundle {
+                    name: Name("RB 61".to_string()),
+                    composition: TrainComposition { components },
+                    ..default()
+                });
+            }
+
+            if ui.small_button("BR 111 (with passenger wagons)").clicked() {
+                *id += 1;
+                let engine = commands
+                    .spawn(EngineBundle::from_file("assets/models/BR111.toml"))
+                    .insert(Name(format!("BR 111 {:0>3}", id.to_string())))
+                    .id();
+
+                let mut components = vec![TrainComponent::Engine(engine)];
+
+                for _ in 0..3 {
+                    components.push(TrainComponent::Wagon(
+                        commands
+                            .spawn(WagonBundle::from_file("assets/models/nwagen.toml"))
+                            .id(),
+                    ));
+                }
 
                 commands.spawn(TrainBundle {
                     name: Name("RB 61".to_string()),
@@ -119,6 +114,6 @@ pub struct TrainSpawnPlugin;
 
 impl Plugin for TrainSpawnPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, train_controls);
+        app.add_systems(Update, spawn);
     }
 }

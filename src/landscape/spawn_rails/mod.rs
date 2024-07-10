@@ -1,5 +1,5 @@
 use super::{open_street_map::OSMData, AssetData, HeightMap, Landscape};
-use crate::landscape::{BALLAST_HEIGHT, MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE};
+use crate::landscape::{BALLAST_HEIGHT, MAX_RAIL_SEGMENT_LENGTH, RAIL_DISTANCE, RAIL_HEIGHT};
 use bevy::prelude::*;
 
 #[derive(Component)]
@@ -75,7 +75,11 @@ pub fn system(
                                         rail.spawn(PbrBundle {
                                             mesh: assets.ballast_mesh.clone(),
                                             material: assets.ballast_texture.clone(),
-                                            transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                                            transform: Transform::from_xyz(
+                                                0.0,
+                                                BALLAST_HEIGHT / 2.0,
+                                                0.0,
+                                            ),
                                             ..default()
                                         });
 
@@ -84,7 +88,7 @@ pub fn system(
                                             material: assets.rail_material.clone(),
                                             transform: Transform::from_xyz(
                                                 0.0,
-                                                BALLAST_HEIGHT,
+                                                BALLAST_HEIGHT + RAIL_HEIGHT / 2.0,
                                                 RAIL_DISTANCE / -2.0,
                                             ),
                                             ..default()
@@ -95,7 +99,7 @@ pub fn system(
                                             material: assets.rail_material.clone(),
                                             transform: Transform::from_xyz(
                                                 0.0,
-                                                BALLAST_HEIGHT,
+                                                BALLAST_HEIGHT + RAIL_HEIGHT / 2.0,
                                                 RAIL_DISTANCE / 2.0,
                                             ),
                                             ..default()
