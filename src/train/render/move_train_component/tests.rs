@@ -35,19 +35,19 @@ fn apply_transform_forwards() {
         distance: 0.0,
     };
 
-    let train_id = app.world.spawn((Transform::default(), location)).id();
+    let train_id = app.world_mut().spawn((Transform::default(), location)).id();
 
     {
         app.init_resource::<Time>();
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(1500));
     }
 
     app.update();
 
     {
-        let mut transform = app.world.query::<&Transform>();
-        let transform = transform.get(&app.world, train_id).unwrap();
+        let mut transform = app.world_mut().query::<&Transform>();
+        let transform = transform.get(&app.world(), train_id).unwrap();
         assert_eq!(transform.translation.x, 0.0);
         assert_eq!(transform.translation.z, 0.0);
         assert_eq!(transform.translation.y, 0.0);
@@ -59,17 +59,17 @@ fn apply_transform_forwards() {
         distance: 141.42135624,
     };
 
-    let train_id = app.world.spawn((Transform::default(), location)).id();
+    let train_id = app.world_mut().spawn((Transform::default(), location)).id();
 
     {
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(100));
     }
     app.update();
 
     {
-        let mut transform = app.world.query::<&Transform>();
-        let transform = transform.get(&app.world, train_id).unwrap();
+        let mut transform = app.world_mut().query::<&Transform>();
+        let transform = transform.get(&app.world(), train_id).unwrap();
         // moves partially to final destination
         assert_eq!(transform.translation.x, 30.0);
         assert_eq!(transform.translation.z, -30.0);
@@ -77,14 +77,14 @@ fn apply_transform_forwards() {
     }
 
     {
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(10000));
     }
     app.update();
 
     {
-        let mut transform = app.world.query::<&Transform>();
-        let transform = transform.get(&app.world, train_id).unwrap();
+        let mut transform = app.world_mut().query::<&Transform>();
+        let transform = transform.get(&app.world(), train_id).unwrap();
         // moves partially to final destination
         assert_eq!(transform.translation.x, 100.0);
         assert_eq!(transform.translation.z, -100.0);
@@ -108,19 +108,19 @@ fn apply_transform_backwards() {
         distance: 0.0,
     };
 
-    let train_id = app.world.spawn((Transform::default(), location)).id();
+    let train_id = app.world_mut().spawn((Transform::default(), location)).id();
 
     {
         app.init_resource::<Time>();
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(1500));
     }
 
     app.update();
 
     {
-        let mut transform = app.world.query::<&Transform>();
-        let transform = transform.get(&app.world, train_id).unwrap();
+        let mut transform = app.world_mut().query::<&Transform>();
+        let transform = transform.get(&app.world(), train_id).unwrap();
         assert_eq!(transform.translation.x, 100.0);
         assert_eq!(transform.translation.z, -100.0);
         assert_eq!(transform.translation.y, 0.0);
@@ -132,17 +132,17 @@ fn apply_transform_backwards() {
         distance: 141.42135624,
     };
 
-    let train_id = app.world.spawn((Transform::default(), location)).id();
+    let train_id = app.world_mut().spawn((Transform::default(), location)).id();
 
     {
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(100));
     }
     app.update();
 
     {
-        let mut transform = app.world.query::<&Transform>();
-        let transform = transform.get(&app.world, train_id).unwrap();
+        let mut transform = app.world_mut().query::<&Transform>();
+        let transform = transform.get(&app.world(), train_id).unwrap();
         // moves partially to final destination
         assert_eq!(transform.translation.x.round(), 0.0);
         assert_eq!(transform.translation.z.round(), 0.0);

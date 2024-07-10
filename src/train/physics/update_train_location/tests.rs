@@ -47,10 +47,10 @@ fn updates_components() {
         distance: 140.0,
     };
 
-    let engine_id = app.world.spawn(location.clone()).id();
+    let engine_id = app.world_mut().spawn(location.clone()).id();
 
     let train_id = app
-        .world
+        .world_mut()
         .spawn((
             Transform::default(),
             location,
@@ -63,23 +63,23 @@ fn updates_components() {
 
     {
         app.init_resource::<Time>();
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(1500));
     }
 
     app.update();
 
-    let mut location = app.world.query::<&TrackLocation>();
+    let mut location = app.world_mut().query::<&TrackLocation>();
 
     {
-        let location = location.get(&app.world, train_id).unwrap();
+        let location = location.get(&app.world(), train_id).unwrap();
         assert_eq!(location.id, (1, 2));
         assert_eq!(location.distance.floor(), 6.0);
         assert_eq!(location.travel_direction, Direction::Forward);
     }
 
     {
-        let location = location.get(&app.world, engine_id).unwrap();
+        let location = location.get(&app.world(), engine_id).unwrap();
         assert_eq!(location.id, (1, 2));
         assert_eq!(location.distance.floor(), 6.0);
         assert_eq!(location.travel_direction, Direction::Forward);
@@ -100,7 +100,7 @@ fn updates_distance() {
     };
 
     let train_id = app
-        .world
+        .world_mut()
         .spawn((
             Transform::default(),
             location,
@@ -111,15 +111,15 @@ fn updates_distance() {
 
     {
         app.init_resource::<Time>();
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(1500));
     }
 
     app.update();
 
     {
-        let mut location = app.world.query::<&TrackLocation>();
-        let location = location.get(&app.world, train_id).unwrap();
+        let mut location = app.world_mut().query::<&TrackLocation>();
+        let location = location.get(&app.world(), train_id).unwrap();
         assert_eq!(location.id, (1, 2));
         assert_eq!(location.distance.floor(), 6.0);
         assert_eq!(location.travel_direction, Direction::Forward);
@@ -127,37 +127,40 @@ fn updates_distance() {
 
     {
         app.init_resource::<Time>();
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(1500));
     }
 
     app.update();
 
     {
-        let mut location = app.world.query::<&TrackLocation>();
-        let location = location.get(&app.world, train_id).unwrap();
+        let mut location = app.world_mut().query::<&TrackLocation>();
+        let world = app.world_mut();
+        let location = location.get(world, train_id).unwrap();
         assert_eq!(location.id, (1, 2));
         assert_eq!(location.distance.floor(), 13.0);
         assert_eq!(location.travel_direction, Direction::Forward);
     }
 
     {
-        let mut speed = app.world.query::<&mut Speed>();
-        let mut speed = speed.get_mut(&mut app.world, train_id).unwrap();
+        let mut speed = app.world_mut().query::<&mut Speed>();
+        let world = app.world_mut();
+        let mut speed = speed.get_mut(world, train_id).unwrap();
         speed.0 = -10.0;
     }
 
     {
         app.init_resource::<Time>();
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(1500));
     }
 
     app.update();
 
     {
-        let mut location = app.world.query::<&TrackLocation>();
-        let location = location.get(&app.world, train_id).unwrap();
+        let mut location = app.world_mut().query::<&TrackLocation>();
+        let world = app.world_mut();
+        let location = location.get(world, train_id).unwrap();
         assert_eq!(location.id, (0, 1));
         assert_eq!(location.distance.floor(), 140.0);
         assert_eq!(location.travel_direction, Direction::Forward);
@@ -178,7 +181,7 @@ fn super_low_speed() {
     };
 
     let train_id = app
-        .world
+        .world_mut()
         .spawn((
             Transform::default(),
             location,
@@ -189,15 +192,16 @@ fn super_low_speed() {
 
     {
         app.init_resource::<Time>();
-        let mut time = app.world.resource_mut::<Time>();
+        let mut time = app.world_mut().resource_mut::<Time>();
         time.advance_by(Duration::from_millis(1500));
     }
 
     app.update();
 
     {
-        let mut location = app.world.query::<&TrackLocation>();
-        let location = location.get(&app.world, train_id).unwrap();
+        let mut location = app.world_mut().query::<&TrackLocation>();
+        let world = app.world_mut();
+        let location = location.get(world, train_id).unwrap();
         assert_eq!(location.id, (0, 1));
         assert_eq!(location.distance, 0.0);
         assert_eq!(location.travel_direction, Direction::Forward);

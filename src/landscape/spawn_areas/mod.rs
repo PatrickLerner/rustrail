@@ -28,13 +28,13 @@ pub fn system(
             TREE_HEIGHT - TREE_CROWN_HEIGHT,
             TREE_TRUNK_WIDTH,
         ));
-        let trunk_material = materials.add(Color::rgb(0.711, 0.444, 0.332));
+        let trunk_material = materials.add(Color::srgb(0.711, 0.444, 0.332));
         let crown_mesh = meshes.add(Cuboid::new(
             TREE_CROWN_WIDTH,
             TREE_CROWN_HEIGHT,
             TREE_CROWN_WIDTH,
         ));
-        let crown_material = materials.add(Color::rgb(0.381, 0.558, 0.230));
+        let crown_material = materials.add(Color::srgb(0.381, 0.558, 0.230));
 
         let mut count = 0;
 
@@ -151,7 +151,7 @@ pub fn system(
                             coordinates.center.1 as f32,
                         );
 
-                        let material = materials.add(Color::rgb(0.369, 0.506, 0.675));
+                        let material = materials.add(Color::srgb(0.369, 0.506, 0.675));
 
                         commands.entity(entity).with_children(
                             #[coverage(off)]

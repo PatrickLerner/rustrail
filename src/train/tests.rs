@@ -20,7 +20,7 @@ fn bundle_initializer() {
     assert!(bundle.mass.0 > 0.0);
     assert_eq!(bundle.name.0, "");
 
-    app.world.spawn(bundle);
+    app.world_mut().spawn(bundle);
 
     let bundle = EngineBundle::default();
 
@@ -33,7 +33,7 @@ fn bundle_initializer() {
     assert!(bundle.mass.0 > 0.0);
     assert!(bundle.max_speed.0 > 0.0);
 
-    app.world.spawn(bundle);
+    app.world_mut().spawn(bundle);
 
     let bundle = WagonBundle::default();
 
@@ -41,7 +41,7 @@ fn bundle_initializer() {
     assert_eq!(bundle.speed.0, 0.0);
     assert_eq!(bundle.max_speed.0, 0.0);
 
-    app.world.spawn(bundle);
+    app.world_mut().spawn(bundle);
 }
 
 #[test]
@@ -52,7 +52,7 @@ fn train_bundle_initializer() {
 
     assert_eq!(bundle.speed.0, 0.0);
 
-    app.world.spawn(bundle);
+    app.world_mut().spawn(bundle);
 }
 
 #[test]

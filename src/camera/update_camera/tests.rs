@@ -16,9 +16,9 @@ fn mock_egui_is_locked() -> EguiUnlocked {
 fn no_movement() {
     let mut app = App::new();
 
-    app.world.insert_resource(OriginOffset::default());
-    app.world.insert_resource(HeightMap::test_dummy());
-    let camera = app.world.spawn(GameCameraBundle::default()).id();
+    app.world_mut().insert_resource(OriginOffset::default());
+    app.world_mut().insert_resource(HeightMap::test_dummy());
+    let camera = app.world_mut().spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
     app.add_event::<MouseWheel>();
@@ -31,9 +31,9 @@ fn no_movement() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // we move back by radius and radius defaults to 1.0
@@ -41,13 +41,13 @@ fn no_movement() {
     }
 
     // move mouse but no clicks changes nothing
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(10.0, 10.0),
         });
 
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(3.0, 12.0),
@@ -57,9 +57,9 @@ fn no_movement() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // we move back by radius and radius defaults to 1.0
@@ -71,9 +71,9 @@ fn no_movement() {
 fn zoom_in_out() {
     let mut app = App::new();
 
-    app.world.insert_resource(OriginOffset::default());
-    app.world.insert_resource(HeightMap::test_dummy());
-    let camera = app.world.spawn(GameCameraBundle::default()).id();
+    app.world_mut().insert_resource(OriginOffset::default());
+    app.world_mut().insert_resource(HeightMap::test_dummy());
+    let camera = app.world_mut().spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
     app.add_event::<MouseWheel>();
@@ -84,7 +84,7 @@ fn zoom_in_out() {
     app.add_systems(Update, mock_egui_is_unlocked.pipe(system));
 
     // scrolling up
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseWheel>>()
         .send(MouseWheel {
             unit: MouseScrollUnit::Pixel,
@@ -97,18 +97,18 @@ fn zoom_in_out() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // we move back by radius and radius defaults to 1.0, so it must be smaller
         assert!(transform.translation.z < 1.0);
 
         let state = app
-            .world
+            .world_mut()
             .query::<&GameCameraState>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // it zoomed in
@@ -116,7 +116,7 @@ fn zoom_in_out() {
     }
 
     // scrolling down
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseWheel>>()
         .send(MouseWheel {
             unit: MouseScrollUnit::Pixel,
@@ -129,18 +129,18 @@ fn zoom_in_out() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // we move back by radius and radius defaults to 1.0, so it must be now at one again
         assert_eq!(transform.translation.z, 1.0);
 
         let state = app
-            .world
+            .world_mut()
             .query::<&GameCameraState>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // it zoomed out again
@@ -148,7 +148,7 @@ fn zoom_in_out() {
     }
 
     // scrolling down (mouse wheel)
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseWheel>>()
         .send(MouseWheel {
             unit: MouseScrollUnit::Line,
@@ -161,18 +161,18 @@ fn zoom_in_out() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // we move back by radius and radius defaults to 1.0, so it must be now be larger
         assert!(transform.translation.z > 1.0);
 
         let state = app
-            .world
+            .world_mut()
             .query::<&GameCameraState>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // it zoomed out even more
@@ -184,9 +184,9 @@ fn zoom_in_out() {
 fn panning_with_egui_locked() {
     let mut app = App::new();
 
-    app.world.insert_resource(OriginOffset::default());
-    app.world.insert_resource(HeightMap::test_dummy());
-    let camera = app.world.spawn(GameCameraBundle::default()).id();
+    app.world_mut().insert_resource(OriginOffset::default());
+    app.world_mut().insert_resource(HeightMap::test_dummy());
+    let camera = app.world_mut().spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
     app.add_event::<MouseWheel>();
@@ -197,7 +197,7 @@ fn panning_with_egui_locked() {
 
     app.add_systems(Update, mock_egui_is_locked.pipe(system));
 
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(300.0, 300.0),
@@ -207,9 +207,9 @@ fn panning_with_egui_locked() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         assert_eq!(transform.translation.z, 1.0);
@@ -221,9 +221,9 @@ fn panning_with_egui_locked() {
 fn panning() {
     let mut app = App::new();
 
-    app.world.insert_resource(OriginOffset::default());
-    app.world.insert_resource(HeightMap::test_dummy());
-    let camera = app.world.spawn(GameCameraBundle::default()).id();
+    app.world_mut().insert_resource(OriginOffset::default());
+    app.world_mut().insert_resource(HeightMap::test_dummy());
+    let camera = app.world_mut().spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
     app.add_event::<MouseWheel>();
@@ -234,7 +234,7 @@ fn panning() {
 
     app.add_systems(Update, mock_egui_is_unlocked.pipe(system));
 
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(300.0, 300.0),
@@ -244,9 +244,9 @@ fn panning() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // we moved forward and left
@@ -261,9 +261,9 @@ fn panning() {
 fn orbit() {
     let mut app = App::new();
 
-    app.world.insert_resource(OriginOffset::default());
-    app.world.insert_resource(HeightMap::test_dummy());
-    let camera = app.world.spawn(GameCameraBundle::default()).id();
+    app.world_mut().insert_resource(OriginOffset::default());
+    app.world_mut().insert_resource(HeightMap::test_dummy());
+    let camera = app.world_mut().spawn(GameCameraBundle::default()).id();
 
     app.add_event::<MouseMotion>();
     app.add_event::<MouseWheel>();
@@ -280,7 +280,7 @@ fn orbit() {
     // this ensures that the current result is the same, but does not
     // test details of the implementation
 
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(362.0, 300.0),
@@ -289,7 +289,7 @@ fn orbit() {
     app.update();
 
     // 360 no-scope
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(3000.0, 3000.0),
@@ -297,7 +297,7 @@ fn orbit() {
 
     app.update();
 
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(-3000.0, -3000.0),
@@ -307,7 +307,7 @@ fn orbit() {
 
     // test upside down on start
 
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(0.0, -1700.0),
@@ -315,7 +315,7 @@ fn orbit() {
 
     app.update();
 
-    app.world
+    app.world_mut()
         .resource_mut::<Events<MouseMotion>>()
         .send(MouseMotion {
             delta: Vec2::new(0.0, 100.0),
@@ -325,9 +325,9 @@ fn orbit() {
 
     {
         let transform = app
-            .world
+            .world_mut()
             .query::<&Transform>()
-            .get(&app.world, camera)
+            .get(&app.world(), camera)
             .unwrap();
 
         // we turn up and left

@@ -4,7 +4,7 @@ mod tests;
 use crate::train::{
     Acceleration, ForceAirResistance, ForceBraking, ForceDriving, ForceFriction, Mass, Speed,
 };
-use bevy::{prelude::*, utils::petgraph::matrix_graph::Zero};
+use bevy::prelude::*;
 
 pub fn system(
     mut entries: Query<(
@@ -27,7 +27,7 @@ pub fn system(
         mass,
     ) in entries.iter_mut()
     {
-        if mass.0.is_zero() {
+        if mass.0 == 0.0 {
             acceleration.0 = 0.0;
             return;
         }

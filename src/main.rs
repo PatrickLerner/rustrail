@@ -37,7 +37,7 @@ fn main() {
         ))
         .insert_resource(WireframeConfig {
             global: false,
-            default_color: Color::hex("8FBCBB").unwrap(),
+            default_color: Srgba::hex("8FBCBB").unwrap().into(),
         })
         .add_plugins(EguiPlugin)
         .add_plugins(train::TrainPlugins)

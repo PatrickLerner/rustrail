@@ -9,7 +9,7 @@ enum GenTrainMode {
 
 #[coverage(off)]
 fn gen_train(app: &mut App, weight: f32, mode: GenTrainMode) -> Entity {
-    app.world
+    app.world_mut()
         .spawn((
             Acceleration(0.0),
             Speed(30.0),
@@ -39,13 +39,13 @@ fn positive_force_balance() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(train_id).is_some());
-    assert!(app.world.get::<Acceleration>(train_id).unwrap().0 > 0.0);
+    assert!(app.world().get::<Acceleration>(train_id).is_some());
+    assert!(app.world().get::<Acceleration>(train_id).unwrap().0 > 0.0);
 
     // inverse driving force
 
     let train_id = app
-        .world
+        .world_mut()
         .spawn((
             Acceleration(0.0),
             Speed(0.0),
@@ -59,8 +59,8 @@ fn positive_force_balance() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(train_id).is_some());
-    assert!(app.world.get::<Acceleration>(train_id).unwrap().0 < 0.0);
+    assert!(app.world().get::<Acceleration>(train_id).is_some());
+    assert!(app.world().get::<Acceleration>(train_id).unwrap().0 < 0.0);
 }
 
 #[test]
@@ -72,13 +72,13 @@ fn negative_force_balance() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(train_id).is_some());
-    assert!(app.world.get::<Acceleration>(train_id).unwrap().0 < 0.0);
+    assert!(app.world().get::<Acceleration>(train_id).is_some());
+    assert!(app.world().get::<Acceleration>(train_id).unwrap().0 < 0.0);
 
     // inverse speed
 
     let train_id = app
-        .world
+        .world_mut()
         .spawn((
             Acceleration(0.0),
             Speed(-100.0),
@@ -92,8 +92,8 @@ fn negative_force_balance() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(train_id).is_some());
-    assert!(app.world.get::<Acceleration>(train_id).unwrap().0 > 0.0);
+    assert!(app.world().get::<Acceleration>(train_id).is_some());
+    assert!(app.world().get::<Acceleration>(train_id).unwrap().0 > 0.0);
 }
 
 #[test]
@@ -102,7 +102,7 @@ fn clamp_to_speed_if_deceleration_is_more() {
     app.add_systems(Update, system);
 
     let train_id = app
-        .world
+        .world_mut()
         .spawn((
             Acceleration(0.0),
             Speed(5.0),
@@ -116,13 +116,13 @@ fn clamp_to_speed_if_deceleration_is_more() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(train_id).is_some());
-    assert_eq!(app.world.get::<Acceleration>(train_id).unwrap().0, -5.0);
+    assert!(app.world().get::<Acceleration>(train_id).is_some());
+    assert_eq!(app.world().get::<Acceleration>(train_id).unwrap().0, -5.0);
 
     // inverse speed
 
     let train_id = app
-        .world
+        .world_mut()
         .spawn((
             Acceleration(0.0),
             Speed(-5.0),
@@ -136,8 +136,8 @@ fn clamp_to_speed_if_deceleration_is_more() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(train_id).is_some());
-    assert_eq!(app.world.get::<Acceleration>(train_id).unwrap().0, 5.0);
+    assert!(app.world().get::<Acceleration>(train_id).is_some());
+    assert_eq!(app.world().get::<Acceleration>(train_id).unwrap().0, 5.0);
 }
 
 #[test]
@@ -150,11 +150,11 @@ fn heavier_things_accelerate_less() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(low_weight).is_some());
-    assert!(app.world.get::<Acceleration>(high_weight).is_some());
+    assert!(app.world().get::<Acceleration>(low_weight).is_some());
+    assert!(app.world().get::<Acceleration>(high_weight).is_some());
     assert!(
-        app.world.get::<Acceleration>(high_weight).unwrap().0
-            < app.world.get::<Acceleration>(low_weight).unwrap().0
+        app.world().get::<Acceleration>(high_weight).unwrap().0
+            < app.world().get::<Acceleration>(low_weight).unwrap().0
     );
 }
 
@@ -168,11 +168,11 @@ fn heavier_things_decelerate_less() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(low_weight).is_some());
-    assert!(app.world.get::<Acceleration>(high_weight).is_some());
+    assert!(app.world().get::<Acceleration>(low_weight).is_some());
+    assert!(app.world().get::<Acceleration>(high_weight).is_some());
     assert!(
-        app.world.get::<Acceleration>(high_weight).unwrap().0
-            > app.world.get::<Acceleration>(low_weight).unwrap().0
+        app.world().get::<Acceleration>(high_weight).unwrap().0
+            > app.world().get::<Acceleration>(low_weight).unwrap().0
     );
 }
 
@@ -185,6 +185,6 @@ fn no_mass() {
 
     app.update();
 
-    assert!(app.world.get::<Acceleration>(train_id).is_some());
-    assert_eq!(app.world.get::<Acceleration>(train_id).unwrap().0, 0.0);
+    assert!(app.world().get::<Acceleration>(train_id).is_some());
+    assert_eq!(app.world().get::<Acceleration>(train_id).unwrap().0, 0.0);
 }

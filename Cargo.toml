@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-bevy = "0.13"
-bevy_egui = "0.27"
+bevy = "0.14"
+bevy_egui = "0.28"
 georaster = "0.1"
 log = "0.4"
 proj = "0.27"
@@ -17,7 +17,7 @@ wrapped_value_derive_macro = { path = "lib/wrapped_value_derive_macro" }
 earcutr = "0.4"
 geo = "0.28"
 fast_poisson = "1.0.0"
-iyes_perf_ui = "0.2"
+iyes_perf_ui = "0.3"
 toml = "0.8"
 
 [dev-dependencies]

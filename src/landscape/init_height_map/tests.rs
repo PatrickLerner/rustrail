@@ -8,6 +8,6 @@ fn initiate_resources() {
 
     app.update();
 
-    assert!(app.world.contains_resource::<HeightMap>());
-    assert!(app.world.contains_resource::<OriginOffset>());
+    assert!(app.world().contains_resource::<HeightMap>());
+    assert!(app.world().contains_resource::<OriginOffset>());
 }
