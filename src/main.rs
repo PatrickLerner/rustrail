@@ -20,6 +20,8 @@ use landscape::{BALLAST_HEIGHT, RAIL_HEIGHT};
 
 const TRAIN_HEIGHT_OFFSET: f32 = BALLAST_HEIGHT + RAIL_HEIGHT;
 
+// marker methods for system ordering
+#[coverage(off)]
 fn moving_things() {}
 
 #[coverage(off)]
