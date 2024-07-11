@@ -106,6 +106,37 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ..default()
                 });
             }
+
+            if ui.small_button("BR 52 (with passenger wagons)").clicked() {
+                *id += 1;
+                let engine = commands
+                    .spawn(EngineBundle::from_file("assets/models/BR52.toml"))
+                    .insert(Name(format!("BR 52 {:0>3}", id.to_string())))
+                    .id();
+
+                let tender = commands
+                    .spawn(WagonBundle::from_file("assets/models/BR52_tender.toml"))
+                    .id();
+
+                let mut components = vec![
+                    TrainComponent::Engine(engine),
+                    TrainComponent::Wagon(tender),
+                ];
+
+                for _ in 0..3 {
+                    components.push(TrainComponent::Wagon(
+                        commands
+                            .spawn(WagonBundle::from_file("assets/models/nwagen.toml"))
+                            .id(),
+                    ));
+                }
+
+                commands.spawn(TrainBundle {
+                    name: Name("RB 61".to_string()),
+                    composition: TrainComposition { components },
+                    ..default()
+                });
+            }
         },
     );
 }

@@ -1,0 +1,6 @@
+file_name = "BR52_tender.glb"
+max_speed = 80
+mass = 58700
+
+[dimension]
+length = 9.1
