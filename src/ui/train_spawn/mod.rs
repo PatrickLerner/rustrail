@@ -266,6 +266,29 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ..default()
                 });
             }
+
+            if ui.small_button("VT98").clicked() {
+                *id += 1;
+                let engine = commands
+                    .spawn(EngineBundle::from_file("assets/models/VT98.toml"))
+                    .insert(Name(format!("VT 98 {:0>3}", id.to_string())))
+                    .id();
+
+                let control_car = commands
+                    .spawn(WagonBundle::from_file("assets/models/VS98.toml"))
+                    .id();
+
+                let components = vec![
+                    TrainComponent::Engine(engine),
+                    TrainComponent::Wagon(control_car),
+                ];
+
+                commands.spawn(TrainBundle {
+                    name: Name("RB 61".to_string()),
+                    composition: TrainComposition { components },
+                    ..default()
+                });
+            }
         },
     );
 }
