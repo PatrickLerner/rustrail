@@ -1,0 +1,11 @@
+Model Information:
+* title:	Baden VI c
+* source:	https://sketchfab.com/3d-models/baden-vi-c-vlc75-locomotive-107922713e7c4e4baf15c44e6afbe846
+* author:	Basic Hsu (https://sketchfab.com/Hsu.Pei.Ge)
+
+Model License:
+* license type:	CC-SA-4.0 (https://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Bombardier Traxx" (https://sketchfab.com/3d-models/baden-vi-c-vlc75-locomotive-107922713e7c4e4baf15c44e6afbe846) by Basic Hsu (https://sketchfab.com/Hsu.Pei.Ge) licensed under CC-SA-4.0 (https://creativecommons.org/licenses/by/4.0/a)

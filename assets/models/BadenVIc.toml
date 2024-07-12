@@ -1,0 +1,7 @@
+file_name = "BadenVIc.glb"
+max_speed = 90
+mass = 76200
+max_power = 580
+
+[dimension]
+length = 13.38
