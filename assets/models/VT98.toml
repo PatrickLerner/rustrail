@@ -1,0 +1,7 @@
+file_name = "VT98.glb"
+max_speed = 90
+mass = 20500
+max_power = 220
+
+[dimension]
+length = 13.95

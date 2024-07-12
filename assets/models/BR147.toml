@@ -1,0 +1,7 @@
+file_name = "BR147.glb"
+max_speed = 160
+mass = 84000
+max_power = 5600
+
+[dimension]
+length = 18.9

@@ -1,0 +1,6 @@
+file_name = "VS98.glb"
+max_speed = 90
+mass = 10500
+
+[dimension]
+length = 13.95

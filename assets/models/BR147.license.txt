@@ -1,0 +1,12 @@
+Model Information:
+* title:	Traxx 3 DB
+* source:	https://sketchfab.com/3d-models/traxx-3-db-0e2c8cf53e2241bca6866aca3fcd9b53
+* author:	newvoxel (https://sketchfab.com/newvoxel)
+
+Model License:
+* license type:	CC-SA-4.0 (https://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Traxx 3 DB" (https://sketchfab.com/3d-models/traxx-3-db-0e2c8cf53e2241bca6866aca3fcd9b53) by newvoxel (https://sketchfab.com/newvoxel) licensed under CC-SA-4.0 (https://creativecommons.org/licenses/by/4.0/a)
+

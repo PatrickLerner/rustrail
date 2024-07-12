@@ -1,0 +1,11 @@
+Model Information:
+* title:	VT98
+* source:	https://sketchfab.com/3d-models/vt98-uerdinger-schienenbus-a0c800fcd16f45ac8b9e0eb51721f801
+* author:	accessviolation (https://sketchfab.com/accessviolation)
+
+Model License:
+* license type:	CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "VT98" (https://sketchfab.com/3d-models/vt98-uerdinger-schienenbus-a0c800fcd16f45ac8b9e0eb51721f801) by accessviolation (https://sketchfab.com/accessviolation) licensed under CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)

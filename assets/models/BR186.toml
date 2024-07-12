@@ -1,0 +1,7 @@
+file_name = "BR186.glb"
+max_speed = 160
+mass = 85000
+max_power = 5600
+
+[dimension]
+length = 18.9

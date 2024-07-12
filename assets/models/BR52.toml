@@ -1,0 +1,7 @@
+file_name = "BR52.glb"
+max_speed = 80
+mass = 84000
+max_power = 1192
+
+[dimension]
+length = 13.875

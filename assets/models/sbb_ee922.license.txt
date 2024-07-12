@@ -1,0 +1,11 @@
+Model Information:
+* title:	sbb ee922
+* source:	https://sketchfab.com/3d-models/stormworks-export-sbb-ee922-shunter-train-4b9bc602d07d4358b34e00b29416b778
+* author:	zizo.chti (https://sketchfab.com/zizo.chti)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "sbb ee922" (https://sketchfab.com/3d-models/stormworks-export-sbb-ee922-shunter-train-4b9bc602d07d4358b34e00b29416b778) by zizo.chti (https://sketchfab.com/zizo.chti) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
