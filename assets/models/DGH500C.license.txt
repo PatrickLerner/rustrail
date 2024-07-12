@@ -1,0 +1,11 @@
+Model Information:
+* title:	DGH 500 C
+* source:	https://sketchfab.com/3d-models/henschel-dhg-500-c-for-cities-skylines-0929ffb7078347db81a4ec57cf17cb96
+* author:	accessviolation (https://sketchfab.com/accessviolation)
+
+Model License:
+* license type:	CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)
+* requirements:	Author must be credited. No commercial use. Modified versions must have the same license.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "DGH 500 C" (https://sketchfab.com/3d-models/henschel-dhg-500-c-for-cities-skylines-0929ffb7078347db81a4ec57cf17cb96) by accessviolation (https://sketchfab.com/accessviolation) licensed under CC-BY-NC-SA-4.0 (http://creativecommons.org/licenses/by-nc-sa/4.0/)

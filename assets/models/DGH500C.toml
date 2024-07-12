@@ -1,0 +1,7 @@
+file_name = "DHG500C.glb"
+max_speed = 60
+mass = 50000
+max_power = 368
+
+[dimension]
+length = 9.9
