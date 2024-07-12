@@ -1,0 +1,7 @@
+file_name = "sbb_ee922.glb"
+max_speed = 100
+mass = 44000
+max_power = 612
+
+[dimension]
+length = 9.53
