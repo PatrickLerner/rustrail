@@ -18,6 +18,8 @@ type TrainControlQuery<'a> = (
     &'a mut BrakeLever,
 );
 
+const MAX_SPEED_WHEN_REVERSING: f32 = 8.0 /* km/h */ / 3.6;
+
 #[coverage(off)]
 fn train_controls(
     mut selected_engine: Local<Option<Entity>>,
@@ -88,7 +90,8 @@ fn train_controls(
                             ui.separator();
                             ui.label(format!("{:.2} t", mass.0 / 1000.0));
                             ui.separator();
-                            let can_change_direction = speed.0 < 0.1 && speed.0 > -0.1;
+                            let can_change_direction = speed.0.abs() < MAX_SPEED_WHEN_REVERSING
+                                && throttle_lever.percentage == 0.0;
                             if ui
                                 .small_button(format!("{:?}", throttle_lever.direction))
                                 .clicked()
