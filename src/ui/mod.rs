@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests;
 
+mod camera_position;
 mod train_controls;
 mod train_spawn;
 
@@ -54,6 +55,7 @@ impl PluginGroup for UIPlugins {
             .add(bevy::diagnostic::EntityCountDiagnosticsPlugin)
             .add(PerfUiPlugin)
             .add(UIPlugin)
+            .add(camera_position::CameraPositionPlugin)
             .add(train_controls::TrainControlsPlugin)
             .add(train_spawn::TrainSpawnPlugin)
     }

@@ -131,7 +131,7 @@ pub fn system(
             state.center += vec;
             state.center.y = height_map.height_at_position(
                 state.center.x as f64 + origin_offset.0 .0,
-                state.center.y as f64 + origin_offset.0 .1,
+                -state.center.z as f64 + origin_offset.0 .1,
             );
         }
 
