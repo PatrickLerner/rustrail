@@ -19,7 +19,7 @@ Germany's topography.
 
 Requires a download of OpenStreetMap Data (e.g. [geofabrik][]) that must be placed in `assets/` folder.
 
-[geofabrik]: https://download.geofabrik.de/europe/germany/saarland.html
+[geofabrik]: https://download.geofabrik.de/europe/germany/hessen.html
 
 ## Research / Sources
 
