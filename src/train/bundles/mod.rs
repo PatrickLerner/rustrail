@@ -47,6 +47,7 @@ pub struct EngineBundle {
     force_air_resistance: ForceAirResistance,
     load_model_file: LoadModelFile,
     air_pressure: AirPressure,
+    air_pressure_delta: AirPressureDelta,
 }
 
 #[derive(Deserialize)]

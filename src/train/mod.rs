@@ -110,15 +110,28 @@ pub struct Mass(pub f32);
 // m
 pub struct Distance(pub f32);
 
-#[derive(Component, Default, WrappedValue)]
+#[derive(Component, Default)]
 // bar
 pub struct AirPressure(pub f32);
+
+impl WrappedValue for AirPressure {
+    fn get(&self) -> f32 {
+        self.0
+    }
+
+    fn set(&mut self, value: f32) {
+        self.0 = value.clamp(0.0, 5.0);
+    }
+}
 
 #[derive(Component, Default, Clone, Deserialize)]
 pub struct Dimension {
     // m
     pub length: f32,
 }
+
+#[derive(Component, Default, WrappedValue)]
+pub struct AirPressureDelta(pub f32);
 
 pub enum TrainComponent {
     Engine(Entity),

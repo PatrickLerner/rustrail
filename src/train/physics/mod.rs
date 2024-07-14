@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests;
 
+mod add_sum_component_values_to_train;
 mod apply_first_component_value_to_train;
 mod apply_min_component_value_to_train;
 mod apply_sum_component_values_to_train;
@@ -24,6 +25,7 @@ impl Plugin for TrainPhysicsPlugin {
         app.add_systems(
             Update,
             (
+                add_sum_component_values_to_train::system::<AirPressureDelta, AirPressure>,
                 apply_train_value_to_components::system::<AirPressure>,
                 apply_train_value_to_components::system::<Speed>,
                 apply_min_component_value_to_train::system::<MaxSpeed>,

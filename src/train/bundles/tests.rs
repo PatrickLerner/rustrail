@@ -41,8 +41,13 @@ fn train_bundle_initializer() {
     let mut app = App::default();
 
     let bundle = TrainBundle::default();
-
     assert_eq!(bundle.speed.0, 0.0);
+
+    app.world_mut().spawn(bundle);
+
+    let bundle = TrainBundle::new("Test", vec![TrainComponent::Engine(Entity::from_raw(123))]);
+    assert_eq!(bundle.name.0, "Test");
+    assert_eq!(bundle.composition.entities(), vec![Entity::from_raw(123)]);
 
     app.world_mut().spawn(bundle);
 }
