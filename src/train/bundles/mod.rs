@@ -7,17 +7,28 @@ use serde::Deserialize;
 
 #[derive(Bundle, Default)]
 pub struct TrainBundle {
-    pub name: Name,
-    pub composition: TrainComposition,
-    pub speed: Speed,
-    pub max_speed: MaxSpeed,
-    pub mass: Mass,
-    pub acceleration: Acceleration,
-    pub distance: Distance,
-    pub force_driving: ForceDriving,
-    pub force_braking: ForceBraking,
-    pub force_friction: ForceFriction,
-    pub force_air_resistance: ForceAirResistance,
+    name: Name,
+    composition: TrainComposition,
+    speed: Speed,
+    max_speed: MaxSpeed,
+    mass: Mass,
+    acceleration: Acceleration,
+    distance: Distance,
+    force_driving: ForceDriving,
+    force_braking: ForceBraking,
+    force_friction: ForceFriction,
+    force_air_resistance: ForceAirResistance,
+    air_pressure: AirPressure,
+}
+
+impl TrainBundle {
+    pub fn new(name: &str, components: Vec<TrainComponent>) -> Self {
+        Self {
+            name: Name(name.to_string()),
+            composition: TrainComposition { components },
+            ..default()
+        }
+    }
 }
 
 #[derive(Bundle, Default)]
@@ -35,6 +46,7 @@ pub struct EngineBundle {
     force_friction: ForceFriction,
     force_air_resistance: ForceAirResistance,
     load_model_file: LoadModelFile,
+    air_pressure: AirPressure,
 }
 
 #[derive(Deserialize)]
@@ -64,13 +76,14 @@ impl EngineBundle {
 
 #[derive(Bundle, Default)]
 pub struct WagonBundle {
-    pub mass: Mass,
-    pub max_speed: MaxSpeed,
-    pub speed: Speed,
-    pub dimension: Dimension,
-    pub force_friction: ForceFriction,
-    pub force_air_resistance: ForceAirResistance,
-    pub load_model_file: LoadModelFile,
+    mass: Mass,
+    max_speed: MaxSpeed,
+    speed: Speed,
+    dimension: Dimension,
+    force_friction: ForceFriction,
+    force_air_resistance: ForceAirResistance,
+    load_model_file: LoadModelFile,
+    air_pressure: AirPressure,
 }
 
 #[derive(Deserialize)]

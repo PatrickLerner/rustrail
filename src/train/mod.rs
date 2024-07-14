@@ -110,6 +110,10 @@ pub struct Mass(pub f32);
 // m
 pub struct Distance(pub f32);
 
+#[derive(Component, Default, WrappedValue)]
+// bar
+pub struct AirPressure(pub f32);
+
 #[derive(Component, Default, Clone, Deserialize)]
 pub struct Dimension {
     // m
