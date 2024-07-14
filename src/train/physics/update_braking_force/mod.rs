@@ -1,15 +1,16 @@
 #[cfg(test)]
 mod tests;
 
-use crate::train::{BrakeLever, ForceBraking, Mass};
+use super::{AirPressure, ForceBraking, Mass, MAX_AIR_PRESSURE};
 use bevy::prelude::*;
 
-pub fn system(mut entries: Query<(&mut ForceBraking, &Mass, &BrakeLever)>) {
+pub fn system(mut entries: Query<(&mut ForceBraking, &Mass, &AirPressure)>) {
     let friction_coefficient = 0.3;
     let g = 9.81;
 
-    for (mut friction, mass, brake_lever) in entries.iter_mut() {
+    for (mut braking, mass, air_pressure) in entries.iter_mut() {
         let n = mass.0 * g;
-        friction.0 = friction_coefficient * n * brake_lever.percentage;
+        let pressure_percentage = (MAX_AIR_PRESSURE - air_pressure.0) / MAX_AIR_PRESSURE;
+        braking.0 = friction_coefficient * n * pressure_percentage;
     }
 }

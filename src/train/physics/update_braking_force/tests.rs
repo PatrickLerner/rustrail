@@ -2,9 +2,9 @@ use super::*;
 use coverage_helper::test;
 
 #[coverage(off)]
-fn spawn_train(app: &mut App, brake: BrakeLever, mass: f32) -> Entity {
+fn spawn_train(app: &mut App, air_pressure: AirPressure, mass: f32) -> Entity {
     app.world_mut()
-        .spawn((ForceBraking::default(), Mass(mass), brake))
+        .spawn((ForceBraking::default(), Mass(mass), air_pressure))
         .id()
 }
 
@@ -13,7 +13,7 @@ fn no_brake_no_force() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
-    let train_id = spawn_train(&mut app, BrakeLever::default(), 7000.0);
+    let train_id = spawn_train(&mut app, AirPressure(MAX_AIR_PRESSURE), 7000.0);
 
     app.update();
 
@@ -26,7 +26,7 @@ fn brake_applies_force() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
-    let train_id = spawn_train(&mut app, BrakeLever { percentage: 0.2 }, 7000.0);
+    let train_id = spawn_train(&mut app, AirPressure(4.8), 7000.0);
 
     app.update();
 
@@ -39,9 +39,9 @@ fn more_brake_more_force() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
-    let low_brake = spawn_train(&mut app, BrakeLever { percentage: 0.2 }, 7000.);
+    let low_brake = spawn_train(&mut app, AirPressure(4.8), 7000.);
 
-    let high_brake = spawn_train(&mut app, BrakeLever { percentage: 1.0 }, 7000.);
+    let high_brake = spawn_train(&mut app, AirPressure(0.0), 7000.);
 
     app.update();
 
@@ -58,9 +58,9 @@ fn more_weight_more_brake() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
-    let low_weight = spawn_train(&mut app, BrakeLever { percentage: 0.2 }, 7000.);
+    let low_weight = spawn_train(&mut app, AirPressure(4.8), 7000.);
 
-    let high_weight = spawn_train(&mut app, BrakeLever { percentage: 0.2 }, 70000.);
+    let high_weight = spawn_train(&mut app, AirPressure(4.8), 70000.);
 
     app.update();
 

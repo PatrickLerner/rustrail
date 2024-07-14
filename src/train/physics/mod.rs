@@ -7,6 +7,7 @@ mod apply_min_component_value_to_train;
 mod apply_sum_component_values_to_train;
 mod apply_train_value_to_components;
 mod update_acceleration;
+mod update_air_pressure_delta;
 mod update_air_resistance;
 mod update_braking_force;
 mod update_distance;
@@ -48,6 +49,7 @@ impl Plugin for TrainPhysicsPlugin {
                 update_speed::system,
                 update_distance::system,
                 update_train_location::system,
+                update_air_pressure_delta::system,
             ),
         );
     }
