@@ -1,6 +1,7 @@
 use super::*;
 use coverage_helper::test;
 
+#[coverage(off)]
 fn spawn_engine(app: &mut App, air_pressure: f32, engine_brake: f32) -> Entity {
     app.world_mut()
         .spawn((

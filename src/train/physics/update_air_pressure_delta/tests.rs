@@ -1,6 +1,7 @@
 use super::*;
 use coverage_helper::test;
 
+#[coverage(off)]
 fn spawn_train(app: &mut App, air_pressure: f32, release_valve: f32) -> Entity {
     app.world_mut()
         .spawn((

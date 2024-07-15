@@ -3,7 +3,7 @@ use crate::train::Direction;
 use coverage_helper::test;
 
 #[coverage(off)]
-fn spawn_engine(app: &mut App, throttle: ThrottleLever, speed: f32) -> Entity {
+fn spawn_engine(app: &mut App, throttle: ThrottleLever, speed: f32, brake: BrakeLever) -> Entity {
     app.world_mut()
         .spawn((
             Engine,
@@ -11,6 +11,7 @@ fn spawn_engine(app: &mut App, throttle: ThrottleLever, speed: f32) -> Entity {
             MaxPower(1000.0),
             Speed(speed),
             throttle,
+            brake,
         ))
         .id()
 }
@@ -20,7 +21,12 @@ fn no_throttle_no_force() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
-    let engine_id = spawn_engine(&mut app, ThrottleLever::default(), 0.0);
+    let engine_id = spawn_engine(
+        &mut app,
+        ThrottleLever::default(),
+        0.0,
+        BrakeLever::default(),
+    );
 
     app.update();
 
@@ -40,6 +46,7 @@ fn forward_throttle_forward_force() {
             direction: Direction::Forward,
         },
         0.0,
+        BrakeLever::default(),
     );
 
     app.update();
@@ -49,7 +56,7 @@ fn forward_throttle_forward_force() {
 }
 
 #[test]
-fn forward_throttle_backward_force() {
+fn backward_throttle_backward_force() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
@@ -60,6 +67,7 @@ fn forward_throttle_backward_force() {
             direction: Direction::Backward,
         },
         0.0,
+        BrakeLever::default(),
     );
 
     app.update();
@@ -80,6 +88,7 @@ fn more_throttle_more_force() {
             direction: Direction::Forward,
         },
         0.0,
+        BrakeLever::default(),
     );
 
     let high_throttle = spawn_engine(
@@ -89,6 +98,7 @@ fn more_throttle_more_force() {
             direction: Direction::Forward,
         },
         0.0,
+        BrakeLever::default(),
     );
 
     app.update();
@@ -113,6 +123,7 @@ fn more_speed_less_force() {
             direction: Direction::Forward,
         },
         0.0,
+        BrakeLever::default(),
     );
 
     let high_speed = spawn_engine(
@@ -122,6 +133,7 @@ fn more_speed_less_force() {
             direction: Direction::Forward,
         },
         30.0,
+        BrakeLever::default(),
     );
 
     app.update();
@@ -132,4 +144,52 @@ fn more_speed_less_force() {
         app.world().get::<ForceDriving>(low_speed).unwrap().0
             > app.world().get::<ForceDriving>(high_speed).unwrap().0
     );
+}
+
+#[test]
+fn brake_applied_no_force() {
+    let mut app = App::new();
+    app.add_systems(Update, system);
+
+    let engine_id = spawn_engine(
+        &mut app,
+        ThrottleLever {
+            percentage: 0.5,
+            direction: Direction::Forward,
+        },
+        10.0,
+        BrakeLever {
+            release_valve: 1.0,
+            engine_brake: 0.0,
+        },
+    );
+
+    app.update();
+
+    assert!(app.world().get::<ForceDriving>(engine_id).is_some());
+    assert_eq!(app.world().get::<ForceDriving>(engine_id).unwrap().0, 0.0);
+}
+
+#[test]
+fn engine_brake_applied_no_force() {
+    let mut app = App::new();
+    app.add_systems(Update, system);
+
+    let engine_id = spawn_engine(
+        &mut app,
+        ThrottleLever {
+            percentage: 0.5,
+            direction: Direction::Forward,
+        },
+        10.0,
+        BrakeLever {
+            release_valve: 0.0,
+            engine_brake: 1.0,
+        },
+    );
+
+    app.update();
+
+    assert!(app.world().get::<ForceDriving>(engine_id).is_some());
+    assert_eq!(app.world().get::<ForceDriving>(engine_id).unwrap().0, 0.0);
 }
