@@ -1,12 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-use super::{AirPressure, Engine, ForceBraking, Mass, Wagon, MAX_AIR_PRESSURE};
+use super::{AirPressure, EngineOrWagons, ForceBraking, Mass, MAX_AIR_PRESSURE};
 use bevy::prelude::*;
 
-pub fn system(
-    mut entries: Query<(&mut ForceBraking, &Mass, &AirPressure), Or<(With<Engine>, With<Wagon>)>>,
-) {
+pub fn system(mut entries: Query<(&mut ForceBraking, &Mass, &AirPressure), EngineOrWagons>) {
     let friction_coefficient = 0.3;
     let g = 9.81;
 

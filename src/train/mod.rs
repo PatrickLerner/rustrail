@@ -22,6 +22,8 @@ pub struct Engine;
 #[derive(Component, Default)]
 pub struct Wagon;
 
+type EngineOrWagons = Or<(With<Engine>, With<Wagon>)>;
+
 #[derive(Component, Default)]
 pub struct Name(pub String);
 

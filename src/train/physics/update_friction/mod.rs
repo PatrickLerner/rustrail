@@ -1,12 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-use crate::train::{ForceFriction, Mass};
+use crate::train::{EngineOrWagons, ForceFriction, Mass};
 use bevy::prelude::*;
 
-use super::{Engine, Wagon};
-
-pub fn system(mut entries: Query<(&mut ForceFriction, &Mass), Or<(With<Engine>, With<Wagon>)>>) {
+pub fn system(mut entries: Query<(&mut ForceFriction, &Mass), EngineOrWagons>) {
     let my_rolling = 0.002;
     let g = 9.81;
 
