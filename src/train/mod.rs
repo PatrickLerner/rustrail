@@ -2,6 +2,7 @@
 mod tests;
 
 mod bundles;
+mod forces;
 mod physics;
 mod render;
 mod track_location;
@@ -11,6 +12,7 @@ use serde::{Deserialize, Serialize};
 use wrapped_value_derive_macro::WrappedValue;
 
 pub use bundles::{EngineBundle, TrainBundle, WagonBundle};
+pub use forces::{ForceAirResistance, ForceBraking, ForceDriving, ForceFriction};
 pub use track_location::TrackLocation;
 
 #[derive(Component, Default)]
@@ -58,22 +60,6 @@ impl MaxSpeed {
         Self(value / 3.6)
     }
 }
-
-#[derive(Component, Default, Debug, WrappedValue)]
-// N
-pub struct ForceDriving(pub f32);
-
-#[derive(Component, Default, Debug, WrappedValue)]
-// N
-pub struct ForceBraking(pub f32);
-
-#[derive(Component, Default, Debug, WrappedValue)]
-// N
-pub struct ForceFriction(pub f32);
-
-#[derive(Component, Default, Debug, WrappedValue)]
-// N
-pub struct ForceAirResistance(pub f32);
 
 #[derive(Debug, PartialEq, Serialize, Deserialize, Clone, Copy)]
 pub enum Direction {
@@ -139,18 +125,18 @@ impl WrappedValue for AirPressure {
     }
 }
 
-#[derive(Component, Default, Clone, Deserialize)]
-pub struct Dimension {
-    // m
-    pub length: f32,
-}
-
 #[derive(Component, Default, WrappedValue)]
 pub struct AirPressureDelta(pub f32);
 
 pub enum TrainComponent {
     Engine(Entity),
     Wagon(Entity),
+}
+
+#[derive(Component, Default, Clone, Deserialize)]
+pub struct Dimension {
+    // m
+    pub length: f32,
 }
 
 #[derive(Component, Default)]
