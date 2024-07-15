@@ -14,6 +14,15 @@ pub use bundles::{EngineBundle, TrainBundle, WagonBundle};
 pub use track_location::TrackLocation;
 
 #[derive(Component, Default)]
+pub struct Train;
+
+#[derive(Component, Default)]
+pub struct Engine;
+
+#[derive(Component, Default)]
+pub struct Wagon;
+
+#[derive(Component, Default)]
 pub struct Name(pub String);
 
 #[derive(Component, Default, Debug)]
@@ -87,15 +96,17 @@ impl Direction {
 
 #[derive(Component, Default)]
 pub struct ThrottleLever {
-    // -1..1
+    // 0..1
     pub percentage: f32,
     pub direction: Direction,
 }
 
 #[derive(Component, Default)]
 pub struct BrakeLever {
-    // -1..1
-    pub percentage: f32,
+    // 0..1
+    pub release_valve: f32,
+    // 0..1
+    pub engine_brake: f32,
 }
 
 #[derive(Component, Default, Deserialize)]

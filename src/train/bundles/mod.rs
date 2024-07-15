@@ -7,6 +7,7 @@ use serde::Deserialize;
 
 #[derive(Bundle, Default)]
 pub struct TrainBundle {
+    train: Train,
     name: Name,
     composition: TrainComposition,
     speed: Speed,
@@ -33,6 +34,7 @@ impl TrainBundle {
 
 #[derive(Bundle, Default)]
 pub struct EngineBundle {
+    engine: Engine,
     name: Name,
     mass: Mass,
     max_power: MaxPower,
@@ -77,6 +79,7 @@ impl EngineBundle {
 
 #[derive(Bundle, Default)]
 pub struct WagonBundle {
+    wagon: Wagon,
     mass: Mass,
     max_speed: MaxSpeed,
     speed: Speed,

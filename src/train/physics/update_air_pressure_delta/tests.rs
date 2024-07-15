@@ -1,13 +1,14 @@
 use super::*;
 use coverage_helper::test;
 
-fn spawn_train(app: &mut App, air_pressure: f32, brake_percentage: f32) -> Entity {
+fn spawn_train(app: &mut App, air_pressure: f32, release_valve: f32) -> Entity {
     app.world_mut()
         .spawn((
             AirPressure(air_pressure),
             AirPressureDelta(0.0),
             BrakeLever {
-                percentage: brake_percentage,
+                release_valve,
+                engine_brake: 0.0,
             },
         ))
         .id()

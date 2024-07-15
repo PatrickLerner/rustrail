@@ -1,10 +1,12 @@
 #[cfg(test)]
 mod tests;
 
-use crate::train::{Direction, ForceDriving, MaxPower, Speed, ThrottleLever};
+use crate::train::{Direction, Engine, ForceDriving, MaxPower, Speed, ThrottleLever};
 use bevy::prelude::*;
 
-pub fn system(mut entries: Query<(&mut ForceDriving, &MaxPower, &Speed, &ThrottleLever)>) {
+pub fn system(
+    mut entries: Query<(&mut ForceDriving, &MaxPower, &Speed, &ThrottleLever), With<Engine>>,
+) {
     for (mut force_driving, max_power, speed, throttle_lever) in entries.iter_mut() {
         let direction = match throttle_lever.direction {
             Direction::Forward => 1.0,

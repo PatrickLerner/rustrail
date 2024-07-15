@@ -83,9 +83,18 @@ fn train_controls(
                                     .show_value(false),
                             );
                             ui.separator();
-                            ui.label(format!("Brake: {:.0}%", brake_lever.percentage * 100.0));
+                            ui.label(format!("Brake: {:.0}%", brake_lever.release_valve * 100.0));
                             ui.add(
-                                egui::Slider::new(&mut brake_lever.percentage, 0.0..=1.0)
+                                egui::Slider::new(&mut brake_lever.release_valve, 0.0..=1.0)
+                                    .show_value(false),
+                            );
+                            ui.separator();
+                            ui.label(format!(
+                                "Engine Brake: {:.0}%",
+                                brake_lever.engine_brake * 100.0
+                            ));
+                            ui.add(
+                                egui::Slider::new(&mut brake_lever.engine_brake, 0.0..=1.0)
                                     .show_value(false),
                             );
                             ui.separator();
