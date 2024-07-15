@@ -1,4 +1,5 @@
 use super::*;
+use crate::train::Engine;
 use coverage_helper::test;
 
 #[test]
