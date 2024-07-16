@@ -65,7 +65,7 @@ impl Default for Landscape {
     }
 }
 
-#[derive(Resource, Default)]
+#[derive(Resource, Default, Clone)]
 pub struct OriginOffset(pub CoordinatePoint);
 
 pub struct LandscapePlugin;

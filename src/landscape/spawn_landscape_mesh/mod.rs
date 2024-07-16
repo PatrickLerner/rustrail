@@ -17,13 +17,13 @@ pub struct ComputeMesh(Task<CommandQueue>);
 
 #[coverage(off)]
 pub fn system(
-    mut transform_tasks: Query<&mut ComputeMesh>,
+    mut tasks: Query<&mut ComputeMesh>,
     landscapes: Query<(Entity, &Landscape), Without<SpawnedMesh>>,
     origin_offset: Res<OriginOffset>,
     height_map: Res<HeightMap>,
     mut commands: Commands,
 ) {
-    for mut task in &mut transform_tasks {
+    for mut task in &mut tasks {
         if let Some(mut commands_queue) = block_on(future::poll_once(&mut task.0)) {
             // append the returned command queue to have it execute later
             commands.append(&mut commands_queue);
@@ -33,14 +33,12 @@ pub fn system(
     let thread_pool = AsyncComputeTaskPool::get();
 
     for (entity, landscape) in landscapes.iter() {
-        // TODO
         let landscape = landscape.clone();
-        let entity = entity.clone();
-        let origin_offset = origin_offset.0.clone();
         let height_map = height_map.clone();
+        let origin_offset = origin_offset.clone();
 
         let task = thread_pool.spawn(async move {
-            let position = landscape.position - origin_offset;
+            let position = landscape.position - origin_offset.0;
 
             log::debug!(
                 "Spawning landscape at {:?}",
