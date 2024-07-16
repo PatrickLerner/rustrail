@@ -10,7 +10,7 @@ pub fn wrapped_value_derive(input: TokenStream) -> TokenStream {
     let name = input.ident;
 
     let expanded = quote! {
-        impl WrappedValue for #name {
+        impl crate::train::WrappedValue for #name {
             fn get(&self) -> f32 {
                 self.0
             }

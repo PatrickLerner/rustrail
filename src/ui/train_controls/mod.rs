@@ -6,7 +6,7 @@ use bevy_egui::{egui, EguiContexts};
 
 use crate::{
     camera,
-    train::{BrakeLever, Mass, Name, Speed, ThrottleLever},
+    train::{AirPressure, BrakeLever, Mass, Name, Speed, ThrottleLever},
 };
 
 type TrainControlQuery<'a> = (
@@ -14,6 +14,7 @@ type TrainControlQuery<'a> = (
     &'a Name,
     &'a Speed,
     &'a Mass,
+    &'a AirPressure,
     &'a mut ThrottleLever,
     &'a mut BrakeLever,
 );
@@ -43,7 +44,7 @@ fn train_controls(
             options.push((train.0, train.1 .0.to_owned()));
         }
 
-        if let Ok((entity, name, speed, mass, mut throttle_lever, mut brake_lever)) =
+        if let Ok((entity, name, speed, mass, air_pressure, mut throttle_lever, mut brake_lever)) =
             trains.get_mut(entity)
         {
             egui::TopBottomPanel::bottom("info").show(
@@ -82,13 +83,24 @@ fn train_controls(
                                     .show_value(false),
                             );
                             ui.separator();
-                            ui.label(format!("Brake: {:.0}%", brake_lever.percentage * 100.0));
+                            ui.label(format!("Brake: {:.0}%", brake_lever.release_valve * 100.0));
                             ui.add(
-                                egui::Slider::new(&mut brake_lever.percentage, 0.0..=1.0)
+                                egui::Slider::new(&mut brake_lever.release_valve, 0.0..=1.0)
+                                    .show_value(false),
+                            );
+                            ui.separator();
+                            ui.label(format!(
+                                "Engine Brake: {:.0}%",
+                                brake_lever.engine_brake * 100.0
+                            ));
+                            ui.add(
+                                egui::Slider::new(&mut brake_lever.engine_brake, 0.0..=1.0)
                                     .show_value(false),
                             );
                             ui.separator();
                             ui.label(format!("{:.2} t", mass.0 / 1000.0));
+                            ui.separator();
+                            ui.label(format!("{:.2} bar", air_pressure.0));
                             ui.separator();
                             let can_change_direction = speed.0.abs() < MAX_SPEED_WHEN_REVERSING
                                 && throttle_lever.percentage == 0.0;

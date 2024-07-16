@@ -1,11 +1,14 @@
 #[cfg(test)]
 mod tests;
 
+mod add_sum_component_values_to_train;
 mod apply_first_component_value_to_train;
 mod apply_min_component_value_to_train;
 mod apply_sum_component_values_to_train;
 mod apply_train_value_to_components;
 mod update_acceleration;
+mod update_air_pressure_delta;
+mod update_air_pressure_engine_brake;
 mod update_air_resistance;
 mod update_braking_force;
 mod update_distance;
@@ -14,7 +17,7 @@ mod update_friction;
 mod update_speed;
 mod update_train_location;
 
-use super::{ForceAirResistance, ForceBraking, ForceDriving, ForceFriction, Mass, MaxSpeed, Speed};
+use super::*;
 use bevy::prelude::*;
 
 pub struct TrainPhysicsPlugin;
@@ -24,6 +27,8 @@ impl Plugin for TrainPhysicsPlugin {
         app.add_systems(
             Update,
             (
+                add_sum_component_values_to_train::system::<AirPressureDelta, AirPressure>,
+                apply_train_value_to_components::system::<AirPressure>,
                 apply_train_value_to_components::system::<Speed>,
                 apply_min_component_value_to_train::system::<MaxSpeed>,
                 apply_sum_component_values_to_train::system::<Mass>,
@@ -32,14 +37,22 @@ impl Plugin for TrainPhysicsPlugin {
                 apply_sum_component_values_to_train::system::<ForceFriction>,
                 // TODO: should not be first in list if driving backwards should be last
                 apply_first_component_value_to_train::system::<ForceAirResistance>,
+            ),
+        )
+        .add_systems(
+            Update,
+            (
                 update_drive_force::system,
-                update_braking_force::system,
                 update_friction::system,
                 update_air_resistance::system,
                 update_acceleration::system,
                 update_speed::system,
                 update_distance::system,
                 update_train_location::system,
+                update_air_pressure_delta::system,
+                update_air_pressure_engine_brake::system
+                    .after(apply_train_value_to_components::system::<AirPressure>),
+                update_braking_force::system.after(update_air_pressure_engine_brake::system),
             ),
         );
     }

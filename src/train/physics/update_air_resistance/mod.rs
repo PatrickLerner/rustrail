@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-use crate::train::{ForceAirResistance, Speed};
+use super::{EngineOrWagons, ForceAirResistance, Speed};
 use bevy::prelude::*;
 
-pub fn system(mut entries: Query<(&mut ForceAirResistance, &Speed)>) {
+pub fn system(mut entries: Query<(&mut ForceAirResistance, &Speed), EngineOrWagons>) {
     let air_density = 1.225; // kg/m^3
     let drag_coefficient = 0.8;
     let frontal_area = 10.0; // m^2

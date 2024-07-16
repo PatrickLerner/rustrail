@@ -1,9 +1,7 @@
 #[cfg(test)]
 mod tests;
 
-use crate::train::{
-    EngineBundle, Name, TrainBundle, TrainComponent, TrainComposition, WagonBundle,
-};
+use crate::train::{EngineBundle, Name, TrainBundle, TrainComponent, WagonBundle};
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
@@ -20,13 +18,10 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     .insert(Name(format!("BR 111 {:0>3}", id.to_string())))
                     .id();
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition {
-                        components: vec![TrainComponent::Engine(engine)],
-                    },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new(
+                    "RB 61",
+                    vec![TrainComponent::Engine(engine)],
+                ));
             }
 
             if ui.small_button("BR 111 (with wagons)").clicked() {
@@ -46,11 +41,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui
@@ -76,11 +67,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui.small_button("BR 111 (with passenger wagons)").clicked() {
@@ -100,11 +87,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui.small_button("BR 147 (with passenger wagons)").clicked() {
@@ -124,11 +107,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui.small_button("BR 186 (with passenger wagons)").clicked() {
@@ -148,11 +127,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui.small_button("BR 52 (with passenger wagons)").clicked() {
@@ -179,11 +154,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui
@@ -206,11 +177,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui
@@ -233,11 +200,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui
@@ -260,11 +223,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     ));
                 }
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
 
             if ui.small_button("VT98").clicked() {
@@ -283,11 +242,7 @@ fn spawn(mut commands: Commands, mut contexts: EguiContexts, mut id: Local<i64>)
                     TrainComponent::Wagon(control_car),
                 ];
 
-                commands.spawn(TrainBundle {
-                    name: Name("RB 61".to_string()),
-                    composition: TrainComposition { components },
-                    ..default()
-                });
+                commands.spawn(TrainBundle::new("RB 61", components));
             }
         },
     );
