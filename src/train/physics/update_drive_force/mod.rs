@@ -19,16 +19,15 @@ pub fn system(
     >,
 ) {
     for (mut force_driving, max_power, speed, throttle_lever, brake_lever) in entries.iter_mut() {
-        if brake_lever.release_valve > 0.0 || brake_lever.engine_brake > 0.0 {
-            continue;
+        force_driving.0 = if brake_lever.release_valve > 0.0 || brake_lever.engine_brake > 0.0 {
+            0.0
+        } else {
+            let direction = match throttle_lever.direction {
+                Direction::Forward => 1.0,
+                Direction::Backward => -1.0,
+            };
+
+            direction * (max_power.0 * 1000.0 * throttle_lever.percentage) / speed.0.abs().max(1.0)
         }
-
-        let direction = match throttle_lever.direction {
-            Direction::Forward => 1.0,
-            Direction::Backward => -1.0,
-        };
-
-        force_driving.0 =
-            direction * (max_power.0 * 1000.0 * throttle_lever.percentage) / speed.0.abs().max(1.0);
     }
 }

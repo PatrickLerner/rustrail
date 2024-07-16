@@ -3,15 +3,21 @@ use crate::train::Direction;
 use coverage_helper::test;
 
 #[coverage(off)]
-fn spawn_engine(app: &mut App, throttle: ThrottleLever, speed: f32, brake: BrakeLever) -> Entity {
+fn spawn_engine(
+    app: &mut App,
+    throttle: ThrottleLever,
+    brake: BrakeLever,
+    speed: f32,
+    force_driving: f32,
+) -> Entity {
     app.world_mut()
         .spawn((
             Engine,
-            ForceDriving::default(),
             MaxPower(1000.0),
             Speed(speed),
             throttle,
             brake,
+            ForceDriving(force_driving),
         ))
         .id()
 }
@@ -24,8 +30,9 @@ fn no_throttle_no_force() {
     let engine_id = spawn_engine(
         &mut app,
         ThrottleLever::default(),
-        0.0,
         BrakeLever::default(),
+        0.0,
+        10.0,
     );
 
     app.update();
@@ -45,8 +52,9 @@ fn forward_throttle_forward_force() {
             percentage: 0.2,
             direction: Direction::Forward,
         },
-        0.0,
         BrakeLever::default(),
+        0.0,
+        0.0,
     );
 
     app.update();
@@ -66,8 +74,9 @@ fn backward_throttle_backward_force() {
             percentage: 0.2,
             direction: Direction::Backward,
         },
-        0.0,
         BrakeLever::default(),
+        0.0,
+        0.0,
     );
 
     app.update();
@@ -87,8 +96,9 @@ fn more_throttle_more_force() {
             percentage: 0.2,
             direction: Direction::Forward,
         },
-        0.0,
         BrakeLever::default(),
+        0.0,
+        0.0,
     );
 
     let high_throttle = spawn_engine(
@@ -97,8 +107,9 @@ fn more_throttle_more_force() {
             percentage: 1.0,
             direction: Direction::Forward,
         },
-        0.0,
         BrakeLever::default(),
+        0.0,
+        0.0,
     );
 
     app.update();
@@ -122,8 +133,9 @@ fn more_speed_less_force() {
             percentage: 0.2,
             direction: Direction::Forward,
         },
-        0.0,
         BrakeLever::default(),
+        0.0,
+        0.0,
     );
 
     let high_speed = spawn_engine(
@@ -132,8 +144,9 @@ fn more_speed_less_force() {
             percentage: 0.2,
             direction: Direction::Forward,
         },
-        30.0,
         BrakeLever::default(),
+        30.0,
+        0.0,
     );
 
     app.update();
@@ -157,11 +170,12 @@ fn brake_applied_no_force() {
             percentage: 0.5,
             direction: Direction::Forward,
         },
-        10.0,
         BrakeLever {
             release_valve: 1.0,
             engine_brake: 0.0,
         },
+        10.0,
+        123.0,
     );
 
     app.update();
@@ -181,11 +195,12 @@ fn engine_brake_applied_no_force() {
             percentage: 0.5,
             direction: Direction::Forward,
         },
-        10.0,
         BrakeLever {
             release_valve: 0.0,
             engine_brake: 1.0,
         },
+        10.0,
+        123.0,
     );
 
     app.update();

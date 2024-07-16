@@ -54,7 +54,10 @@ fn partial_brake_reduces_pressure() {
     app.update();
 
     let air_pressure = app.world().get::<AirPressure>(engine_id).unwrap().0;
-    assert_eq!(air_pressure, initial_pressure * (1.0 - engine_brake));
+    assert_eq!(
+        air_pressure,
+        initial_pressure * (1.0 - engine_brake.powi(2))
+    );
 }
 
 #[test]
@@ -71,6 +74,9 @@ fn varying_brake_levels() {
         app.update();
 
         let air_pressure = app.world().get::<AirPressure>(engine_id).unwrap().0;
-        assert_eq!(air_pressure, initial_pressure * (1.0 - engine_brake));
+        assert_eq!(
+            air_pressure,
+            initial_pressure * (1.0 - engine_brake.powi(2))
+        );
     }
 }

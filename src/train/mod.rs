@@ -111,9 +111,15 @@ pub struct Distance(pub f32);
 
 const MAX_AIR_PRESSURE: f32 = 5.0;
 
-#[derive(Component, Default)]
+#[derive(Component)]
 // bar
 pub struct AirPressure(pub f32);
+
+impl Default for AirPressure {
+    fn default() -> Self {
+        Self(MAX_AIR_PRESSURE)
+    }
+}
 
 impl WrappedValue for AirPressure {
     fn get(&self) -> f32 {

@@ -37,13 +37,14 @@ fn brake_applies_pressure_decrease() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
-    let train_id = spawn_train(&mut app, MAX_AIR_PRESSURE, 0.5);
+    let release_valve = 0.5;
+    let train_id = spawn_train(&mut app, MAX_AIR_PRESSURE, release_valve);
     app.init_resource::<Time>();
 
     app.update();
 
     let air_pressure_delta = app.world().get::<AirPressureDelta>(train_id).unwrap().0;
-    let target = MAX_AIR_PRESSURE * (1.0 - 0.5);
+    let target = MAX_AIR_PRESSURE * (1.0 - release_valve.powi(2));
     let expected_delta = (target - MAX_AIR_PRESSURE)
         .min(COMPRESSOR_SPEED * app.world().resource::<Time>().delta_seconds());
     assert_eq!(air_pressure_delta, expected_delta);
@@ -71,13 +72,14 @@ fn partial_brake_pressure_decreases() {
     let mut app = App::new();
     app.add_systems(Update, system);
 
-    let train_id = spawn_train(&mut app, MAX_AIR_PRESSURE, 0.25);
+    let release_valve = 0.25;
+    let train_id = spawn_train(&mut app, MAX_AIR_PRESSURE, release_valve);
     app.init_resource::<Time>();
 
     app.update();
 
     let air_pressure_delta = app.world().get::<AirPressureDelta>(train_id).unwrap().0;
-    let target = MAX_AIR_PRESSURE * (1.0 - 0.25);
+    let target = MAX_AIR_PRESSURE * (1.0 - release_valve.powi(2));
     let expected_delta = (target - MAX_AIR_PRESSURE)
         .min(COMPRESSOR_SPEED * app.world().resource::<Time>().delta_seconds());
     assert_eq!(air_pressure_delta, expected_delta);

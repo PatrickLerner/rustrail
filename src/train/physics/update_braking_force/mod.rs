@@ -12,6 +12,5 @@ pub fn system(mut entries: Query<(&mut ForceBraking, &Mass, &AirPressure), Engin
         let n = mass.0 * g;
         let pressure_percentage = (MAX_AIR_PRESSURE - air_pressure.0) / MAX_AIR_PRESSURE;
         braking.0 = friction_coefficient * n * pressure_percentage;
-        log::info!("pressure {:?}; brake {:?}", air_pressure.0, braking.0);
     }
 }
