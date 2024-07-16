@@ -4,10 +4,27 @@ mod tests;
 use bevy::prelude::*;
 use georaster::geotiff::{GeoTiffReader, RasterValue};
 use proj::Proj;
-use std::{collections::HashMap, fs::File, io::BufReader};
+use std::{collections::HashMap, fs::File, io::BufReader, sync::Arc};
 
-#[derive(Resource)]
-pub struct HeightMap {
+#[derive(Resource, Clone)]
+pub struct HeightMap(Arc<HeightMapData>);
+
+impl HeightMap {
+    #[cfg(test)]
+    pub fn test_dummy() -> Self {
+        Self(Arc::new(HeightMapData::test_dummy()))
+    }
+
+    pub fn load_from_file(file_name: &str) -> Self {
+        Self(Arc::new(HeightMapData::load_from_file(file_name)))
+    }
+
+    pub fn height_at_position(&self, x: f64, y: f64) -> f32 {
+        self.0.height_at_position(x, y)
+    }
+}
+
+pub struct HeightMapData {
     origin: (f64, f64),
     pixel_size: (f64, f64),
     dimensions: (u32, u32),
@@ -20,7 +37,7 @@ struct ProjWrapper(Proj);
 unsafe impl Sync for ProjWrapper {}
 unsafe impl Send for ProjWrapper {}
 
-impl HeightMap {
+impl HeightMapData {
     #[cfg(test)]
     pub fn test_dummy() -> Self {
         let converter = Proj::new_known_crs("ESRI:53004", "EPSG:32632", None).unwrap();
