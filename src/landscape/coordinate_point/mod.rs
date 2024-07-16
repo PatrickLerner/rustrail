@@ -79,7 +79,7 @@ impl std::ops::Mul<f64> for CoordinatePoint {
     }
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone)]
 pub struct Coordinates(pub Vec<CoordinatePoint>);
 
 impl Coordinates {

@@ -20,14 +20,14 @@ pub struct OSMData {
     pub sections: HashMap<(i64, i64), SectionData>,
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone)]
 pub struct SectionData {
     pub buildings: Vec<BuildingData>,
     pub areas: Vec<AreaData>,
     pub rails: Vec<PathId>,
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone)]
 pub struct BuildingData {
     pub building_type: BuildingType,
     pub coordinates: Coordinates,
@@ -35,13 +35,13 @@ pub struct BuildingData {
     pub layer: Option<u8>,
 }
 
-#[derive(Default, Debug, Deserialize, Serialize)]
+#[derive(Default, Debug, Deserialize, Serialize, Clone)]
 pub struct AreaData {
     pub area_type: AreaType,
     pub coordinates: Coordinates,
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub enum BuildingType {
     Building,
     Industrial,
@@ -57,7 +57,7 @@ impl Default for BuildingType {
     }
 }
 
-#[derive(Debug, PartialEq, Deserialize, Serialize)]
+#[derive(Debug, PartialEq, Deserialize, Serialize, Clone)]
 pub enum AreaType {
     Wood,
     Water,

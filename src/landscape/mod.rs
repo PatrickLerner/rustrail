@@ -27,7 +27,6 @@ const ORIGIN: (f64, f64) = (49.68134809269307, 8.61687829630227);
 // lifetime of a landscape. if it is not renewed, it will despawn
 const DEFAULT_TTL: f32 = 30.0;
 const SPAWN_RADIUS: i32 = 5;
-const MAX_SPAWN_PER_FRAME: usize = 3;
 
 pub const BALLAST_WIDTH: f32 = RAIL_DISTANCE + 1.75;
 pub const BALLAST_HEIGHT: f32 = 0.4;
@@ -51,7 +50,7 @@ pub struct AssetData {
     commercial_material: Handle<StandardMaterial>,
 }
 
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct Landscape {
     pub ttl: f32,
     pub position: CoordinatePoint,
@@ -66,7 +65,7 @@ impl Default for Landscape {
     }
 }
 
-#[derive(Resource, Default)]
+#[derive(Resource, Default, Clone)]
 pub struct OriginOffset(pub CoordinatePoint);
 
 pub struct LandscapePlugin;
