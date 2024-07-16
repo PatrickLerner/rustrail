@@ -49,96 +49,111 @@ pub fn system(
         if let Some(section_data) = data.sections.get(&sector) {
             let buildings = section_data.buildings.clone();
 
-            let task = thread_pool.spawn(async move {
-                let mut count = 0;
+            let task = thread_pool.spawn(
+                #[coverage(off)]
+                async move {
+                    let mut count = 0;
 
-                let mut command_queue = CommandQueue::default();
-                for building in buildings.into_iter() {
-                    let coordinates = building
-                        .coordinates
-                        .view_for_landscape_position(&landscape.position);
+                    let mut command_queue = CommandQueue::default();
+                    for building in buildings.into_iter() {
+                        let coordinates = building
+                            .coordinates
+                            .view_for_landscape_position(&landscape.position);
 
-                    let extrude_amount = if let Some(level) = building.levels {
-                        if level == 0 {
-                            FIRST_LEVEL_HEIGHT
+                        let extrude_amount = if let Some(level) = building.levels {
+                            if level == 0 {
+                                FIRST_LEVEL_HEIGHT
+                            } else {
+                                level as f32 * LEVEL_HEIGHT
+                            }
                         } else {
-                            level as f32 * LEVEL_HEIGHT
-                        }
-                    } else {
-                        match building.building_type {
-                            BuildingType::Building => BUILDING_HEIGHT,
-                            BuildingType::Industrial => INDUSTRIAL_HEIGHT,
-                            BuildingType::Office => OFFICE_HEIGHT,
-                            BuildingType::Commercial => COMMERCIAL_HEIGHT,
-                            BuildingType::Platform => PLATFORM_HEIGHT,
-                            BuildingType::Roof => ROOF_HEIGHT,
-                        }
-                    };
-
-                    let offset = if let Some(layer) = building.layer {
-                        if layer == 0 {
-                            FIRST_LEVEL_HEIGHT
-                        } else {
-                            layer as f32 * LEVEL_HEIGHT
-                        }
-                    } else {
-                        0.0
-                    };
-
-                    let position_height = height_map.height_at_position(
-                        coordinates.center.0 + landscape.position.0,
-                        -coordinates.center.1 + landscape.position.1,
-                    );
-
-                    let transform = Transform::from_xyz(
-                        coordinates.center.0 as f32,
-                        offset + position_height,
-                        coordinates.center.1 as f32,
-                    );
-
-                    command_queue.push(move |world: &mut World| {
-                        let (mesh, material) = {
-                            let mut system_state =
-                                SystemState::<(ResMut<Assets<Mesh>>, Res<AssetData>)>::new(world);
-                            let (mut meshes, assets) = system_state.get_mut(world);
-                            let mesh =
-                                meshes.add(generate_3d_mesh(coordinates.list, extrude_amount));
-
-                            let material = match building.building_type {
-                                BuildingType::Building => assets.building_material.clone(),
-                                BuildingType::Industrial => assets.industrial_material.clone(),
-                                BuildingType::Office => assets.office_material.clone(),
-                                BuildingType::Commercial => assets.commercial_material.clone(),
-                                BuildingType::Roof => assets.building_material.clone(),
-                                BuildingType::Platform => assets.platform_material.clone(),
-                            };
-
-                            (mesh, material)
+                            match building.building_type {
+                                BuildingType::Building => BUILDING_HEIGHT,
+                                BuildingType::Industrial => INDUSTRIAL_HEIGHT,
+                                BuildingType::Office => OFFICE_HEIGHT,
+                                BuildingType::Commercial => COMMERCIAL_HEIGHT,
+                                BuildingType::Platform => PLATFORM_HEIGHT,
+                                BuildingType::Roof => ROOF_HEIGHT,
+                            }
                         };
 
-                        world.entity_mut(entity).with_children(
+                        let offset = if let Some(layer) = building.layer {
+                            if layer == 0 {
+                                FIRST_LEVEL_HEIGHT
+                            } else {
+                                layer as f32 * LEVEL_HEIGHT
+                            }
+                        } else {
+                            0.0
+                        };
+
+                        let position_height = height_map.height_at_position(
+                            coordinates.center.0 + landscape.position.0,
+                            -coordinates.center.1 + landscape.position.1,
+                        );
+
+                        let transform = Transform::from_xyz(
+                            coordinates.center.0 as f32,
+                            offset + position_height,
+                            coordinates.center.1 as f32,
+                        );
+
+                        command_queue.push(
                             #[coverage(off)]
-                            |parent| {
-                                parent.spawn(PbrBundle {
-                                    mesh,
-                                    material,
-                                    transform,
-                                    ..default()
-                                });
+                            move |world: &mut World| {
+                                let (mesh, material) = {
+                                    let mut system_state =
+                                        SystemState::<(ResMut<Assets<Mesh>>, Res<AssetData>)>::new(
+                                            world,
+                                        );
+                                    let (mut meshes, assets) = system_state.get_mut(world);
+                                    let mesh = meshes
+                                        .add(generate_3d_mesh(coordinates.list, extrude_amount));
+
+                                    let material = match building.building_type {
+                                        BuildingType::Building => assets.building_material.clone(),
+                                        BuildingType::Industrial => {
+                                            assets.industrial_material.clone()
+                                        }
+                                        BuildingType::Office => assets.office_material.clone(),
+                                        BuildingType::Commercial => {
+                                            assets.commercial_material.clone()
+                                        }
+                                        BuildingType::Roof => assets.building_material.clone(),
+                                        BuildingType::Platform => assets.platform_material.clone(),
+                                    };
+
+                                    (mesh, material)
+                                };
+
+                                world.entity_mut(entity).with_children(
+                                    #[coverage(off)]
+                                    |parent| {
+                                        parent.spawn(PbrBundle {
+                                            mesh,
+                                            material,
+                                            transform,
+                                            ..default()
+                                        });
+                                    },
+                                );
                             },
                         );
-                    });
 
-                    count += 1;
-                }
-                log::debug!("{} buildings spawned", count);
+                        count += 1;
+                    }
+                    log::debug!("{} buildings spawned", count);
 
-                command_queue.push(move |world: &mut World| {
-                    world.entity_mut(entity).remove::<ComputeBuildings>();
-                });
+                    command_queue.push(
+                        #[coverage(off)]
+                        move |world: &mut World| {
+                            world.entity_mut(entity).remove::<ComputeBuildings>();
+                        },
+                    );
 
-                command_queue
-            });
+                    command_queue
+                },
+            );
 
             commands
                 .entity(entity)
