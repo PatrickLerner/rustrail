@@ -8,7 +8,7 @@ pub use path::{Path, PathId};
 #[coverage(off)]
 pub fn load_data(mut commands: Commands) {
     // TODO: make configurable
-    let file_name = "assets/hessen-latest.osm.pbf";
+    let file_name = "assets/rheinland-pfalz-latest.osm.pbf";
     let parsed_file_name = format!("{}.bin", file_name);
 
     let data = if let Ok(data) = OSMData::load_from_file(&parsed_file_name) {

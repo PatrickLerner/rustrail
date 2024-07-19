@@ -1,0 +1,75 @@
+[info]
+name = "RB 35: Worms => Bingen"
+starting_direction = "Forward"
+
+[origin]
+latitude = 49.63966024260717
+longitude = 8.357820661280797
+
+[map]
+osm_data = "assets/rheinland-pfalz-latest.osm.pbf"
+height_map = "assets/dgm200_utm32s.tif"
+
+[[stops]]
+name = "Worms Hauptbahnhof"
+node_id = 1704497419
+
+[[stops]]
+name = "Pfeddersheim"
+node_id = 4496958583
+
+[[stops]]
+name = "Monsheim"
+node_id = 4496958581
+
+[[stops]]
+name = "Flörsheim-Dalsheim"
+node_id = 5091992746
+
+[[stops]]
+name = "Gundersheim (Rheinhessen)"
+node_id = 5091992748
+
+[[stops]]
+name = "Eppelsheim (Rheinhessen)"
+node_id = 4496958578
+
+[[stops]]
+name = "Alzey Süd"
+node_id = 5091992769
+
+[[stops]]
+name = "Alzey"
+node_id = 4496958575
+
+[[stops]]
+name = "Albig"
+node_id = 1686222468
+
+[[stops]]
+name = "Armsheim"
+node_id = 4496958577
+
+[[stops]]
+name = "Wallertheim"
+node_id = 5090680690
+
+[[stops]]
+name = "Gau-Bickelheim"
+node_id = 5090878200
+
+[[stops]]
+name = "Sprendlingen"
+node_id = 5090878192
+
+[[stops]]
+name = "Welgesheim-Zotzenheim"
+node_id = 4812154448
+
+[[stops]]
+name = "Gensingen-Horrweiler"
+node_id = 4496958579
+
+[[stops]]
+name = "Bingen (Rhein) Stadt"
+node_id = 2163328376

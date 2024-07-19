@@ -6,7 +6,7 @@ mod spawn_light;
 mod update_camera;
 mod update_follow;
 
-use crate::moving_things;
+use crate::{landscape::HeightMap, moving_things};
 use bevy::prelude::*;
 use bevy_egui::EguiContexts;
 
@@ -81,7 +81,9 @@ impl Plugin for CameraPlugin {
         app.add_systems(
             Update,
             (
-                egui_unlocked.pipe(update_camera::system),
+                egui_unlocked
+                    .pipe(update_camera::system)
+                    .run_if(resource_exists::<HeightMap>),
                 update_follow::system.before(moving_things),
             )
                 .run_if(any_with_component::<GameCameraState>),
