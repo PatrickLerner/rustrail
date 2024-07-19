@@ -73,27 +73,26 @@ pub struct LandscapePlugin;
 
 impl Plugin for LandscapePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Startup,
-            (open_street_map::load_data, load_asset_data::system),
-        )
-        .add_systems(
-            Update,
-            init_height_map::system.run_if(
-                resource_exists::<ScenarioData>.and_then(not(resource_exists::<HeightMap>)),
-            ),
-        )
-        .add_systems(
-            Update,
-            (
-                spawn_landscapes::system,
-                spawn_landscape_mesh::system,
-                despawn_landscapes::system,
-                spawn_rails::system,
-                spawn_buildings::system,
-                spawn_areas::system,
+        app.add_systems(Startup, load_asset_data::system)
+            .add_systems(
+                Update,
+                (
+                    init_height_map::system.run_if(not(resource_exists::<HeightMap>)),
+                    open_street_map::load_data.run_if(not(resource_exists::<OSMData>)),
+                )
+                    .run_if(resource_exists::<ScenarioData>),
             )
-                .run_if(resource_exists::<HeightMap>.and_then(resource_exists::<OSMData>)),
-        );
+            .add_systems(
+                Update,
+                (
+                    spawn_landscapes::system,
+                    spawn_landscape_mesh::system,
+                    despawn_landscapes::system,
+                    spawn_rails::system,
+                    spawn_buildings::system,
+                    spawn_areas::system,
+                )
+                    .run_if(resource_exists::<HeightMap>.and_then(resource_exists::<OSMData>)),
+            );
     }
 }

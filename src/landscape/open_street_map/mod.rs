@@ -1,14 +1,15 @@
 mod osm_data;
 mod path;
 
+use crate::scenario::ScenarioData;
 use bevy::prelude::*;
 pub use osm_data::{AreaType, BuildingType, OSMData};
 pub use path::{Path, PathId};
 
 #[coverage(off)]
-pub fn load_data(mut commands: Commands) {
+pub fn load_data(mut commands: Commands, scenario: Res<ScenarioData>) {
     // TODO: make configurable
-    let file_name = "assets/rheinland-pfalz-latest.osm.pbf";
+    let file_name = &scenario.map.osm_data;
     let parsed_file_name = format!("{}.bin", file_name);
 
     let data = if let Ok(data) = OSMData::load_from_file(&parsed_file_name) {

@@ -18,6 +18,7 @@ mod update_speed;
 mod update_train_location;
 
 use super::*;
+use crate::landscape::OSMData;
 use bevy::prelude::*;
 
 pub struct TrainPhysicsPlugin;
@@ -48,11 +49,11 @@ impl Plugin for TrainPhysicsPlugin {
                 update_acceleration::system,
                 update_speed::system,
                 update_distance::system,
-                update_train_location::system,
                 update_air_pressure_delta::system,
                 update_air_pressure_engine_brake::system
                     .after(apply_train_value_to_components::system::<AirPressure>),
                 update_braking_force::system.after(update_air_pressure_engine_brake::system),
+                update_train_location::system.run_if(resource_exists::<OSMData>),
             ),
         );
     }
