@@ -1,6 +1,6 @@
 [info]
 name = "RB 35: Worms => Bingen"
-starting_direction = "Forward"
+starting_direction = "Backward"
 
 [origin]
 latitude = 49.63966024260717

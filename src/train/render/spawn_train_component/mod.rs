@@ -1,7 +1,7 @@
 use crate::{
     landscape::OSMData,
     scenario::ScenarioData,
-    train::{Dimension, Direction, LoadModelFile, TrackLocation, TrainComposition},
+    train::{Dimension, LoadModelFile, TrackLocation, TrainComposition},
     TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
@@ -63,7 +63,7 @@ pub fn system(
         let mut location = TrackLocation {
             id: *id,
             distance: 0.0,
-            travel_direction: Direction::Forward,
+            travel_direction: scenario_data.info.starting_direction,
         };
 
         commands.entity(entity).insert(location.clone());
