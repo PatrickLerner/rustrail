@@ -43,7 +43,7 @@ fn load_scenario(
             |ui| {
                 for (file_name, scenario_name) in scenarios {
                     if ui.small_button(scenario_name).clicked() {
-                        let scenario_data = ScenarioData::load_from_file(&file_name);
+                        let scenario_data = ScenarioData::load_from_file(file_name);
 
                         let mut window = window.single_mut();
                         window.title = format!("rustrail - {}", scenario_data.info.name);
