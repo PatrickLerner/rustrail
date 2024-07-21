@@ -8,7 +8,6 @@ pub use path::{Path, PathId};
 
 #[coverage(off)]
 pub fn load_data(mut commands: Commands, scenario: Res<ScenarioData>) {
-    // TODO: make configurable
     let file_name = &scenario.map.osm_data;
     let parsed_file_name = format!("{}.bin", file_name);
 
