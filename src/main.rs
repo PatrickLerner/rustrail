@@ -3,6 +3,7 @@
 mod camera;
 mod landscape;
 mod mesh;
+mod scenario;
 mod train;
 mod ui;
 

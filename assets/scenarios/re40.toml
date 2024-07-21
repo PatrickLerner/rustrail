@@ -1,0 +1,59 @@
+[info]
+name = "RE 40: Freudenstadt Hbf => Karlsruhe Hbf"
+starting_direction = "Backward"
+
+[origin]
+latitude = 48.46035868868311
+longitude = 8.429149588186345
+
+[map]
+osm_data = "assets/baden-wuerttemberg-latest.osm.pbf"
+height_map = "assets/dgm200_utm32s.tif"
+
+[[stops]]
+name = "Freudenstadt Hauptbahnhof"
+node_id = 2239986123
+
+[[stops]]
+name = "Freudenstadt Industriegebiet/Schmid"
+node_id = 4040952268
+
+[[stops]]
+name = "Freudenstadt Schulzentrum/Panoramabad"
+node_id = 4040952269
+
+[[stops]]
+name = "Freudenstadt Stadt"
+node_id = 3154068059
+
+[[stops]]
+name = "Baiersbronn"
+node_id = 3154068861
+
+[[stops]]
+name = "Schönmünzach"
+node_id = 3154068867
+
+[[stops]]
+name = "Forbach (Schwarzwald)"
+node_id = 2958399195
+
+[[stops]]
+name = "Weisenbach"
+node_id = 3112924511
+
+[[stops]]
+name = "Gernsbach"
+node_id = 19089039
+
+[[stops]]
+name = "Gaggenau"
+node_id = 1207712908
+
+[[stops]]
+name = "Rastatt"
+node_id = 4044016600
+
+[[stops]]
+name = "Karlsruhe Hauptbahnhof"
+node_id = 402589292

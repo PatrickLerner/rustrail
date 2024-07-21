@@ -1,6 +1,7 @@
 use crate::{
     landscape::OSMData,
-    train::{Dimension, Direction, LoadModelFile, TrackLocation, TrainComposition},
+    scenario::ScenarioData,
+    train::{Dimension, LoadModelFile, TrackLocation, TrainComposition},
     TRAIN_HEIGHT_OFFSET,
 };
 use bevy::prelude::*;
@@ -13,22 +14,22 @@ pub fn system(
     engines: Query<(Entity, &LoadModelFile)>,
     dimensions: Query<&Dimension>,
     mut commands: Commands,
-    // mut meshes: ResMut<Assets<Mesh>>,
-    // mut materials: ResMut<Assets<StandardMaterial>>,
     asset_server: Res<AssetServer>,
     data: Res<OSMData>,
+    scenario_data: Res<ScenarioData>,
 ) {
     if trains.is_empty() {
         return;
     }
 
-    const START_ID: i64 = 1687958953;
+    let start_rail = scenario_data.stops.first().unwrap().node_id;
+
     let id = data
         .rails
         .keys()
         .find(
             #[coverage(off)]
-            |(s, _e)| *s == START_ID,
+            |(s, _e)| *s == start_rail,
         )
         .expect("to find rail with start id");
 
@@ -41,7 +42,7 @@ pub fn system(
                 TrackLocation {
                     id: *id,
                     distance: 0.0,
-                    travel_direction: Direction::Forward,
+                    travel_direction: scenario_data.info.starting_direction,
                 },
                 PbrBundle::default(),
             ))
@@ -62,7 +63,7 @@ pub fn system(
         let mut location = TrackLocation {
             id: *id,
             distance: 0.0,
-            travel_direction: Direction::Forward,
+            travel_direction: scenario_data.info.starting_direction,
         };
 
         commands.entity(entity).insert(location.clone());

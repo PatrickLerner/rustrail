@@ -20,10 +20,11 @@ pub use height_map::HeightMap;
 pub use open_street_map::Path;
 pub use open_street_map::{OSMData, PathId};
 
+use crate::scenario::ScenarioData;
+
 const TRIANGLE_SIZE: i32 = 10;
 const LANDSCAPE_SIZE: i32 = 1000;
 const HALF_LANDSCAPE_SIZE: i32 = LANDSCAPE_SIZE / 2;
-const ORIGIN: (f64, f64) = (49.68134809269307, 8.61687829630227);
 // lifetime of a landscape. if it is not renewed, it will despawn
 const DEFAULT_TTL: f32 = 30.0;
 const SPAWN_RADIUS: i32 = 5;
@@ -72,24 +73,26 @@ pub struct LandscapePlugin;
 
 impl Plugin for LandscapePlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(
-            Startup,
-            (
-                init_height_map::system,
-                open_street_map::load_data,
-                load_asset_data::system,
-            ),
-        )
-        .add_systems(
-            Update,
-            (
-                spawn_landscapes::system,
-                spawn_landscape_mesh::system,
-                despawn_landscapes::system,
-                spawn_rails::system,
-                spawn_buildings::system,
-                spawn_areas::system,
-            ),
-        );
+        app.add_systems(Startup, load_asset_data::system)
+            .add_systems(
+                Update,
+                (
+                    init_height_map::system.run_if(not(resource_exists::<HeightMap>)),
+                    open_street_map::load_data.run_if(not(resource_exists::<OSMData>)),
+                )
+                    .run_if(resource_exists::<ScenarioData>),
+            )
+            .add_systems(
+                Update,
+                (
+                    spawn_landscapes::system,
+                    spawn_landscape_mesh::system,
+                    despawn_landscapes::system,
+                    spawn_rails::system,
+                    spawn_buildings::system,
+                    spawn_areas::system,
+                )
+                    .run_if(resource_exists::<HeightMap>.and_then(resource_exists::<OSMData>)),
+            );
     }
 }
