@@ -16,12 +16,15 @@ fn load_scenario(
     if scenarios.is_none() {
         let files = glob("assets/scenarios/*.toml").unwrap();
         let items = files
-            .map(|file| {
-                let file_name = file.unwrap().display().to_string();
-                let scenario = ScenarioData::load_from_file(&file_name);
+            .map(
+                #[coverage(off)]
+                |file| {
+                    let file_name = file.unwrap().display().to_string();
+                    let scenario = ScenarioData::load_from_file(&file_name);
 
-                (file_name, scenario.info.name)
-            })
+                    (file_name, scenario.info.name)
+                },
+            )
             .collect();
 
         *scenarios = Some(items);
