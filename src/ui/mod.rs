@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests;
 
+mod load_scenario;
 mod train_controls;
 mod train_spawn;
 
@@ -56,5 +57,6 @@ impl PluginGroup for UIPlugins {
             .add(UIPlugin)
             .add(train_controls::TrainControlsPlugin)
             .add(train_spawn::TrainSpawnPlugin)
+            .add(load_scenario::LoadScenarioPlugin)
     }
 }

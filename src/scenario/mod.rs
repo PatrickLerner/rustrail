@@ -1,3 +1,6 @@
+#[cfg(test)]
+mod tests;
+
 use crate::train::Direction;
 use bevy::prelude::*;
 use serde::Deserialize;
@@ -18,6 +21,8 @@ pub struct ScenarioMap {
 
 #[derive(Default, Debug, Deserialize)]
 pub struct ScenarioStop {
+    // TODO: remove when used
+    #[allow(dead_code)]
     pub name: String,
     pub node_id: i64,
 }

@@ -1,7 +1,10 @@
 #[cfg(test)]
 mod tests;
 
-use crate::train::{EngineBundle, Name, TrainBundle, TrainComponent, WagonBundle};
+use crate::{
+    scenario::ScenarioData,
+    train::{EngineBundle, Name, TrainBundle, TrainComponent, WagonBundle},
+};
 use bevy::prelude::*;
 use bevy_egui::{egui, EguiContexts};
 
@@ -252,6 +255,6 @@ pub struct TrainSpawnPlugin;
 
 impl Plugin for TrainSpawnPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, spawn);
+        app.add_systems(Update, spawn.run_if(resource_exists::<ScenarioData>));
     }
 }

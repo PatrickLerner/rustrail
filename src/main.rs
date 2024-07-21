@@ -15,26 +15,15 @@ use bevy::{
         settings::{RenderCreation, WgpuSettings},
         RenderPlugin,
     },
-    window::PrimaryWindow,
 };
 use bevy_egui::EguiPlugin;
 use landscape::{BALLAST_HEIGHT, RAIL_HEIGHT};
-use scenario::ScenarioData;
 
 const TRAIN_HEIGHT_OFFSET: f32 = BALLAST_HEIGHT + RAIL_HEIGHT;
 
 // marker methods for system ordering
 #[coverage(off)]
 fn moving_things() {}
-
-fn load_scenario(mut commands: Commands, mut window: Query<&mut Window, With<PrimaryWindow>>) {
-    let scenario_data = ScenarioData::load_from_file("assets/scenarios/re40.toml");
-
-    let mut window = window.single_mut();
-    window.title = format!("rustrail - {}", scenario_data.info.name);
-
-    commands.insert_resource(scenario_data);
-}
 
 #[coverage(off)]
 fn main() {
@@ -61,9 +50,5 @@ fn main() {
         .add_plugins(ui::UIPlugins)
         .add_plugins(landscape::LandscapePlugin)
         .add_systems(Update, moving_things)
-        .add_systems(
-            Update,
-            load_scenario.run_if(not(resource_exists::<ScenarioData>)),
-        )
         .run();
 }

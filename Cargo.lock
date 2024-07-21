@@ -3867,6 +3867,7 @@ dependencies = [
  "fast_poisson",
  "geo",
  "georaster",
+ "glob",
  "iyes_perf_ui",
  "log",
  "osmpbfreader",
