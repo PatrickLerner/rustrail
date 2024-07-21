@@ -34,18 +34,22 @@ fn load_scenario(
         .collapsible(false)
         .resizable(false)
         .movable(false)
-        .show(contexts.ctx_mut(), |ui| {
-            for (file_name, scenario_name) in scenarios {
-                if ui.small_button(scenario_name).clicked() {
-                    let scenario_data = ScenarioData::load_from_file(&file_name);
+        .show(
+            contexts.ctx_mut(),
+            #[coverage(off)]
+            |ui| {
+                for (file_name, scenario_name) in scenarios {
+                    if ui.small_button(scenario_name).clicked() {
+                        let scenario_data = ScenarioData::load_from_file(&file_name);
 
-                    let mut window = window.single_mut();
-                    window.title = format!("rustrail - {}", scenario_data.info.name);
+                        let mut window = window.single_mut();
+                        window.title = format!("rustrail - {}", scenario_data.info.name);
 
-                    commands.insert_resource(scenario_data);
+                        commands.insert_resource(scenario_data);
+                    }
                 }
-            }
-        });
+            },
+        );
 }
 
 pub struct LoadScenarioPlugin;
