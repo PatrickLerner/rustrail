@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.14"
-bevy_egui = "0.28"
+bevy_egui = "0.30"
 georaster = "0.1"
 log = "0.4"
 proj = "0.27"
